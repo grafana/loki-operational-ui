@@ -1,24 +1,36 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { AppRootProps } from '@grafana/data';
-import { ROUTES } from '../../constants';
-const PageOne = React.lazy(() => import('../../pages/PageOne'));
-const PageTwo = React.lazy(() => import('../../pages/PageTwo'));
-const PageThree = React.lazy(() => import('../../pages/PageThree'));
-const PageFour = React.lazy(() => import('../../pages/PageFour'));
+import { routes } from "config/routes";
 
-function App(props: AppRootProps) {
+import { AppLayout } from "../../layout/layout";
+import { ThemeProvider } from "../../features/theme/components/theme-provider";
+import { QueryProvider } from "../../providers/query-provider";
+import { ClusterProvider } from "../../contexts/cluster-provider";
+import { FeatureFlagsProvider } from "../../contexts/feature-flags";
+
+
+function App(_: AppRootProps) {
   return (
-    <Routes>
-      <Route path={ROUTES.Two} element={<PageTwo />} />
-      <Route path={`${ROUTES.Three}/:id?`} element={<PageThree />} />
-
-      {/* Full-width page (this page will have no side navigation) */}
-      <Route path={ROUTES.Four} element={<PageFour />} />
-
-      {/* Default page */}
-      <Route path="*" element={<PageOne />} />
-    </Routes>
+    <QueryProvider>
+      <ThemeProvider defaultTheme="dark" storageKey="loki-ui-theme">
+        <FeatureFlagsProvider>
+          <ClusterProvider>
+            <AppLayout>
+              <Routes>
+                {routes.map((route) => (
+                  <Route
+                    key={route.path}
+                    path={route.path}
+                    element={route.element}
+                  />
+                ))}
+              </Routes>
+            </AppLayout>
+          </ClusterProvider>
+        </FeatureFlagsProvider>
+      </ThemeProvider>
+    </QueryProvider>
   );
 }
 
