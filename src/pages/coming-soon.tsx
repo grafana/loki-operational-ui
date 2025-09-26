@@ -7,7 +7,7 @@ export default function ComingSoon() {
       <Construction className="h-16 w-16 text-muted-foreground mb-6" />
       <h1 className="text-4xl font-bold text-center mb-4">Coming Soon</h1>
       <p className="text-lg text-muted-foreground text-center max-w-md">
-        We're working hard to bring you this feature. Stay tuned for updates!
+        We&apos;re working hard to bring you this feature. Stay tuned for updates!
       </p>
     </div>
   );

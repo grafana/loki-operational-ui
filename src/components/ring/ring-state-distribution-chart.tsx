@@ -1,5 +1,4 @@
-import React from 'react';
-import { useMemo } from "react";
+import React, { useMemo } from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
 import { RingInstance } from "types/ring";
 
@@ -82,7 +81,7 @@ export function RingStateDistributionChart({
           </Pie>
           <Tooltip
             content={({ active, payload }) => {
-              if (!active || !payload || !payload[0]) return null;
+              if (!active || !payload || !payload[0]) {return null;}
               const data = payload[0].payload;
               return (
                 <div className="bg-background border rounded-lg shadow-lg px-3 py-2 flex items-center gap-2">

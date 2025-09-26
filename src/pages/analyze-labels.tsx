@@ -1,25 +1,25 @@
-import React from 'react';
-import { DataTableColumnHeader } from "gcomponents/common/data-table-column-header";
-import { Badge } from "gcomponents/ui/badge";
-import { Button } from "gcomponents/ui/button";
+import React, { useEffect, useMemo, useState } from "react";
+import { DataTableColumnHeader } from "../components/common/data-table-column-header";
+import { Badge } from "../components/ui/badge";
+import { Button } from "../components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "gcomponents/ui/card";
+} from "../components/ui/card";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
-} from "gcomponents/ui/chart";
+} from "../components/ui/chart";
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "gcomponents/ui/collapsible";
+} from "../components/ui/collapsible";
 import {
   Form,
   FormControl,
@@ -27,15 +27,15 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "gcomponents/ui/form";
-import { Input } from "gcomponents/ui/input";
+} from "../components/ui/form";
+import { Input } from "../components/ui/input";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "gcomponents/ui/select";
+} from "../components/ui/select";
 import {
   Table,
   TableBody,
@@ -43,15 +43,14 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "gcomponents/ui/table";
-import { useCluster } from "gcontexts/use-cluster";
-import { useToast } from "ghooks/use-toast";
-import { cn, findNodeName } from "glib/utils";
-import { absolutePath } from "gutil";
+} from "../components/ui/table";
+import { useCluster } from "../contexts/use-cluster";
+import { useToast } from "../hooks/use-toast";
+import { cn, findNodeName } from "../lib/utils";
+import { absolutePath } from "../util";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import * as z from "zod";
@@ -273,7 +272,7 @@ export default function AnalyzeLabels() {
   } satisfies ChartConfig;
 
   const sortedLabels = useMemo(() => {
-    if (!analysisResults) return [];
+    if (!analysisResults) {return [];}
 
     return [...analysisResults.labels].sort((a, b) => {
       let comparison = 0;
@@ -636,7 +635,7 @@ export default function AnalyzeLabels() {
 }
 
 function parseDuration(duration: string): number {
-  const value = parseInt(duration);
+  const value = parseInt(duration, 10);
   const unit = duration.slice(-1);
   const multiplier = unit === "h" ? 3600000 : 0; // Convert hours to milliseconds
   return value * multiplier;

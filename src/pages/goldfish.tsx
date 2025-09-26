@@ -1,19 +1,18 @@
-import React from 'react';
-import { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from "react-router-dom";
-import { useGoldfishQueries } from "ghooks/use-goldfish-queries";
-import { QueryDiffView } from "gcomponents/goldfish/query-diff-view";
-import { TimeRangeSelector } from "gcomponents/goldfish/time-range-selector";
-import { UserFilterCombobox } from "gcomponents/goldfish/user-filter-combobox";
-import { TenantFilterSelect } from "gcomponents/goldfish/tenant-filter-select";
-import { Button } from "gcomponents/ui/button";
-import { Skeleton } from "gcomponents/ui/skeleton";
-import { Alert, AlertDescription } from "gcomponents/ui/alert";
-import { Card, CardHeader, CardContent } from "gcomponents/ui/card";
-import { Checkbox } from "gcomponents/ui/checkbox";
+import { useGoldfishQueries } from "../hooks/use-goldfish-queries";
+import { QueryDiffView } from "../components/goldfish/query-diff-view";
+import { TimeRangeSelector } from "../components/goldfish/time-range-selector";
+import { UserFilterCombobox } from "../components/goldfish/user-filter-combobox";
+import { TenantFilterSelect } from "../components/goldfish/tenant-filter-select";
+import { Button } from "../components/ui/button";
+import { Skeleton } from "../components/ui/skeleton";
+import { Alert, AlertDescription } from "../components/ui/alert";
+import { Card, CardHeader, CardContent } from "../components/ui/card";
+import { Checkbox } from "../components/ui/checkbox";
 import { RefreshCw, AlertCircle, CheckCircle2, XCircle, Rocket, ChevronDown } from "lucide-react";
-import { OutcomeFilter, OUTCOME_ALL, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from "gtypes/goldfish";
-import { PageContainer } from "glayout/page-container";
+import { OutcomeFilter, OUTCOME_ALL, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from "../types/goldfish";
+import { PageContainer } from "../layout/page-container";
 
 // Define preset ranges (matching TimeRangeSelector)
 const PRESET_RANGES = [
@@ -77,7 +76,7 @@ export default function GoldfishPage() {
         const [, amount, unit] = match;
         const now = new Date();
         const msMultiplier = { m: 60 * 1000, h: 60 * 60 * 1000, d: 24 * 60 * 60 * 1000 }[unit] || 1;
-        const from = new Date(now.getTime() - parseInt(amount) * msMultiplier);
+        const from = new Date(now.getTime() - parseInt(amount, 10) * msMultiplier);
         return { from, to: now };
       }
     }

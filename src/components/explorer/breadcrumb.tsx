@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link } from "react-router-dom";
 import React, { useMemo } from "react";
 import { findNodeName } from "lib/utils";
 import { useCluster } from "contexts/use-cluster";
@@ -9,8 +9,7 @@ import {
   Breadcrumb,
   BreadcrumbSeparator,
 } from "components/ui/breadcrumb";
-import { Link } from "react-router-dom";
-import { absolutePath } from "util";
+import { absolutePath } from "../../util";
 
 const getProviderStyles = (
   provider: string

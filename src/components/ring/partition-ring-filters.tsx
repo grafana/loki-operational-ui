@@ -33,7 +33,7 @@ export function PartitionRingFilters({
   // Create options for each filter type
   const stateOptions: Option[] = uniqueStates.map((state) => ({
     value: state,
-    label: PartitionStates[parseInt(state) as keyof typeof PartitionStates],
+    label: PartitionStates[parseInt(state, 10) as keyof typeof PartitionStates],
   }));
 
   // Get unique zones from all owners
@@ -41,7 +41,7 @@ export function PartitionRingFilters({
   partitions.forEach((partition) => {
     partition.owner_ids.forEach((owner) => {
       const zone = parseZoneFromOwner(owner);
-      if (zone) allZones.add(zone);
+      if (zone) {allZones.add(zone);}
     });
   });
 
@@ -55,7 +55,7 @@ export function PartitionRingFilters({
   // Get unique partition IDs
   const uniquePartitions = Array.from(
     new Set(partitions.map((p) => p.id.toString()))
-  ).sort((a, b) => parseInt(a) - parseInt(b));
+  ).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
 
   const partitionOptions: Option[] = uniquePartitions.map((id) => ({
     value: id,

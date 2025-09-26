@@ -42,11 +42,11 @@ export function useVersionInfo(): UseVersionInfoResult {
   }, [clusterLoading]);
 
   const getMostCommonVersion = (): string => {
-    if (!cluster?.members) return "v0.0.0";
+    if (!cluster?.members) {return "v0.0.0";}
 
     const versionCounts = new Map<string, number>();
     Object.values(cluster.members).forEach((member) => {
-      if (!member.build.version) return;
+      if (!member.build.version) {return;}
       const version = member.build.version;
       versionCounts.set(version, (versionCounts.get(version) || 0) + 1);
     });
@@ -65,7 +65,7 @@ export function useVersionInfo(): UseVersionInfoResult {
   };
 
   const getVersionInfos = (): Array<{ version: string; info: VersionInfo }> => {
-    if (!cluster?.members) return [];
+    if (!cluster?.members) {return [];}
 
     const versions = new Set<string>();
     const buildInfo = new Map<string, VersionInfo>();

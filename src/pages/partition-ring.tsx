@@ -1,21 +1,20 @@
-import React from 'react';
-import { useState, useCallback, useMemo } from "react";
-import { usePartitionRing } from "ghooks/use-partition-ring";
+import React, { useState, useCallback, useMemo } from 'react';
+import { usePartitionRing } from "../hooks/use-partition-ring";
 import {
   PartitionRingTable,
   SortField,
-} from "gcomponents/ring/partition-ring-table";
-import { getStateColors, parseZoneFromOwner } from "glib/ring-utils";
-import { useToast } from "ghooks/use-toast";
-import { Card, CardContent, CardHeader, CardTitle } from "gcomponents/ui/card";
-import { RefreshLoop } from "gcomponents/common/refresh-loop";
+} from "../components/ring/partition-ring-table";
+import { getStateColors, parseZoneFromOwner } from "../lib/ring-utils";
+import { useToast } from "../hooks/use-toast";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { RefreshLoop } from "../components/common/refresh-loop";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "gcomponents/ui/select";
+} from "../components/ui/select";
 import {
   Dialog,
   DialogContent,
@@ -23,12 +22,12 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "gcomponents/ui/dialog";
-import { cn } from "glib/utils";
+} from "../components/ui/dialog";
+import { cn } from "../lib/utils";
 import { Loader2, ArrowRightCircle } from "lucide-react";
-import { Button } from "gcomponents/ui/button";
-import { PartitionStateDistributionChart } from "gcomponents/ring/partition-state-distribution-chart";
-import { PartitionRingFilters } from "gcomponents/ring/partition-ring-filters";
+import { Button } from "../components/ui/button";
+import { PartitionStateDistributionChart } from "../components/ring/partition-state-distribution-chart";
+import { PartitionRingFilters } from "../components/ring/partition-ring-filters";
 import { BaseRing } from "./base-ring";
 
 const STATE_OPTIONS = [
@@ -131,7 +130,7 @@ export default function PartitionRing() {
 
   // Handle state change
   const handleStateChange = useCallback(async () => {
-    if (selectedPartitions.size === 0 || !selectedNewState) return;
+    if (selectedPartitions.size === 0 || !selectedNewState) {return;}
 
     try {
       setIsStateChangeLoading(true);
@@ -299,7 +298,7 @@ export default function PartitionRing() {
                 new Set(selectedPartitionDetails.map((p) => p.id))
               ).map((partitionId) => {
                 const partition = partitions.find((p) => p.id === partitionId);
-                if (!partition) return null;
+                if (!partition) {return null;}
                 return (
                   <div
                     key={partitionId}

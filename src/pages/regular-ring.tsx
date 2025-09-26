@@ -1,17 +1,16 @@
-import React from 'react';
-import { useState, useCallback, useMemo } from "react";
-import { RingType } from "gtypes/ring";
-import { Card, CardContent, CardHeader, CardTitle } from "gcomponents/ui/card";
-import { Button } from "gcomponents/ui/button";
+import React, { useState, useCallback, useMemo } from 'react';
+import { RingType } from "../types/ring";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
+import { Button } from "../components/ui/button";
 import { Loader2 } from "lucide-react";
-import { AVAILABLE_RINGS, useRing } from "ghooks/use-ring";
+import { AVAILABLE_RINGS, useRing } from "../hooks/use-ring";
 import {
   RingInstanceTable,
   SortField,
-} from "gcomponents/ring/ring-instance-table";
-import { RingFilters } from "gcomponents/ring/ring-filters";
-import { cn } from "glib/utils";
-import { getStateColors } from "glib/ring-utils";
+} from "../components/ring/ring-instance-table";
+import { RingFilters } from "../components/ring/ring-filters";
+import { cn } from "../lib/utils";
+import { getStateColors } from "../lib/ring-utils";
 import {
   Dialog,
   DialogContent,
@@ -19,11 +18,11 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "gcomponents/ui/dialog";
-import { RingStateDistributionChart } from "gcomponents/ring/ring-state-distribution-chart";
-import { RefreshLoop } from "gcomponents/common/refresh-loop";
+} from "../components/ui/dialog";
+import { RingStateDistributionChart } from "../components/ring/ring-state-distribution-chart";
+import { RefreshLoop } from "../components/common/refresh-loop";
 import { BaseRing } from "./base-ring";
-import { useToast } from "ghooks/use-toast";
+import { useToast } from "../hooks/use-toast";
 
 interface RegularRingProps {
   ringName: RingType;
@@ -55,7 +54,7 @@ export function RegularRing({ ringName }: RegularRingProps) {
 
   // Get selected instance details
   const selectedInstanceDetails = useMemo(() => {
-    if (!ring?.shards) return [];
+    if (!ring?.shards) {return [];}
     return ring.shards.filter((instance) => selectedInstances.has(instance.id));
   }, [ring?.shards, selectedInstances]);
 
@@ -90,7 +89,7 @@ export function RegularRing({ ringName }: RegularRingProps) {
 
   // Handle forget instances
   const handleForget = useCallback(async () => {
-    if (selectedInstances.size === 0) return;
+    if (selectedInstances.size === 0) {return;}
 
     try {
       setIsForgetLoading(true);
@@ -125,7 +124,7 @@ export function RegularRing({ ringName }: RegularRingProps) {
 
   // Filter and sort instances
   const sortedInstances = useMemo(() => {
-    if (!ring?.shards) return [];
+    if (!ring?.shards) {return [];}
 
     return ring.shards
       .filter((instance) => {

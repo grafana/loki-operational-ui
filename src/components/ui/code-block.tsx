@@ -1,9 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { CodeBlock as ReactCodeBlock } from "react-code-block";
 import { Button } from "./button";
 import { Copy, Check, ChevronDown, ChevronUp } from "lucide-react";
 import { cn } from "lib/utils";
-import { useState } from "react";
 import { useTheme } from "next-themes";
 import type { PrismTheme } from "prism-react-renderer";
 

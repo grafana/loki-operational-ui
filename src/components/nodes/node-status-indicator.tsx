@@ -1,7 +1,6 @@
-import React from 'react';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { cn } from "lib/utils";
-import { absolutePath } from "util";
+import { absolutePath } from "../../util";
 
 interface NodeStatusIndicatorProps {
   nodeName: string;

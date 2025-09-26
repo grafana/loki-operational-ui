@@ -44,7 +44,7 @@ export function NotFound() {
             Oops! Page Not Found
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Even with our powerful log aggregation, we couldn't find this page
+            Even with our powerful log aggregation, we couldn&apos;t find this page
             in any of our streams!
           </p>
           <p className="text-xs sm:text-sm text-muted-foreground italic">

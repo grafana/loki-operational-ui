@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   HoverCard,
   HoverCardContent,
@@ -7,7 +7,6 @@ import {
 import { useVersionInfo } from "hooks/use-version-info";
 import { Loader2 } from "lucide-react";
 import { cn } from "lib/utils";
-import { useState } from "react";
 import { CopyButton } from "components/common/copy-button";
 
 export function VersionDisplay() {

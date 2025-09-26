@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo, useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
 import { Button } from "components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
@@ -20,7 +20,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formatDuration, intervalToDuration } from "date-fns";
 import debounce from "lodash/debounce";
 import { AlertCircle, Loader2 } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
 import { useForm, ControllerRenderProps } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { useQueryClient } from "@tanstack/react-query";
@@ -28,7 +27,7 @@ import * as z from "zod";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { PageContainer } from "layout/page-container";
-import { absolutePath } from "util";
+import { absolutePath } from "../util";
 
 const formSchema = z.object({
   tenant_id: z.string().min(1, "Tenant ID is required"),
@@ -69,7 +68,7 @@ const NewDeleteRequest = () => {
 
   const validateQuery = useCallback(
     async (query: string, shouldFormat = false) => {
-      if (!query.trim()) return;
+      if (!query.trim()) {return;}
 
       setQueryValidating(true);
       try {

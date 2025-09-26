@@ -1,5 +1,4 @@
-import React from 'react';
-import { useMemo } from "react";
+import React, { useMemo } from 'react';
 import { Link } from "react-router-dom";
 import { PartitionInstance } from "types/ring";
 import {

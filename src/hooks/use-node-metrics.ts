@@ -1,4 +1,4 @@
-import { absolutePath } from "util";
+import { absolutePath } from "../util";
 import { useState, useEffect } from "react";
 
 interface UseNodeMetricsResult {

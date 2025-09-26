@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo, useState } from 'react';
 import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
 import { Button } from "components/ui/button";
 import { Card, CardContent, CardHeader } from "components/ui/card";
@@ -8,7 +8,6 @@ import { ServiceNames } from "lib/ring-utils";
 import { findNodeName } from "lib/utils";
 import { useQuery } from "@tanstack/react-query";
 import { AlertCircle, Loader2, Plus } from "lucide-react";
-import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { fromUnixTime, formatDistance, format } from "date-fns";
 import {
@@ -29,7 +28,7 @@ import {
 } from "components/ui/hover-card";
 import { Input } from "components/ui/input";
 import { PageContainer } from "layout/page-container";
-import { absolutePath } from "util";
+import { absolutePath } from "../util";
 
 interface DeleteRequest {
   request_id: string;
@@ -322,7 +321,7 @@ const DeletesPage = () => {
   const { data, isLoading, error } = useDeletes(status);
 
   const filteredData = useMemo(() => {
-    if (!data || !queryFilter) return data;
+    if (!data || !queryFilter) {return data;}
     return data.filter((request) =>
       request.query.toLowerCase().includes(queryFilter.toLowerCase())
     );

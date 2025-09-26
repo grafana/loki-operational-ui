@@ -36,7 +36,10 @@ const NodesPage = () => {
     }
   };
 
+  console.log("cluster", cluster);
+
   const filterNodes = () => {
+    console.log("filterNodes", cluster);
     if (!cluster) {return {};}
 
     return Object.entries(cluster.members).reduce((acc, [name, node]) => {
@@ -140,8 +143,10 @@ const NodesPage = () => {
 };
 
 export default function NodesPageWithErrorBoundary() {
+  console.log("NodesPageWithErrorBoundary");
   return (
     <ErrorBoundary>
+      <p> Hello </p>
       <NodesPage />
     </ErrorBoundary>
   );

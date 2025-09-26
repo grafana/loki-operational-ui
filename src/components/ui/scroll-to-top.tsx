@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { Button } from "./button";
 import { ArrowUp } from "lucide-react";
 
@@ -22,7 +21,7 @@ export function ScrollToTop() {
     });
   };
 
-  if (!show) return null;
+  if (!show) {return null;}
 
   return (
     <Button

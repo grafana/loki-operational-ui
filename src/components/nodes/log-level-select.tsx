@@ -1,7 +1,5 @@
 import React from 'react';
 
-"use client";
-
 import { Check, AlertCircle } from "lucide-react";
 import { useLogLevel } from "hooks/use-log-level";
 import {

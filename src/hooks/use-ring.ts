@@ -23,7 +23,9 @@ function parseOwnershipFromHTML(html: string): Record<string, string> {
     // Extract instance rows from the table
     const tableRegex = /<tbody[^>]*>([\s\S]*?)<\/tbody>/;
     const tableMatch = html.match(tableRegex);
-    if (!tableMatch) return ownerships;
+    if (!tableMatch) {
+      return ownerships;
+    }
 
     const rowRegex = /<tr[^>]*>([\s\S]*?)<\/tr>/g;
     const rows = Array.from(tableMatch[1].matchAll(rowRegex));
@@ -239,6 +241,8 @@ export function useRing({
         clearInterval(intervalId);
       };
     }
+
+    return;
   }, [fetchRing, isPaused]);
 
   return {

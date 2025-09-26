@@ -9,8 +9,8 @@ export interface FetchResult<T> {
 }
 
 export async function fetchSampledQueries(
-  page: number = 1,
-  pageSize: number = 20,
+  page = 1,
+  pageSize = 20,
   tenant?: string,
   user?: string,
   newEngine?: boolean,

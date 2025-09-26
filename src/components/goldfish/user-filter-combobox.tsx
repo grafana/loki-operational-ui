@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from 'react';
 import { Check, X } from "lucide-react";
 import { cn } from "lib/utils";
 import { Button } from "components/ui/button";

@@ -1,7 +1,7 @@
 import { RingType, RingTypes } from "types/ring";
 import { formatDistanceToNowStrict, formatISO } from "date-fns";
 import { findNodeName, hasService } from "./utils";
-import { absolutePath } from "util";
+import { absolutePath } from "../util";
 
 export function formatRelativeTime(timestamp: string) {
   const date = new Date(timestamp);
@@ -58,7 +58,7 @@ export function parseZoneFromOwner(owner: string): string {
 }
 
 export function getFirstZoneFromOwners(owners: string[]): string {
-  if (!owners.length) return "";
+  if (!owners.length) {return "";}
   return parseZoneFromOwner(owners[0]);
 }
 
@@ -174,9 +174,9 @@ function findServiceName(ringType: RingType) {
 
 // Function to determine if a ring type needs tokens
 export function needsTokens(ringName: RingType | undefined): boolean {
-  if (!ringName) return false;
+  if (!ringName) {return false;}
   const serviceName = findServiceName(ringName);
-  if (!serviceName) return false;
+  if (!serviceName) {return false;}
   return RingServices[serviceName].needsTokens;
 }
 
@@ -186,7 +186,7 @@ export const getAvailableRings = (
 ): Array<{ title: string; url: string }> => {
   const rings: Array<{ title: string; url: string }> = [];
 
-  if (!members) return rings;
+  if (!members) {return rings;}
 
   // loop through services type an push to rigns
 
@@ -206,14 +206,14 @@ export function getRingProxyPath(
   members: Record<string, Member> | undefined,
   ringName: RingType
 ): string {
-  if (!members) return "";
-  if (!ringName) return "";
+  if (!members) {return "";}
+  if (!ringName) {return "";}
 
   const serviceName = findServiceName(ringName);
-  if (!serviceName) return "";
+  if (!serviceName) {return "";}
   // Find the first member that has the serviceName
   const nodeName = findNodeName(members, serviceName);
-  if (!nodeName) return "";
+  if (!nodeName) {return "";}
 
   const proxyPath = absolutePath(`/api/v1/proxy/${nodeName}`);
   const ringPath = RingServices[serviceName].ringPath;

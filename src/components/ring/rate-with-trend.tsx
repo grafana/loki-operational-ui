@@ -1,5 +1,4 @@
-import React from 'react';
-import { useMemo, useRef, useEffect } from "react";
+import React, { useMemo, useRef, useEffect } from 'react';
 import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
 import { formatBytes } from "lib/ring-utils";
 
@@ -26,7 +25,7 @@ function getRateTrend(current: number, previous: number): "up" | "down" | null {
 }
 
 function TrendIndicator({ trend }: { trend: "up" | "down" | null }) {
-  if (!trend) return null;
+  if (!trend) {return null;}
 
   return trend === "up" ? (
     <ArrowUpCircle className="inline h-4 w-4 text-green-500 ml-1" />

@@ -1,5 +1,4 @@
-import React from 'react';
-import { useState } from "react";
+import React, { useState } from "react";
 import { SampledQuery, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from "types/goldfish";
 import { Card, CardContent } from "components/ui/card";
 import { Badge } from "components/ui/badge";
@@ -8,7 +7,6 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "components/
 import { CheckCircle2, XCircle, Clock, Database, Zap, FileText, Hash, AlertCircle, AlertTriangle, ChevronDown, Activity, Rocket, Code2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { cn } from "lib/utils";
-import { useFeatureFlags } from "contexts/use-feature-flags";
 
 interface MetricComparison {
   label: string;
@@ -21,8 +19,8 @@ interface MetricComparison {
 }
 
 function formatBytes(bytes: number | null): string {
-  if (bytes === null) return "N/A";
-  if (bytes === 0) return "0 B";
+  if (bytes === null) {return "N/A";}
+  if (bytes === 0) {return "0 B";}
   
   const k = 1024;
   const sizes = ["B", "KB", "MB", "GB", "TB"];
@@ -32,13 +30,13 @@ function formatBytes(bytes: number | null): string {
 }
 
 function formatNumber(num: number | null): string {
-  if (num === null) return "N/A";
+  if (num === null) {return "N/A";}
   return new Intl.NumberFormat().format(num);
 }
 
 function formatDuration(ms: number | null): string {
-  if (ms === null) return "N/A";
-  if (ms < 1000) return `${ms}ms`;
+  if (ms === null) {return "N/A";}
+  if (ms < 1000) {return `${ms}ms`;}
   return `${(ms / 1000).toFixed(2)}s`;
 }
 
@@ -119,7 +117,6 @@ function MetricRow({ metric }: { metric: MetricComparison }) {
 
 export function QueryDiffView({ query }: { query: SampledQuery }) {
   const [isOpen, setIsOpen] = useState(false);
-  const { features } = useFeatureFlags();
   
   const performanceMetrics: MetricComparison[] = [
     {
@@ -266,11 +263,11 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
               <div className="grid grid-cols-7 gap-4">
                 <h4 className="col-span-2 text-sm font-medium">Response Status</h4>
                 <div className="col-span-2 text-right text-sm font-medium">
-                  Cell A{features.goldfish.cellANamespace && ` (${features.goldfish.cellANamespace})`}
+                  Cell A Foo TODO
                 </div>
                 <div className="col-span-1"></div>
                 <div className="col-span-2 text-left text-sm font-medium">
-                  Cell B{features.goldfish.cellBNamespace && ` (${features.goldfish.cellBNamespace})`}
+                  Cell B Bar TODO
                 </div>
               </div>
               <div className="grid grid-cols-7 gap-4">

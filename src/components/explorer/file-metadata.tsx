@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from "react-router-dom";
 import { DownloadIcon } from "lucide-react";
-import { cn } from "lib/utils";
+import { cn, formatBytes } from "lib/utils";
 import { Button } from "components/ui/button";
 import {
   Card,
@@ -11,12 +11,10 @@ import {
   CardTitle,
 } from "components/ui/card";
 import { Badge } from "components/ui/badge";
-import { formatBytes } from "lib/utils";
 import { FileMetadataResponse } from "types/explorer";
 import { DateHover } from "components/common/date-hover";
 import { CopyButton } from "../common/copy-button";
 import { CompressionRatio } from "../common/compression-ratio";
-import { useState } from "react";
 
 // Value type to badge styling mapping
 const getValueTypeBadgeStyle = (valueType: string): string => {

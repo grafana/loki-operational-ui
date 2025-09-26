@@ -79,7 +79,7 @@ export function extractTraceId(
   // Try to get from response headers first
   if (response) {
     const traceId = response.headers.get('X-Trace-Id');
-    if (traceId) return traceId;
+    if (traceId) {return traceId;}
   }
   
   // Try to get from error object if it contains trace info

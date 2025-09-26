@@ -6,12 +6,12 @@ import {
   CardDescription,
   CardHeader,
   CardTitle,
-} from "gcomponents/ui/card";
-import { ScrollArea } from "gcomponents/ui/scroll-area";
-import { FileList } from "gcomponents/explorer/file-list";
-import { useExplorerData } from "ghooks/use-explorer-data";
-import { ExplorerBreadcrumb } from "gcomponents/explorer/breadcrumb";
-import { PageContainer } from "glayout/page-container";
+} from "../components/ui/card";
+import { ScrollArea } from "../components/ui/scroll-area";
+import { FileList } from "../components/explorer/file-list";
+import { useExplorerData } from "../hooks/use-explorer-data";
+import { ExplorerBreadcrumb } from "../components/explorer/breadcrumb";
+import { PageContainer } from "../layout/page-container";
 
 export function DataObjectsPage() {
   const [searchParams] = useSearchParams();

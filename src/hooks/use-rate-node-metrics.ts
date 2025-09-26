@@ -1,5 +1,5 @@
 import { useCallback, useRef } from "react";
-import { absolutePath } from "util";
+import { absolutePath } from "../util";
 interface MetricSample {
   timestamp: number;
   values: Record<string, number>;

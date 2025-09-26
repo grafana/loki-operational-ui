@@ -1,5 +1,4 @@
-import React from 'react';
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import { Button } from "components/ui/button";
 import { Loader2, Pause } from "lucide-react";
 
@@ -28,7 +27,7 @@ export function RefreshLoop({
       }, 1000); // Keep loading state for 1 second after isLoading becomes false
     }
     return () => {
-      if (timeoutId) clearTimeout(timeoutId);
+      if (timeoutId) {clearTimeout(timeoutId);}
     };
   }, [isLoading]);
 

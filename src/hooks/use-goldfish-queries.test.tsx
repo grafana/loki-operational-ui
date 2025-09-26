@@ -1,10 +1,9 @@
+import React from 'react';
 import { renderHook, waitFor, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { useGoldfishQueries } from './use-goldfish-queries';
-import { fetchSampledQueries } from 'lib/goldfish-api';
+import { fetchSampledQueries, type FetchResult } from 'lib/goldfish-api';
 import { OUTCOME_ALL, OUTCOME_MATCH, OUTCOME_MISMATCH, type GoldfishAPIResponse } from 'types/goldfish';
-import type { FetchResult } from 'lib/goldfish-api';
-import React from 'react';
 
 /**
  * @jest-environment jsdom
@@ -27,9 +26,11 @@ const createWrapper = () => {
       },
     },
   });
-  return ({ children }: { children: React.ReactNode }) => (
+  const TestWrapper = ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
+  TestWrapper.displayName = 'TestWrapper';
+  return TestWrapper;
 };
 
 // Mock data

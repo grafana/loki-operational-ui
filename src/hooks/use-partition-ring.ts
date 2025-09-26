@@ -122,7 +122,7 @@ export function usePartitionRing({
         ...prev,
         isLoading: false,
         partitions: denormalizedPartitions.map((partition) => {
-          if (!partition.owner_id) return partition;
+          if (!partition.owner_id) {return partition;}
           const nodeRates = metricsData[partition.owner_id] || [];
           return {
             ...partition,
@@ -236,6 +236,7 @@ export function usePartitionRing({
       const intervalId = setInterval(fetchPartitions, 5000);
       return () => clearInterval(intervalId);
     }
+    return;
   }, [fetchPartitions, isPaused]);
 
   return {

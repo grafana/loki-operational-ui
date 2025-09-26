@@ -1,4 +1,4 @@
-import { SampledQuery, OutcomeFilter, OUTCOME_ALL, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from "gtypes/goldfish";
+import { SampledQuery, OutcomeFilter, OUTCOME_ALL, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from "../types/goldfish";
 
 export function getOutcomeFromQuery(query: SampledQuery): OutcomeFilter {
   const status = query.comparisonStatus?.toLowerCase();

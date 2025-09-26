@@ -16,7 +16,6 @@ import {
 } from "lucide-react";
 import { useCluster } from "../contexts/use-cluster";
 import { getAvailableRings } from "lib/ring-utils";
-import { useFeatureFlags } from "../contexts/use-feature-flags";
 
 import {
   Sidebar,
@@ -229,7 +228,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const basename = getBasename();
   const location = useLocation();
   const { cluster } = useCluster();
-  const { features } = useFeatureFlags();
   const currentPath = location.pathname.replace(basename, "/");
 
   // Initialize state from localStorage or default to all sections open
@@ -262,17 +260,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   // Use the stable nav items hook
   const navItems = useNavItems(cluster, baseNavItems);
   
-  // Filter nav items based on feature flags
-  const filteredNavItems = React.useMemo(() => {
-    return navItems.filter(item => {
-      // Hide Goldfish if feature is disabled
-      if (item.title === "Goldfish" && !features.goldfish.enabled) {
-        return false;
-      }
-      return true;
-    });
-  }, [navItems, features.goldfish.enabled]);
-
   const isActive = React.useCallback(
     (url: string) => {
       if (url === "/") {
@@ -321,7 +308,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarContent>
           <SidebarGroup>
             <SidebarMenu>
-              {filteredNavItems.map((item) => (
+              {navItems.map((item) => (
                 <React.Fragment key={item.title}>
                   <NavItemComponent
                     item={item}

@@ -93,9 +93,9 @@ const NodeList: React.FC<NodeListProps> = ({
   const compareDates = (dateStrA: string, dateStrB: string) => {
     const dateA = parseISO(dateStrA);
     const dateB = parseISO(dateStrB);
-    if (!isValid(dateA) && !isValid(dateB)) return 0;
-    if (!isValid(dateA)) return 1;
-    if (!isValid(dateB)) return -1;
+    if (!isValid(dateA) && !isValid(dateB)) {return 0;}
+    if (!isValid(dateA)) {return 1;}
+    if (!isValid(dateB)) {return -1;}
     return dateA.getTime() - dateB.getTime();
   };
 

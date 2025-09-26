@@ -1,7 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "components/ui/button";
 import { Copy, Check } from "lucide-react";
-import { useState } from "react";
 import { cn } from "lib/utils";
 
 interface CopyButtonProps {

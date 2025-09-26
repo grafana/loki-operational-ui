@@ -11,5 +11,5 @@ export function getBasename(): string {
 export function absolutePath(path: string): string {
   const basename = getBasename();
   const apiPath = `${basename}${path.startsWith("/") ? path.slice(1) : path}`;
-  return "http://localhost:3100/ui/api/v1" + apiPath;
+  return "/api/datasources/proxy/uid/loki/" + apiPath;
 }

@@ -7,14 +7,12 @@ import { AppLayout } from "../../layout/layout";
 import { ThemeProvider } from "../../features/theme/components/theme-provider";
 import { QueryProvider } from "../../providers/query-provider";
 import { ClusterProvider } from "../../contexts/cluster-provider";
-import { FeatureFlagsProvider } from "../../contexts/feature-flags";
 
 
 function App(_: AppRootProps) {
   return (
     <QueryProvider>
       <ThemeProvider defaultTheme="dark" storageKey="loki-ui-theme">
-        <FeatureFlagsProvider>
           <ClusterProvider>
             <AppLayout>
               <Routes>
@@ -28,7 +26,6 @@ function App(_: AppRootProps) {
               </Routes>
             </AppLayout>
           </ClusterProvider>
-        </FeatureFlagsProvider>
       </ThemeProvider>
     </QueryProvider>
   );

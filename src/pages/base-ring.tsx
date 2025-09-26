@@ -1,11 +1,11 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "gcomponents/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Link } from "react-router-dom";
 import { AlertCircle, CircleDot } from "lucide-react";
-import { AVAILABLE_RINGS } from "ghooks/use-ring";
-import { RingType } from "gtypes/ring";
-import { Alert, AlertTitle, AlertDescription } from "gcomponents/ui/alert";
-import { PageContainer } from "glayout/page-container";
+import { AVAILABLE_RINGS } from "../hooks/use-ring";
+import { RingType } from "../types/ring";
+import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
+import { PageContainer } from "../layout/page-container";
 
 interface BaseRingProps {
   error?: string;

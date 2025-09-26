@@ -5,7 +5,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "components/ui/tooltip";
-import { absolutePath } from "util";
+import { absolutePath } from "../../util";
 
 interface PprofControlsProps {
   nodeName: string;

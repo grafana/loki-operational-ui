@@ -5,28 +5,7 @@ import { QueryDiffView } from './query-diff-view';
 import { SampledQuery } from 'types/goldfish';
 import '@testing-library/jest-dom';
 
-// Mock the feature flags context
-jest.mock('@/contexts/use-feature-flags', () => ({
-  useFeatureFlags: jest.fn(),
-}));
-
-import { useFeatureFlags } from 'contexts/use-feature-flags';
-const mockUseFeatureFlags = useFeatureFlags as jest.MockedFunction<typeof useFeatureFlags>;
-
 describe('QueryDiffView - Trace ID Display', () => {
-  beforeEach(() => {
-    // Mock the feature flags for all tests in this describe block
-    mockUseFeatureFlags.mockReturnValue({
-      features: {
-        goldfish: {
-          enabled: true,
-        },
-      },
-      isLoading: false,
-      error: null,
-    });
-  });
-
   const baseQuery: SampledQuery = {
     correlationId: 'test-correlation-1',
     tenantId: 'test-tenant',
@@ -85,7 +64,7 @@ describe('QueryDiffView - Trace ID Display', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Test that trace IDs are displayed
     expect(screen.getByText('span-abc-123')).toBeInTheDocument();
@@ -98,7 +77,7 @@ describe('QueryDiffView - Trace ID Display', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Should show N/A for both trace IDs
     const naElements = screen.getAllByText('N/A');
@@ -123,7 +102,7 @@ describe('QueryDiffView - Trace ID Display', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     expect(screen.getByText('span-only-a')).toBeInTheDocument();
     // Should still have at least one N/A for Cell B
@@ -142,7 +121,7 @@ describe('QueryDiffView - Trace ID Display', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     expect(screen.getByText('trace-only-b')).toBeInTheDocument();
     // Should still have at least one N/A for Cell A
@@ -151,19 +130,6 @@ describe('QueryDiffView - Trace ID Display', () => {
 });
 
 describe('QueryDiffView - Trace ID Links', () => {
-  beforeEach(() => {
-    // Mock the feature flags for all tests in this describe block
-    mockUseFeatureFlags.mockReturnValue({
-      features: {
-        goldfish: {
-          enabled: true,
-        },
-      },
-      isLoading: false,
-      error: null,
-    });
-  });
-
   const baseQuery: SampledQuery = {
     correlationId: 'test-correlation-1',
     tenantId: 'test-tenant',
@@ -224,7 +190,7 @@ describe('QueryDiffView - Trace ID Links', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Find the links by their text content
     const cellALink = screen.getByText('span-abc-123');
@@ -245,7 +211,7 @@ describe('QueryDiffView - Trace ID Links', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Find all N/A texts
     const naElements = screen.getAllByText('N/A');
@@ -274,7 +240,7 @@ describe('QueryDiffView - Trace ID Links', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // The existing trace ID should be a link
     const traceLink = screen.getByText('span-exists');
@@ -287,19 +253,6 @@ describe('QueryDiffView - Trace ID Links', () => {
 });
 
 describe('QueryDiffView - Trace ID Visual Indicators', () => {
-  beforeEach(() => {
-    // Mock the feature flags for all tests in this describe block
-    mockUseFeatureFlags.mockReturnValue({
-      features: {
-        goldfish: {
-          enabled: true,
-        },
-      },
-      isLoading: false,
-      error: null,
-    });
-  });
-
   const baseQuery: SampledQuery = {
     correlationId: 'test-correlation-1',
     tenantId: 'test-tenant',
@@ -358,7 +311,7 @@ describe('QueryDiffView - Trace ID Visual Indicators', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Find the section by its header
     const traceSection = screen.getByText('Trace IDs').closest('div');
@@ -384,7 +337,7 @@ describe('QueryDiffView - Trace ID Visual Indicators', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     const traceLink = screen.getByText('span-abc-123').closest('a');
     
@@ -440,26 +393,13 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
     comparisonStatus: 'match',
   };
 
-  beforeEach(() => {
-    // Default mock - no namespaces
-    mockUseFeatureFlags.mockReturnValue({
-      features: {
-        goldfish: {
-          enabled: true,
-        },
-      },
-      isLoading: false,
-      error: null,
-    });
-  });
-
   it('displays "Cell A" and "Cell B" when namespaces are not available', async () => {
     const user = userEvent.setup();
     const { container } = render(<QueryDiffView query={baseQuery} />);
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Find the performance metrics header
     expect(screen.getByText('Cell A')).toBeInTheDocument();
@@ -472,23 +412,12 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
 
   it('displays "Cell A (loki-ops-002)" when Cell A namespace is available', async () => {
     const user = userEvent.setup();
-    mockUseFeatureFlags.mockReturnValue({
-      features: {
-        goldfish: {
-          enabled: true,
-          cellANamespace: 'loki-ops-002',
-          cellBNamespace: 'loki-ops-003',
-        },
-      },
-      isLoading: false,
-      error: null,
-    });
 
     const { container } = render(<QueryDiffView query={baseQuery} />);
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Should display namespaces in parentheses
     expect(screen.getByText('Cell A (loki-ops-002)')).toBeInTheDocument();
@@ -497,23 +426,12 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
 
   it('displays namespace for only Cell A when only Cell A namespace is available', async () => {
     const user = userEvent.setup();
-    mockUseFeatureFlags.mockReturnValue({
-      features: {
-        goldfish: {
-          enabled: true,
-          cellANamespace: 'loki-ops-002',
-          // cellBNamespace is undefined
-        },
-      },
-      isLoading: false,
-      error: null,
-    });
 
     const { container } = render(<QueryDiffView query={baseQuery} />);
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Cell A should have namespace
     expect(screen.getByText('Cell A (loki-ops-002)')).toBeInTheDocument();
@@ -524,23 +442,12 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
 
   it('displays namespace for only Cell B when only Cell B namespace is available', async () => {
     const user = userEvent.setup();
-    mockUseFeatureFlags.mockReturnValue({
-      features: {
-        goldfish: {
-          enabled: true,
-          cellBNamespace: 'loki-ops-003',
-          // cellANamespace is undefined
-        },
-      },
-      isLoading: false,
-      error: null,
-    });
 
     const { container } = render(<QueryDiffView query={baseQuery} />);
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Cell A should not have namespace
     expect(screen.getByText('Cell A')).toBeInTheDocument();
@@ -551,18 +458,6 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
 });
 
 describe('QueryDiffView - New Engine Badge Display', () => {
-  beforeEach(() => {
-    mockUseFeatureFlags.mockReturnValue({
-      features: {
-        goldfish: {
-          enabled: true,
-        },
-      },
-      isLoading: false,
-      error: null,
-    });
-  });
-
   const baseQuery: SampledQuery = {
     correlationId: 'test-correlation-1',
     tenantId: 'test-tenant',
@@ -657,7 +552,7 @@ describe('QueryDiffView - New Engine Badge Display', () => {
 
     // Expand the collapsible content to see the engine details
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) await user.click(trigger);
+    if (trigger) {await user.click(trigger);}
 
     // Find the query engine section and verify both cells show their engine status
     expect(screen.getByText('Query Engine')).toBeInTheDocument();
