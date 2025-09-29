@@ -2,6 +2,7 @@ import React, { Suspense, lazy } from 'react';
 import { AppPlugin, type AppRootProps } from '@grafana/data';
 import { LoadingPlaceholder } from '@grafana/ui';
 import type { AppConfigProps } from './components/AppConfig/AppConfig';
+import './styles/index.css';
 
 const LazyApp = lazy(() => import('./components/App/App'));
 const LazyAppConfig = lazy(() => import('./components/AppConfig/AppConfig'));
