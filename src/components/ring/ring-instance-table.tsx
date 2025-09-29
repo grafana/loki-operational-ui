@@ -1,35 +1,17 @@
 import React from 'react';
-import { Link } from "react-router-dom";
-import { RingInstance } from "types/ring";
-import {
-  formatRelativeTime,
-  formatTimestamp,
-  getStateColors,
-  getZoneColors,
-} from "lib/ring-utils";
-import { cn } from "lib/utils";
-import { Checkbox } from "components/ui/checkbox";
-import { ArrowRightCircle } from "lucide-react";
-import { Button } from "components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "components/ui/table";
-import { DataTableColumnHeader } from "components/common/data-table-column-header";
-import { Progress } from "components/ui/progress";
+import { Link } from 'react-router-dom';
+import { RingInstance } from 'types/ring';
+import { prefixRoute } from 'utils/utils.routing';
+import { formatRelativeTime, formatTimestamp, getStateColors, getZoneColors } from 'lib/ring-utils';
+import { cn } from 'lib/utils';
+import { Checkbox } from 'components/ui/checkbox';
+import { ArrowRightCircle } from 'lucide-react';
+import { Button } from 'components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
+import { DataTableColumnHeader } from 'components/common/data-table-column-header';
+import { Progress } from 'components/ui/progress';
 
-export type SortField =
-  | "id"
-  | "state"
-  | "address"
-  | "zone"
-  | "timestamp"
-  | "ownership"
-  | "tokens";
+export type SortField = 'id' | 'state' | 'address' | 'zone' | 'timestamp' | 'ownership' | 'tokens';
 
 interface SelectAllCheckboxProps {
   visibleIds: string[];
@@ -37,20 +19,14 @@ interface SelectAllCheckboxProps {
   onChange: (selectedIds: Set<string>) => void;
 }
 
-function SelectAllCheckbox({
-  visibleIds,
-  selectedIds,
-  onChange,
-}: SelectAllCheckboxProps) {
+function SelectAllCheckbox({ visibleIds, selectedIds, onChange }: SelectAllCheckboxProps) {
   const allVisibleSelected = visibleIds.every((id) => selectedIds.has(id));
 
   const handleChange = () => {
     const visibleIdsSet = new Set(visibleIds);
     if (allVisibleSelected) {
       // Keep only the instances that are not currently visible
-      onChange(
-        new Set([...selectedIds].filter((id) => !visibleIdsSet.has(id)))
-      );
+      onChange(new Set([...selectedIds].filter((id) => !visibleIdsSet.has(id))));
     } else {
       // Add all visible instances to the current selection
       onChange(new Set([...selectedIds, ...visibleIds]));
@@ -71,7 +47,7 @@ interface RingInstanceTableProps {
   selectedInstances: Set<string>;
   onSelectInstance: (instanceId: string) => void;
   sortField: SortField;
-  sortDirection: "asc" | "desc";
+  sortDirection: 'asc' | 'desc';
   onSort: (field: SortField) => void;
   showTokens?: boolean;
 }
@@ -95,10 +71,7 @@ export function RingInstanceTable({
               selectedIds={selectedInstances}
               onChange={(newSelection) => {
                 instances.forEach((instance) => {
-                  if (
-                    newSelection.has(instance.id) !==
-                    selectedInstances.has(instance.id)
-                  ) {
+                  if (newSelection.has(instance.id) !== selectedInstances.has(instance.id)) {
                     onSelectInstance(instance.id);
                   }
                 });
@@ -177,14 +150,14 @@ export function RingInstanceTable({
                 />
               </TableCell>
               <TableCell className="font-medium">
-                <Link to={`/nodes/${instance.id}`} className="hover:underline">
+                <Link to={prefixRoute(`nodes/${instance.id}`)} className="hover:underline">
                   {instance.id}
                 </Link>
               </TableCell>
               <TableCell>
                 <span
                   className={cn(
-                    "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
+                    'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
                     getStateColors(instance.state)
                   )}
                 >
@@ -197,16 +170,10 @@ export function RingInstanceTable({
                   <div className="space-y-1">
                     <div className="flex justify-between text-xs">
                       <span>{ownership}</span>
-                      <span className="text-muted-foreground">
-                        {instance.tokens.length} tokens
-                      </span>
+                      <span className="text-muted-foreground">{instance.tokens.length} tokens</span>
                     </div>
                     <Progress
-                      value={
-                        typeof ownership === "number"
-                          ? ownership
-                          : Number(ownership.slice(0, -1))
-                      }
+                      value={typeof ownership === 'number' ? ownership : Number(ownership.slice(0, -1))}
                       className="h-2"
                     />
                   </div>
@@ -216,7 +183,7 @@ export function RingInstanceTable({
                 {instance.zone ? (
                   <span
                     className={cn(
-                      "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
+                      'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
                       getZoneColors(instance.zone)
                     )}
                   >
@@ -227,22 +194,13 @@ export function RingInstanceTable({
                 )}
               </TableCell>
               <TableCell>
-                <span
-                  title={formatTimestamp(instance.timestamp)}
-                  className="text-muted-foreground"
-                >
+                <span title={formatTimestamp(instance.timestamp)} className="text-muted-foreground">
                   {formatRelativeTime(instance.timestamp)}
                 </span>
               </TableCell>
               <TableCell>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  asChild
-                  className="h-8 w-8"
-                  title="View instance details"
-                >
-                  <Link to={`/nodes/${instance.id}`}>
+                <Button variant="ghost" size="icon" asChild className="h-8 w-8" title="View instance details">
+                  <Link to={prefixRoute(`nodes/${instance.id}`)}>
                     <ArrowRightCircle className="h-4 w-4" />
                   </Link>
                 </Button>

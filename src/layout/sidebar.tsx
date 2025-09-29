@@ -1,21 +1,12 @@
 import React from 'react';
-;
-import { ScrollArea } from "components/ui/scroll-area";
-import { getBasename } from "../util";
-import { VersionDisplay } from "components/version-display";
-import { useLocation, Link } from "react-router-dom";
-import {
-  ChevronDown,
-  CircleDot,
-  Database,
-  GaugeCircle,
-  LayoutDashboard,
-  Users,
-  BookOpen,
-  Fish,
-} from "lucide-react";
-import { useCluster } from "../contexts/use-cluster";
-import { getAvailableRings } from "lib/ring-utils";
+import { ScrollArea } from 'components/ui/scroll-area';
+import { getBasename } from '../util';
+import { VersionDisplay } from 'components/version-display';
+import { useLocation, Link } from 'react-router-dom';
+import { ChevronDown, CircleDot, Database, GaugeCircle, LayoutDashboard, Users, BookOpen, Fish } from 'lucide-react';
+import { useCluster } from '../contexts/use-cluster';
+import { getAvailableRings } from 'lib/ring-utils';
+import { prefixRoute } from 'utils/utils.routing';
 
 import {
   Sidebar,
@@ -29,14 +20,15 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
   SidebarRail,
-} from "components/ui/sidebar";
-import { cn } from "lib/utils";
+} from 'components/ui/sidebar';
+import { cn } from 'lib/utils';
 
 interface NavItem {
   title: string;
   url: string;
   icon?: React.ReactNode;
   items?: Array<{ title: string; url: string }>;
+  noPrefix?: boolean;
 }
 
 interface Member {
@@ -47,18 +39,17 @@ interface ClusterData {
   members?: Record<string, Member>;
 }
 
-function useNavItems(
-  cluster: ClusterData | null,
-  baseItems: NavItem[]
-): NavItem[] {
+function useNavItems(cluster: ClusterData | null, baseItems: NavItem[]): NavItem[] {
   const [navItems, setNavItems] = React.useState<NavItem[]>(baseItems);
 
   React.useEffect(() => {
-    if (!cluster?.members) {return;}
+    if (!cluster?.members) {
+      return;
+    }
 
     // Update nav items based on available services
     const newItems = baseItems.map((item) => {
-      if (item.title === "Rings" && cluster.members) {
+      if (item.title === 'Rings' && cluster.members) {
         return {
           ...item,
           items: getAvailableRings(cluster.members),
@@ -75,79 +66,80 @@ function useNavItems(
 
 const baseNavItems: NavItem[] = [
   {
-    title: "Cluster",
-    url: "/nodes",
+    title: 'Cluster',
+    url: 'nodes',
     icon: <LayoutDashboard className="h-4 w-4" />,
     items: [
       {
-        title: "Nodes",
-        url: "/nodes",
+        title: 'Nodes',
+        url: 'nodes',
       },
       {
-        title: "Rollouts & Versions",
-        url: "/versions",
+        title: 'Rollouts & Versions',
+        url: 'versions',
       },
     ],
   },
   {
-    title: "Rings",
-    url: "/rings",
+    title: 'Rings',
+    url: 'rings',
     icon: <CircleDot className="h-4 w-4" />,
     items: [],
   },
   {
-    title: "Storage",
-    url: "/storage",
+    title: 'Storage',
+    url: 'storage',
     icon: <Database className="h-4 w-4" />,
     items: [
       {
-        title: "Object Storage",
-        url: "/storage/object",
+        title: 'Object Storage',
+        url: 'storage/object',
       },
       {
-        title: "Data Objects",
-        url: "/storage/dataobj",
+        title: 'Data Objects',
+        url: 'storage/dataobj',
       },
     ],
   },
   {
-    title: "Tenants",
-    url: "/tenants",
+    title: 'Tenants',
+    url: 'tenants',
     icon: <Users className="h-4 w-4" />,
     items: [
       {
-        title: "Analyze Labels",
-        url: "/tenants/analyze-labels",
+        title: 'Analyze Labels',
+        url: 'tenants/analyze-labels',
       },
       {
-        title: "Deletes",
-        url: "/tenants/deletes",
+        title: 'Deletes',
+        url: 'tenants/deletes',
       },
       {
-        title: "Limits",
-        url: "/tenants/limits",
+        title: 'Limits',
+        url: 'tenants/limits',
       },
       {
-        title: "Labels",
-        url: "/tenants/labels",
+        title: 'Labels',
+        url: 'tenants/labels',
       },
     ],
   },
   {
-    title: "Rules",
-    url: "/rules",
+    title: 'Rules',
+    url: 'rules',
     icon: <GaugeCircle className="h-4 w-4" />,
     items: [],
   },
   {
-    title: "Goldfish",
-    url: "/goldfish",
+    title: 'Goldfish',
+    url: 'goldfish',
     icon: <Fish className="h-4 w-4" />,
     items: [],
   },
   {
-    title: "Documentation",
-    url: "https://grafana.com/docs/loki/latest/",
+    title: 'Documentation',
+    noPrefix: true,
+    url: 'https://grafana.com/docs/loki/latest/',
     icon: <BookOpen className="h-4 w-4" />,
     items: [],
   },
@@ -158,16 +150,12 @@ function CustomSidebarRail(props: React.ComponentProps<typeof SidebarRail>) {
   return (
     <SidebarRail
       {...props}
-      className={cn(
-        "after:bg-border/40 hover:after:bg-border",
-        "hover:bg-muted/50",
-        props.className
-      )}
+      className={cn('after:bg-border/40 hover:after:bg-border', 'hover:bg-muted/50', props.className)}
     />
   );
 }
 
-const OPEN_SECTIONS_KEY = "loki-sidebar-open-sections";
+const OPEN_SECTIONS_KEY = 'loki-sidebar-open-sections';
 
 interface NavItemProps {
   item: NavItem;
@@ -176,35 +164,23 @@ interface NavItemProps {
   onToggle: (title: string) => void;
 }
 
-const NavItemComponent = React.memo(function NavItemComponent({
-  item,
-  isOpen,
-  isActive,
-  onToggle,
-}: NavItemProps) {
+const NavItemComponent = React.memo(function NavItemComponent({ item, isOpen, isActive, onToggle }: NavItemProps) {
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton
-        asChild
-        isActive={isActive(item.url)}
-        onClick={() => onToggle(item.title)}
-      >
+      <SidebarMenuButton asChild isActive={isActive(item.url)} onClick={() => onToggle(item.title)}>
         <div className="flex items-center justify-between font-medium">
           <div className="flex items-center gap-2">
             {item.icon}
             <Link
-              to={`${item.url}`}
-              target={item.url.includes("http") ? "_blank" : "_self"}
+              to={item.noPrefix ? item.url : prefixRoute(item.url)}
+              target={item.url.includes('http') ? '_blank' : '_self'}
             >
               {item.title}
             </Link>
           </div>
           {item.items && item.items.length > 0 && (
             <ChevronDown
-              className={cn(
-                "h-4 w-4 transition-transform duration-200",
-                isOpen ? "rotate-0" : "-rotate-90"
-              )}
+              className={cn('h-4 w-4 transition-transform duration-200', isOpen ? 'rotate-0' : '-rotate-90')}
             />
           )}
         </div>
@@ -214,7 +190,7 @@ const NavItemComponent = React.memo(function NavItemComponent({
           {item.items.map((subItem) => (
             <SidebarMenuSubItem key={subItem.title}>
               <SidebarMenuSubButton asChild isActive={isActive(subItem.url)}>
-                <Link to={`${subItem.url}`}>{subItem.title}</Link>
+                <Link to={prefixRoute(subItem.url)}>{subItem.title}</Link>
               </SidebarMenuSubButton>
             </SidebarMenuSubItem>
           ))}
@@ -228,12 +204,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const basename = getBasename();
   const location = useLocation();
   const { cluster } = useCluster();
-  const currentPath = location.pathname.replace(basename, "/");
+  const currentPath = location.pathname.replace(basename, '/');
 
   // Initialize state from localStorage or default to all sections open
-  const [openSections, setOpenSections] = React.useState<
-    Record<string, boolean>
-  >(() => {
+  const [openSections, setOpenSections] = React.useState<Record<string, boolean>>(() => {
     const stored = localStorage.getItem(OPEN_SECTIONS_KEY);
     if (stored) {
       try {
@@ -259,11 +233,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
   // Use the stable nav items hook
   const navItems = useNavItems(cluster, baseNavItems);
-  
+
   const isActive = React.useCallback(
     (url: string) => {
-      if (url === "/") {
-        return currentPath === "/";
+      if (url === '/') {
+        return currentPath === '/';
       }
       return currentPath.startsWith(url);
     },
@@ -294,9 +268,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   className="h-7 w-7"
                 />
                 <div className="flex flex-col gap-0.5">
-                  <span className="text-sm font-semibold leading-none">
-                    Grafana Loki
-                  </span>
+                  <span className="text-sm font-semibold leading-none">Grafana Loki</span>
                   <VersionDisplay />
                 </div>
               </div>

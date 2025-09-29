@@ -1,34 +1,17 @@
 import React, { useMemo } from 'react';
-import { Link } from "react-router-dom";
-import { PartitionInstance } from "types/ring";
-import {
-  formatTimestamp,
-  formatRelativeTime,
-  getZoneColors,
-} from "lib/ring-utils";
-import { cn } from "lib/utils";
-import { Checkbox } from "components/ui/checkbox";
-import { ArrowRightCircle } from "lucide-react";
-import { Button } from "components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "components/ui/table";
-import { DataTableColumnHeader } from "components/common/data-table-column-header";
-import { RateWithTrend } from "./rate-with-trend";
+import { Link } from 'react-router-dom';
+import { PartitionInstance } from 'types/ring';
+import { prefixRoute } from 'utils/utils.routing';
+import { formatTimestamp, formatRelativeTime, getZoneColors } from 'lib/ring-utils';
+import { cn } from 'lib/utils';
+import { Checkbox } from 'components/ui/checkbox';
+import { ArrowRightCircle } from 'lucide-react';
+import { Button } from 'components/ui/button';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
+import { DataTableColumnHeader } from 'components/common/data-table-column-header';
+import { RateWithTrend } from './rate-with-trend';
 
-export type SortField =
-  | "id"
-  | "state"
-  | "owner"
-  | "timestamp"
-  | "zone"
-  | "uncompressed_rate"
-  | "compressed_rate";
+export type SortField = 'id' | 'state' | 'owner' | 'timestamp' | 'zone' | 'uncompressed_rate' | 'compressed_rate';
 
 interface SelectAllCheckboxProps {
   allPartitions: PartitionInstance[];
@@ -36,11 +19,7 @@ interface SelectAllCheckboxProps {
   onChange: (selectedIds: Set<number>) => void;
 }
 
-function SelectAllCheckbox({
-  allPartitions,
-  selectedIds,
-  onChange,
-}: SelectAllCheckboxProps) {
+function SelectAllCheckbox({ allPartitions, selectedIds, onChange }: SelectAllCheckboxProps) {
   // Get unique partition IDs from all partitions
   const uniquePartitionIds = useMemo(() => {
     return Array.from(new Set(allPartitions.map((p) => p.id)));
@@ -70,15 +49,15 @@ function SelectAllCheckbox({
 function getStateColors(state: number): string {
   switch (state) {
     case 2: // Active
-      return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
+      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
     case 1: // Pending
-      return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
+      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
     case 3: // Inactive
-      return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200";
+      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
     case 4: // Deleted
-      return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
+      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
     default: // Unknown
-      return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
+      return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
   }
 }
 
@@ -87,17 +66,17 @@ interface PartitionRingTableProps {
   selectedPartitions: Set<number>;
   onSelectPartition: (id: number) => void;
   sortField: SortField;
-  sortDirection: "asc" | "desc";
+  sortDirection: 'asc' | 'desc';
   onSort: (field: SortField) => void;
   onStateChange: (partitionIds: number[], newState: number) => void;
   previousPartitions?: PartitionInstance[];
 }
 
 const STATE_OPTIONS = [
-  { value: 1, label: "Pending" },
-  { value: 2, label: "Active" },
-  { value: 3, label: "Inactive" },
-  { value: 4, label: "Deleted" },
+  { value: 1, label: 'Pending' },
+  { value: 2, label: 'Active' },
+  { value: 3, label: 'Inactive' },
+  { value: 4, label: 'Deleted' },
 ];
 
 export function PartitionRingTable({
@@ -113,33 +92,31 @@ export function PartitionRingTable({
     return [...partitions].sort((a, b) => {
       let comparison = 0;
       switch (sortField) {
-        case "uncompressed_rate": {
+        case 'uncompressed_rate': {
           comparison = (a.uncompressedRate || 0) - (b.uncompressedRate || 0);
           break;
         }
-        case "compressed_rate": {
+        case 'compressed_rate': {
           comparison = (a.compressedRate || 0) - (b.compressedRate || 0);
           break;
         }
-        case "id":
+        case 'id':
           comparison = a.id - b.id;
           break;
-        case "state":
+        case 'state':
           comparison = a.state - b.state;
           break;
-        case "owner":
-          comparison = a.owner_id?.localeCompare(b.owner_id || "") || 0;
+        case 'owner':
+          comparison = a.owner_id?.localeCompare(b.owner_id || '') || 0;
           break;
-        case "zone":
-          comparison = (a.zone || "").localeCompare(b.zone || "");
+        case 'zone':
+          comparison = (a.zone || '').localeCompare(b.zone || '');
           break;
-        case "timestamp":
-          comparison =
-            new Date(a.state_timestamp).getTime() -
-            new Date(b.state_timestamp).getTime();
+        case 'timestamp':
+          comparison = new Date(a.state_timestamp).getTime() - new Date(b.state_timestamp).getTime();
           break;
       }
-      return sortDirection === "asc" ? comparison : -comparison;
+      return sortDirection === 'asc' ? comparison : -comparison;
     });
   }, [partitions, sortField, sortDirection]);
 
@@ -240,32 +217,27 @@ export function PartitionRingTable({
                   />
                 </TableCell>
                 <TableCell className="font-medium">
-                  <Link
-                    to={`/nodes/${partition.owner_id}`}
-                    className="hover:underline"
-                  >
+                  <Link to={prefixRoute(`nodes/${partition.owner_id}`)} className="hover:underline">
                     {partition.owner_id}
                   </Link>
                 </TableCell>
                 <TableCell>
                   <span
                     className={cn(
-                      "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium",
-                      getZoneColors(partition.zone || "")
+                      'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
+                      getZoneColors(partition.zone || '')
                     )}
                   >
-                    {partition.zone || "-"}
+                    {partition.zone || '-'}
                   </span>
                 </TableCell>
                 <TableCell>
                   <span
                     className={cn(
-                      "inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium",
-                      partition.corrupted
-                        ? "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                        : "bg-muted"
+                      'inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium',
+                      partition.corrupted ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-muted'
                     )}
-                    title={partition.corrupted ? "Corrupted" : undefined}
+                    title={partition.corrupted ? 'Corrupted' : undefined}
                   >
                     {partition.id}
                   </span>
@@ -273,19 +245,15 @@ export function PartitionRingTable({
                 <TableCell>
                   <span
                     className={cn(
-                      "inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium",
+                      'inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium',
                       getStateColors(partition.state)
                     )}
                   >
-                    {STATE_OPTIONS.find((opt) => opt.value === partition.state)
-                      ?.label || "Unknown"}
+                    {STATE_OPTIONS.find((opt) => opt.value === partition.state)?.label || 'Unknown'}
                   </span>
                 </TableCell>
                 <TableCell>
-                  <span
-                    title={formatTimestamp(partition.state_timestamp)}
-                    className="text-muted-foreground"
-                  >
+                  <span title={formatTimestamp(partition.state_timestamp)} className="text-muted-foreground">
                     {formatRelativeTime(partition.state_timestamp)}
                   </span>
                 </TableCell>
@@ -303,16 +271,8 @@ export function PartitionRingTable({
                 </TableCell>
                 <TableCell>
                   <div className="flex items-center gap-2">
-                    <Link
-                      to={`/nodes/${partition.owner_id}`}
-                      className="hover:underline"
-                    >
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        className="h-8 w-8"
-                        title="View instance details"
-                      >
+                    <Link to={prefixRoute(`nodes/${partition.owner_id}`)} className="hover:underline">
+                      <Button variant="ghost" size="icon" className="h-8 w-8" title="View instance details">
                         <ArrowRightCircle className="h-4 w-4" />
                       </Button>
                     </Link>
