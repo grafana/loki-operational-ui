@@ -10,6 +10,7 @@ import {
   BreadcrumbSeparator,
 } from 'components/ui/breadcrumb';
 import { routes } from 'config/routes';
+import { prefixRoute } from 'utils/utils.routing';
 
 export function BreadcrumbNav() {
   const breadcrumbs = useBreadcrumbs(routes, {
@@ -26,7 +27,7 @@ export function BreadcrumbNav() {
                 <BreadcrumbPage>{breadcrumb}</BreadcrumbPage>
               ) : (
                 <BreadcrumbLink asChild>
-                  <Link to={match.pathname}>{breadcrumb}</Link>
+                  <Link to={prefixRoute(match.pathname.replace(/^\//, ''))}>{breadcrumb}</Link>
                 </BreadcrumbLink>
               )}
             </BreadcrumbItem>

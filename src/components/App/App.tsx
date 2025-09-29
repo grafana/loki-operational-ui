@@ -7,19 +7,36 @@ import { AppLayout } from '../../layout/layout';
 import { ThemeProvider } from '../../features/theme/components/theme-provider';
 import { QueryProvider } from '../../providers/query-provider';
 import { ClusterProvider } from '../../contexts/cluster-provider';
+import { VersionDisplay } from 'components/version-display';
+import { PluginPage } from '@grafana/runtime';
+import { HeaderActions } from '../../layout/header-actions';
 
 function App(_: AppRootProps) {
   return (
     <QueryProvider>
       <ThemeProvider defaultTheme="dark" storageKey="loki-ui-theme">
         <ClusterProvider>
-          <AppLayout>
-            <Routes>
-              {routes.map((route) => (
-                <Route key={route.path} path={route.path} element={route.element} />
-              ))}
-            </Routes>
-          </AppLayout>
+          <PluginPage
+            renderTitle={() => (
+              <div className="flex items-center justify-between w-full">
+                <div className="flex items-center gap-3">
+                  <div className="flex flex-col gap-0.5">
+                    <span className="text-lg font-semibold leading-none">Grafana Loki</span>
+                    <VersionDisplay />
+                  </div>
+                </div>
+              </div>
+            )}
+            actions={<HeaderActions />}
+          >
+            <AppLayout>
+              <Routes>
+                {routes.map((route) => (
+                  <Route key={route.path} path={route.path} element={route.element} />
+                ))}
+              </Routes>
+            </AppLayout>
+          </PluginPage>
         </ClusterProvider>
       </ThemeProvider>
     </QueryProvider>

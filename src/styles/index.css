@@ -83,13 +83,31 @@
   body {
     @apply font-sans antialiased bg-background text-foreground;
   }
-}
 
-@layer base {
-  * {
-    @apply border-border;
+  /* Prevent scroll flickering when dropdowns open/close */
+  [data-radix-popper-content-wrapper] {
+    z-index: 50;
   }
+
+  /* Ensure smooth transitions for dropdown menus */
+  [data-radix-dropdown-menu-content] {
+    transform-origin: var(--radix-dropdown-menu-content-transform-origin);
+    will-change: transform, opacity;
+  }
+
+  /* Prevent scrollbar from disappearing when dropdowns open */
   body {
-    @apply bg-background text-foreground;
+    overflow-y: scroll !important;
+  }
+
+  /* Ensure consistent scrollbar behavior */
+  html {
+    overflow-y: scroll;
+  }
+
+  /* Override Radix UI's body scroll lock */
+  body[data-scroll-locked] {
+    overflow-y: scroll !important;
+    padding-right: 0 !important;
   }
 }

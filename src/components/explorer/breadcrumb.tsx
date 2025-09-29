@@ -10,6 +10,7 @@ import {
   BreadcrumbSeparator,
 } from 'components/ui/breadcrumb';
 import { absolutePath } from '../../util';
+import { prefixRoute } from 'utils/utils.routing';
 
 const getProviderStyles = (provider: string): { bg: string; text: string; darkBg: string; darkText: string } => {
   switch (provider) {
@@ -121,7 +122,7 @@ export function ExplorerBreadcrumb() {
         <BreadcrumbItem>
           <BreadcrumbLink asChild>
             <Link
-              to="/storage/dataobj"
+              to={prefixRoute('storage/dataobj')}
               className={`inline-flex items-center h-7 gap-2 px-3 py-1 text-xs font-medium ${providerStyles.bg} ${providerStyles.text} ${providerStyles.darkBg} ${providerStyles.darkText} rounded-full hover:ring-1 hover:ring-gray-300 dark:hover:ring-gray-600 transition-all duration-200`}
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512" className="w-4 h-4" fill="currentColor">
@@ -142,7 +143,7 @@ export function ExplorerBreadcrumb() {
                   {isLastItem ? (
                     <span className="text-gray-500">{segment}</span>
                   ) : (
-                    <Link to={`/storage/dataobj?path=${encodeURIComponent(currentPath)}`}>{segment}</Link>
+                    <Link to={prefixRoute(`storage/dataobj?path=${encodeURIComponent(currentPath)}`)}>{segment}</Link>
                   )}
                 </BreadcrumbLink>
               </BreadcrumbItem>

@@ -6,6 +6,7 @@ import { AVAILABLE_RINGS } from '../hooks/use-ring';
 import { RingType } from '../types/ring';
 import { Alert, AlertTitle, AlertDescription } from '../components/ui/alert';
 import { PageContainer } from '../layout/page-container';
+import { prefixRoute } from 'utils/utils.routing';
 
 interface BaseRingProps {
   error?: string;
@@ -37,7 +38,7 @@ export function BaseRing({ error, ringName }: BaseRingProps) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {AVAILABLE_RINGS.map((ring) => (
-              <Link key={ring.id} to={`/rings/${ring.id}`}>
+              <Link key={ring.id} to={prefixRoute(`rings/${ring.id}`)}>
                 <Card className="hover:bg-muted/50 transition-colors cursor-pointer">
                   <CardHeader>
                     <CardTitle>{ring.title}</CardTitle>

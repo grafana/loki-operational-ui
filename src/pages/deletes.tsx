@@ -9,6 +9,7 @@ import { findNodeName } from 'lib/utils';
 import { useQuery } from '@tanstack/react-query';
 import { AlertCircle, Loader2, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { prefixRoute } from 'utils/utils.routing';
 import { fromUnixTime, formatDistance, format } from 'date-fns';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
 import { DataTableColumnHeader } from 'components/common/data-table-column-header';
@@ -304,7 +305,7 @@ const DeletesPage = () => {
                 <p className="text-sm text-muted-foreground mt-1">View and manage delete requests in your cluster</p>
               </div>
               <Button variant="default" asChild>
-                <Link to="/tenants/deletes/new">
+                <Link to={prefixRoute('tenants/deletes/new')}>
                   <Plus className="mr-2 h-4 w-4" />
                   New Delete Request
                 </Link>
