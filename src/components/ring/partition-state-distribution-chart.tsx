@@ -1,20 +1,20 @@
 import React, { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { PartitionInstance, PartitionStates } from "types/ring";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { PartitionInstance, PartitionStates } from 'types/ring';
 
 // Map states to their corresponding hex colors
 const getStateColor = (state: number): string => {
   switch (state) {
     case 2: // Active
-      return "#22c55e"; // green-500
+      return '#22c55e'; // green-500
     case 1: // Pending
-      return "#3b82f6"; // blue-500
+      return '#3b82f6'; // blue-500
     case 3: // Inactive
-      return "#eab308"; // yellow-500
+      return '#eab308'; // yellow-500
     case 4: // Deleted
-      return "#ef4444"; // red-500
+      return '#ef4444'; // red-500
     default: // Unknown
-      return "#6b7280"; // gray-500
+      return '#6b7280'; // gray-500
   }
 };
 
@@ -22,9 +22,7 @@ interface PartitionStateDistributionChartProps {
   partitions: PartitionInstance[];
 }
 
-export function PartitionStateDistributionChart({
-  partitions,
-}: PartitionStateDistributionChartProps) {
+export function PartitionStateDistributionChart({ partitions }: PartitionStateDistributionChartProps) {
   const data = useMemo(() => {
     const stateCounts = new Map<number, number>();
 
@@ -70,23 +68,18 @@ export function PartitionStateDistributionChart({
             strokeWidth={1}
           >
             {data.map((entry) => (
-              <Cell
-                key={`cell-${entry.name}`}
-                fill={entry.color}
-                stroke="hsl(var(--background))"
-              />
+              <Cell key={`cell-${entry.name}`} fill={entry.color} stroke="hsl(var(--background))" />
             ))}
           </Pie>
           <Tooltip
             content={({ active, payload }) => {
-              if (!active || !payload || !payload[0]) {return null;}
+              if (!active || !payload || !payload[0]) {
+                return null;
+              }
               const data = payload[0].payload;
               return (
                 <div className="bg-background border rounded-lg shadow-lg px-3 py-2 flex items-center gap-2">
-                  <div
-                    className="w-2.5 h-2.5 rounded-sm"
-                    style={{ backgroundColor: data.color }}
-                  />
+                  <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: data.color }} />
                   <span className="text-sm font-medium">{data.name}</span>
                   <span className="text-sm font-semibold">{data.value}</span>
                 </div>

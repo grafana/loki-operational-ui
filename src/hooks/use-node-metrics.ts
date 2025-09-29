@@ -1,5 +1,5 @@
-import { absolutePath } from "../util";
-import { useState, useEffect } from "react";
+import { absolutePath } from '../util';
+import { useState, useEffect } from 'react';
 
 interface UseNodeMetricsResult {
   isLoading: boolean;
@@ -7,18 +7,15 @@ interface UseNodeMetricsResult {
   metrics: string;
 }
 
-export function useNodeMetrics(
-  nodeName: string | undefined,
-  isMetricsTabActive: boolean
-): UseNodeMetricsResult {
+export function useNodeMetrics(nodeName: string | undefined, isMetricsTabActive: boolean): UseNodeMetricsResult {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [metrics, setMetrics] = useState<string>("");
+  const [metrics, setMetrics] = useState<string>('');
 
   useEffect(() => {
     // Reset state when tab becomes inactive
     if (!isMetricsTabActive) {
-      setMetrics("");
+      setMetrics('');
       return;
     }
 
@@ -34,12 +31,9 @@ export function useNodeMetrics(
       setError(null);
 
       try {
-        const response = await fetch(
-          absolutePath(`/api/v1/proxy/${nodeName}/metrics`),
-          {
-            signal: abortController.signal,
-          }
-        );
+        const response = await fetch(absolutePath(`/api/v1/proxy/${nodeName}/metrics`), {
+          signal: abortController.signal,
+        });
 
         if (!response.ok) {
           throw new Error(`Failed to fetch metrics: ${response.statusText}`);
@@ -51,7 +45,7 @@ export function useNodeMetrics(
         if (err instanceof Error) {
           setError(err.message);
         } else {
-          setError("An unknown error occurred");
+          setError('An unknown error occurred');
         }
       } finally {
         setIsLoading(false);

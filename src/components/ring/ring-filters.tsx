@@ -1,7 +1,7 @@
 import React from 'react';
-import { Search } from "lucide-react";
-import { Input } from "components/ui/input";
-import { MultiSelect } from "../common/multi-select";
+import { Search } from 'lucide-react';
+import { Input } from 'components/ui/input';
+import { MultiSelect } from '../common/multi-select';
 
 interface RingFiltersProps {
   idFilter: string;

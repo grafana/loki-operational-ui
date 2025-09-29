@@ -1,20 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Check, X } from "lucide-react";
-import { cn } from "lib/utils";
-import { Button } from "components/ui/button";
-import { Input } from "components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "components/ui/popover";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandItem,
-  CommandList,
-} from "components/ui/command";
+import { Check, X } from 'lucide-react';
+import { cn } from 'lib/utils';
+import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
+import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from 'components/ui/command';
 
 interface UserFilterComboboxProps {
   value?: string;
@@ -24,21 +14,19 @@ interface UserFilterComboboxProps {
 
 export function UserFilterCombobox({ value, onChange, suggestions }: UserFilterComboboxProps) {
   const [open, setOpen] = useState(false);
-  const [inputValue, setInputValue] = useState(value || "");
-  const [searchTerm, setSearchTerm] = useState(value || ""); // Used for filtering
+  const [inputValue, setInputValue] = useState(value || '');
+  const [searchTerm, setSearchTerm] = useState(value || ''); // Used for filtering
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   // Update state when value prop changes
   useEffect(() => {
-    setInputValue(value || "");
-    setSearchTerm(value || "");
+    setInputValue(value || '');
+    setSearchTerm(value || '');
   }, [value]);
 
   // Deduplicate suggestions first, then filter based on searchTerm (not inputValue)
   const uniqueSuggestions = Array.from(new Set(suggestions));
-  const filteredSuggestions = uniqueSuggestions.filter(user =>
-    user.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredSuggestions = uniqueSuggestions.filter((user) => user.toLowerCase().includes(searchTerm.toLowerCase()));
 
   const handleSelect = (selectedValue: string) => {
     setInputValue(selectedValue);
@@ -50,22 +38,22 @@ export function UserFilterCombobox({ value, onChange, suggestions }: UserFilterC
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = e.target.value;
     setInputValue(newValue);
-    
+
     // Clear any existing debounce timer
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
-    
+
     // Debounce the search term update (1s delay)
     debounceTimer.current = setTimeout(() => {
       setSearchTerm(newValue);
       onChange(newValue || undefined);
-      
+
       // Check if we should show dropdown after debounce
-      const newFilteredSuggestions = uniqueSuggestions.filter(user =>
+      const newFilteredSuggestions = uniqueSuggestions.filter((user) =>
         user.toLowerCase().includes(newValue.toLowerCase())
       );
-      
+
       if (newFilteredSuggestions.length > 0) {
         setOpen(true);
       }
@@ -89,8 +77,8 @@ export function UserFilterCombobox({ value, onChange, suggestions }: UserFilterC
     if (debounceTimer.current) {
       clearTimeout(debounceTimer.current);
     }
-    setInputValue("");
-    setSearchTerm("");
+    setInputValue('');
+    setSearchTerm('');
     onChange(undefined);
     setOpen(false);
   };
@@ -147,8 +135,8 @@ export function UserFilterCombobox({ value, onChange, suggestions }: UserFilterC
         )}
       </div>
       {open && filteredSuggestions.length > 0 && (
-        <PopoverContent 
-          className="w-[240px] p-0" 
+        <PopoverContent
+          className="w-[240px] p-0"
           align="start"
           onOpenAutoFocus={(e) => e.preventDefault()}
           sideOffset={4}
@@ -158,17 +146,8 @@ export function UserFilterCombobox({ value, onChange, suggestions }: UserFilterC
               <CommandEmpty>No users found.</CommandEmpty>
               <CommandGroup>
                 {filteredSuggestions.map((user) => (
-                  <CommandItem
-                    key={user}
-                    value={user}
-                    onSelect={() => handleSelect(user)}
-                  >
-                    <Check
-                      className={cn(
-                        "mr-2 h-4 w-4",
-                        value === user ? "opacity-100" : "opacity-0"
-                      )}
-                    />
+                  <CommandItem key={user} value={user} onSelect={() => handleSelect(user)}>
+                    <Check className={cn('mr-2 h-4 w-4', value === user ? 'opacity-100' : 'opacity-0')} />
                     {user}
                   </CommandItem>
                 ))}

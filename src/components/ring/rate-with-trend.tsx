@@ -1,6 +1,6 @@
 import React, { useMemo, useRef, useEffect } from 'react';
-import { ArrowUpCircle, ArrowDownCircle } from "lucide-react";
-import { formatBytes } from "lib/ring-utils";
+import { ArrowUpCircle, ArrowDownCircle } from 'lucide-react';
+import { formatBytes } from 'lib/ring-utils';
 
 interface RateWithTrendProps {
   currentRate: number;
@@ -8,7 +8,7 @@ interface RateWithTrendProps {
   className?: string;
 }
 
-function getRateTrend(current: number, previous: number): "up" | "down" | null {
+function getRateTrend(current: number, previous: number): 'up' | 'down' | null {
   if (current === undefined || previous === undefined) {
     return null;
   }
@@ -21,29 +21,24 @@ function getRateTrend(current: number, previous: number): "up" | "down" | null {
     return null;
   }
 
-  return current > previous ? "up" : "down";
+  return current > previous ? 'up' : 'down';
 }
 
-function TrendIndicator({ trend }: { trend: "up" | "down" | null }) {
-  if (!trend) {return null;}
+function TrendIndicator({ trend }: { trend: 'up' | 'down' | null }) {
+  if (!trend) {
+    return null;
+  }
 
-  return trend === "up" ? (
+  return trend === 'up' ? (
     <ArrowUpCircle className="inline h-4 w-4 text-green-500 ml-1" />
   ) : (
     <ArrowDownCircle className="inline h-4 w-4 text-red-500 ml-1" />
   );
 }
 
-export function RateWithTrend({
-  currentRate,
-  label,
-  className,
-}: RateWithTrendProps) {
+export function RateWithTrend({ currentRate, label, className }: RateWithTrendProps) {
   const previousRateRef = useRef(currentRate);
-  const trend = useMemo(
-    () => getRateTrend(currentRate, previousRateRef.current),
-    [currentRate]
-  );
+  const trend = useMemo(() => getRateTrend(currentRate, previousRateRef.current), [currentRate]);
 
   useEffect(() => {
     const timeoutId = setTimeout(() => {

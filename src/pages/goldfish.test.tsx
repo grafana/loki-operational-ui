@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import GoldfishPage from './goldfish';
-import { useGoldfishQueries } from "hooks/use-goldfish-queries";
+import { useGoldfishQueries } from 'hooks/use-goldfish-queries';
 import type { SampledQuery } from 'types/goldfish';
 import '@testing-library/jest-dom';
 
@@ -37,7 +37,9 @@ jest.mock('@/components/goldfish/query-diff-view', () => ({
 jest.mock('@/components/goldfish/time-range-selector', () => ({
   TimeRangeSelector: ({ onChange }: { onChange: (from: Date | null, to: Date | null) => void }) => (
     <div data-testid="time-range-selector">
-      <button onClick={() => onChange(new Date('2024-01-01T10:00:00Z'), new Date('2024-01-01T14:30:00Z'))}>Set Custom Range</button>
+      <button onClick={() => onChange(new Date('2024-01-01T10:00:00Z'), new Date('2024-01-01T14:30:00Z'))}>
+        Set Custom Range
+      </button>
       <button
         data-testid="select-1h-preset"
         onClick={() => {
@@ -54,7 +56,15 @@ jest.mock('@/components/goldfish/time-range-selector', () => ({
 
 // Mock UserFilterCombobox
 jest.mock('@/components/goldfish/user-filter-combobox', () => ({
-  UserFilterCombobox: ({ value, onChange, suggestions }: { value?: string; onChange: (value?: string) => void; suggestions?: string[] }) => (
+  UserFilterCombobox: ({
+    value,
+    onChange,
+    suggestions,
+  }: {
+    value?: string;
+    onChange: (value?: string) => void;
+    suggestions?: string[];
+  }) => (
     <select
       data-testid="user-filter"
       value={value || ''}
@@ -65,7 +75,9 @@ jest.mock('@/components/goldfish/user-filter-combobox', () => ({
     >
       <option value="">All Users</option>
       {suggestions?.map((user: string) => (
-        <option key={user} value={user}>{user}</option>
+        <option key={user} value={user}>
+          {user}
+        </option>
       ))}
     </select>
   ),
@@ -73,11 +85,21 @@ jest.mock('@/components/goldfish/user-filter-combobox', () => ({
 
 // Mock TenantFilterSelect
 jest.mock('@/components/goldfish/tenant-filter-select', () => ({
-  TenantFilterSelect: ({ value, onChange, tenants }: { value?: string; onChange: (value?: string) => void; tenants?: string[] }) => (
+  TenantFilterSelect: ({
+    value,
+    onChange,
+    tenants,
+  }: {
+    value?: string;
+    onChange: (value?: string) => void;
+    tenants?: string[];
+  }) => (
     <select data-testid="tenant-filter" value={value || ''} onChange={(e) => onChange(e.target.value || undefined)}>
       <option value="">All Tenants</option>
       {tenants?.map((tenant: string) => (
-        <option key={tenant} value={tenant}>{tenant}</option>
+        <option key={tenant} value={tenant}>
+          {tenant}
+        </option>
       ))}
     </select>
   ),
@@ -318,9 +340,7 @@ describe('GoldfishPage', () => {
       expect(setSearchParams).toHaveBeenCalled();
 
       // Find the call that has outcome=error (might not be the first due to initial render)
-      const callWithError = setSearchParams.mock.calls.find(call =>
-        call[0].get('outcome') === 'error'
-      );
+      const callWithError = setSearchParams.mock.calls.find((call) => call[0].get('outcome') === 'error');
       expect(callWithError).toBeDefined();
       expect(callWithError[0].get('outcome')).toBe('error');
 
@@ -412,9 +432,7 @@ describe('GoldfishPage', () => {
       expect(setSearchParams).toHaveBeenCalled();
 
       // Find the call that has tenant=tenant-b
-      const callWithTenant = setSearchParams.mock.calls.find(call =>
-        call[0].get('tenant') === 'tenant-b'
-      );
+      const callWithTenant = setSearchParams.mock.calls.find((call) => call[0].get('tenant') === 'tenant-b');
       expect(callWithTenant).toBeDefined();
       expect(callWithTenant[0].get('tenant')).toBe('tenant-b');
 
@@ -433,10 +451,12 @@ describe('GoldfishPage', () => {
       mockUseSearchParams.mockReturnValue([searchParams, setSearchParams]);
 
       // Mock the hook to return queries with a tenant that has special characters
-      const queriesWithSpecialTenant = [{
-        ...mockQueries[0],
-        tenantId: 'tenant/special-123'
-      }];
+      const queriesWithSpecialTenant = [
+        {
+          ...mockQueries[0],
+          tenantId: 'tenant/special-123',
+        },
+      ];
       mockUseGoldfishQueries.mockReturnValue({
         ...defaultMockHookReturn,
         queries: queriesWithSpecialTenant,
@@ -453,9 +473,7 @@ describe('GoldfishPage', () => {
       expect(setSearchParams).toHaveBeenCalled();
 
       // Find the call and check the tenant is properly encoded
-      const callWithTenant = setSearchParams.mock.calls.find(call =>
-        call[0].get('tenant') === 'tenant/special-123'
-      );
+      const callWithTenant = setSearchParams.mock.calls.find((call) => call[0].get('tenant') === 'tenant/special-123');
       expect(callWithTenant).toBeDefined();
 
       // The actual URL string should have the encoded value
@@ -505,9 +523,7 @@ describe('GoldfishPage', () => {
       // Check that setSearchParams was called with the user
       expect(setSearchParams).toHaveBeenCalled();
 
-      const callWithUser = setSearchParams.mock.calls.find(call =>
-        call[0].get('user') === 'user1@example.com'
-      );
+      const callWithUser = setSearchParams.mock.calls.find((call) => call[0].get('user') === 'user1@example.com');
       expect(callWithUser).toBeDefined();
       expect(callWithUser[0].get('user')).toBe('user1@example.com');
 
@@ -648,9 +664,7 @@ describe('GoldfishPage', () => {
       // Should use since=1h for the preset
       expect(setSearchParams).toHaveBeenCalled();
 
-      const callWithSince = setSearchParams.mock.calls.find(call =>
-        call[0].get('since') === '1h'
-      );
+      const callWithSince = setSearchParams.mock.calls.find((call) => call[0].get('since') === '1h');
       expect(callWithSince).toBeDefined();
       expect(callWithSince[0].get('since')).toBe('1h');
     });
@@ -671,8 +685,8 @@ describe('GoldfishPage', () => {
       expect(setSearchParams).toHaveBeenCalled();
 
       // When custom range is selected, should use from/to not since
-      const callWithFromTo = setSearchParams.mock.calls.find(call =>
-        call[0].has('from') && call[0].has('to') && !call[0].has('since')
+      const callWithFromTo = setSearchParams.mock.calls.find(
+        (call) => call[0].has('from') && call[0].has('to') && !call[0].has('since')
       );
       expect(callWithFromTo).toBeDefined();
       expect(callWithFromTo[0].get('from')).toBe('2024-01-01T10:00:00.000Z');
@@ -708,7 +722,7 @@ describe('GoldfishPage', () => {
   describe('Rendering', () => {
     it('renders the page with all components', () => {
       renderGoldfishPage();
-      
+
       expect(screen.getByText('Goldfish - Query Comparison')).toBeInTheDocument();
       expect(screen.getByText('Side-by-side performance comparison between Cell A and Cell B')).toBeInTheDocument();
       expect(screen.getByTestId('time-range-selector')).toBeInTheDocument();
@@ -717,7 +731,7 @@ describe('GoldfishPage', () => {
 
     it('displays queries from the hook', () => {
       renderGoldfishPage();
-      
+
       expect(screen.getAllByTestId('query-diff-view')).toHaveLength(3);
       expect(screen.getByText('Status: match')).toBeInTheDocument();
       expect(screen.getByText('Status: mismatch')).toBeInTheDocument();
@@ -732,7 +746,7 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       // Verify that query views are not shown during loading
       expect(screen.queryByTestId('query-diff-view')).not.toBeInTheDocument();
       // Instead, the page still shows but with no queries
@@ -748,7 +762,7 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       expect(screen.getByText(/Failed to load queries: Failed to fetch queries/)).toBeInTheDocument();
       expect(screen.getByText('error-trace-123')).toBeInTheDocument();
     });
@@ -763,7 +777,7 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       // Load More button text could be in the button element
       const loadMoreButton = screen.getByRole('button', { name: /Load More/i });
       expect(loadMoreButton).toBeInTheDocument();
@@ -777,7 +791,7 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       expect(screen.queryByText('Load More')).not.toBeInTheDocument();
       expect(screen.getByText(/No more results/)).toBeInTheDocument();
     });
@@ -792,7 +806,7 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       const loadMoreButton = screen.getByRole('button', { name: /Load More/i });
       fireEvent.click(loadMoreButton);
       expect(mockLoadMore).toHaveBeenCalled();
@@ -807,7 +821,7 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       // Loading state is shown in the button
       const loadingButton = screen.getByRole('button', { name: /Loading/i });
       expect(loadingButton).toBeInTheDocument();
@@ -824,33 +838,33 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       fireEvent.click(screen.getByText('Refresh'));
       expect(mockRefresh).toHaveBeenCalled();
     });
 
     it('updates hook parameters when filters change', () => {
       renderGoldfishPage();
-      
+
       // Change tenant filter
       const tenantFilter = screen.getByTestId('tenant-filter');
       fireEvent.change(tenantFilter, { target: { value: 'tenant-a' } });
-      
+
       // Change user filter
       const userFilter = screen.getByTestId('user-filter');
       fireEvent.change(userFilter, { target: { value: 'user1@example.com' } });
-      
+
       // The hook should be called with the new parameters
       expect(mockUseGoldfishQueries).toHaveBeenCalled();
     });
 
     it('toggles new engine filter', () => {
       renderGoldfishPage();
-      
+
       // Find the checkbox by its label text
       const newEngineLabel = screen.getByText(/New Engine Only/i);
       expect(newEngineLabel).toBeInTheDocument();
-      
+
       // The hook should be called with proper parameters
       expect(mockUseGoldfishQueries).toHaveBeenCalled();
     });
@@ -865,7 +879,7 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       expect(screen.getByText(/No queries found in current results/)).toBeInTheDocument();
     });
 
@@ -877,7 +891,7 @@ describe('GoldfishPage', () => {
       });
 
       renderGoldfishPage();
-      
+
       expect(screen.getByText(/Try loading more results to find matching queries/)).toBeInTheDocument();
       expect(screen.getByText('Load More Results')).toBeInTheDocument();
     });
@@ -886,20 +900,20 @@ describe('GoldfishPage', () => {
   describe('User Information Display', () => {
     it('displays user emails in query views', () => {
       renderGoldfishPage();
-      
+
       // Check that user emails are shown in the query views (not in dropdown options)
       const queryViews = screen.getAllByTestId('query-diff-view');
       expect(queryViews).toHaveLength(3);
-      
+
       // Find user emails within query views specifically
       expect(screen.getAllByText('user1@example.com')).toHaveLength(2); // One in dropdown, one in query view
-      expect(screen.getAllByText('user2@example.com')).toHaveLength(2); // One in dropdown, one in query view  
+      expect(screen.getAllByText('user2@example.com')).toHaveLength(2); // One in dropdown, one in query view
       expect(screen.getAllByText('user3@example.com')).toHaveLength(2); // One in dropdown, one in query view
     });
 
     it('populates user filter dropdown with unique users', () => {
       renderGoldfishPage();
-      
+
       const userFilter = screen.getByTestId('user-filter');
       expect(userFilter).toBeInTheDocument();
       // The actual suggestions are controlled by the component internally

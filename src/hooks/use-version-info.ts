@@ -1,5 +1,5 @@
-import { useCluster } from "contexts/use-cluster";
-import { useEffect, useState } from "react";
+import { useCluster } from 'contexts/use-cluster';
+import { useEffect, useState } from 'react';
 
 interface VersionInfo {
   revision: string;
@@ -42,16 +42,20 @@ export function useVersionInfo(): UseVersionInfoResult {
   }, [clusterLoading]);
 
   const getMostCommonVersion = (): string => {
-    if (!cluster?.members) {return "v0.0.0";}
+    if (!cluster?.members) {
+      return 'v0.0.0';
+    }
 
     const versionCounts = new Map<string, number>();
     Object.values(cluster.members).forEach((member) => {
-      if (!member.build.version) {return;}
+      if (!member.build.version) {
+        return;
+      }
       const version = member.build.version;
       versionCounts.set(version, (versionCounts.get(version) || 0) + 1);
     });
 
-    let mostCommonVersion = "v0.0.0";
+    let mostCommonVersion = 'v0.0.0';
     let maxCount = 0;
 
     versionCounts.forEach((count, version) => {
@@ -65,7 +69,9 @@ export function useVersionInfo(): UseVersionInfoResult {
   };
 
   const getVersionInfos = (): Array<{ version: string; info: VersionInfo }> => {
-    if (!cluster?.members) {return [];}
+    if (!cluster?.members) {
+      return [];
+    }
 
     const versions = new Set<string>();
     const buildInfo = new Map<string, VersionInfo>();
@@ -83,13 +89,13 @@ export function useVersionInfo(): UseVersionInfoResult {
     });
 
     return Array.from(versions).map((version) => ({
-      version: version ?? "v0.0.0",
+      version: version ?? 'v0.0.0',
       info: buildInfo.get(version) ?? {
-        revision: "v0.0.0",
-        branch: "v0.0.0",
-        buildUser: "v0.0.0",
-        buildDate: "v0.0.0",
-        goVersion: "v0.0.0",
+        revision: 'v0.0.0',
+        branch: 'v0.0.0',
+        buildUser: 'v0.0.0',
+        buildDate: 'v0.0.0',
+        goVersion: 'v0.0.0',
       },
     }));
   };

@@ -1,4 +1,4 @@
-import { Cluster } from "types/cluster";
+import { Cluster } from 'types/cluster';
 
 export interface ClusterContextValue {
   cluster: Cluster | null;

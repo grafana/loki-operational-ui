@@ -17,16 +17,16 @@ export interface RingResponse {
 }
 
 export const RingTypes: Record<string, string> = {
-  INGESTER: "ingester",
-  PARTITION_INGESTER: "partition-ingester",
-  DISTRIBUTOR: "distributor",
-  INGEST_LIMITS_FRONTEND: "ingest-limits-frontend",
-  INGEST_LIMITS: "ingest-limits",
-  PATTERN_INGESTER: "pattern-ingester",
-  QUERY_SCHEDULER: "query-scheduler",
-  COMPACTOR: "compactor",
-  RULER: "ruler",
-  INDEX_GATEWAY: "index-gateway",
+  INGESTER: 'ingester',
+  PARTITION_INGESTER: 'partition-ingester',
+  DISTRIBUTOR: 'distributor',
+  INGEST_LIMITS_FRONTEND: 'ingest-limits-frontend',
+  INGEST_LIMITS: 'ingest-limits',
+  PATTERN_INGESTER: 'pattern-ingester',
+  QUERY_SCHEDULER: 'query-scheduler',
+  COMPACTOR: 'compactor',
+  RULER: 'ruler',
+  INDEX_GATEWAY: 'index-gateway',
 } as const;
 
 export type RingType = keyof typeof RingTypes;
@@ -52,11 +52,11 @@ export interface PartitionRingResponse {
 }
 
 export const PartitionStates = {
-  0: "Unknown",
-  1: "Pending",
-  2: "Active",
-  3: "Inactive",
-  4: "Deleted",
+  0: 'Unknown',
+  1: 'Pending',
+  2: 'Active',
+  3: 'Inactive',
+  4: 'Deleted',
 } as const;
 
 export type PartitionState = keyof typeof PartitionStates;

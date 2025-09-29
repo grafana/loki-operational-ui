@@ -138,10 +138,7 @@ describe('useGoldfishQueries', () => {
       };
       mockFetchSampledQueries.mockResolvedValueOnce({ data: mockData, traceId: 'test-trace' });
 
-      const { result } = renderHook(
-        () => useGoldfishQueries(20, OUTCOME_ALL),
-        { wrapper: createWrapper() }
-      );
+      const { result } = renderHook(() => useGoldfishQueries(20, OUTCOME_ALL), { wrapper: createWrapper() });
 
       // Initially loading
       expect(result.current.isLoading).toBe(true);
@@ -162,10 +159,7 @@ describe('useGoldfishQueries', () => {
       const error = new Error('Network error');
       mockFetchSampledQueries.mockRejectedValueOnce(error);
 
-      const { result } = renderHook(
-        () => useGoldfishQueries(20, OUTCOME_ALL),
-        { wrapper: createWrapper() }
-      );
+      const { result } = renderHook(() => useGoldfishQueries(20, OUTCOME_ALL), { wrapper: createWrapper() });
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -190,15 +184,12 @@ describe('useGoldfishQueries', () => {
         page: 2,
         pageSize: 20,
       };
-      
+
       mockFetchSampledQueries
         .mockResolvedValueOnce({ data: page1Data, traceId: 'trace-1' })
         .mockResolvedValueOnce({ data: page2Data, traceId: 'trace-2' });
 
-      const { result } = renderHook(
-        () => useGoldfishQueries(20, OUTCOME_ALL),
-        { wrapper: createWrapper() }
-      );
+      const { result } = renderHook(() => useGoldfishQueries(20, OUTCOME_ALL), { wrapper: createWrapper() });
 
       // Wait for initial load
       await waitFor(() => {
@@ -234,21 +225,18 @@ describe('useGoldfishQueries', () => {
         page: 1,
         pageSize: 20,
       };
-      
+
       // Delay the second response
       let resolveSecondCall: ((value: unknown) => void) | undefined;
-      const secondCallPromise = new Promise(resolve => {
+      const secondCallPromise = new Promise((resolve) => {
         resolveSecondCall = resolve;
       });
-      
+
       mockFetchSampledQueries
         .mockResolvedValueOnce({ data: page1Data, traceId: 'trace-1' })
         .mockImplementationOnce(() => secondCallPromise as unknown as Promise<FetchResult<GoldfishAPIResponse>>);
 
-      const { result } = renderHook(
-        () => useGoldfishQueries(20, OUTCOME_ALL),
-        { wrapper: createWrapper() }
-      );
+      const { result } = renderHook(() => useGoldfishQueries(20, OUTCOME_ALL), { wrapper: createWrapper() });
 
       // Wait for initial load
       await waitFor(() => {
@@ -301,13 +289,10 @@ describe('useGoldfishQueries', () => {
         .mockResolvedValueOnce({ data: filteredData, traceId: 'trace-3' })
         .mockResolvedValue({ data: filteredData, traceId: 'trace-4' }); // Default for any additional calls
 
-      const { result, rerender } = renderHook(
-        ({ tenant }) => useGoldfishQueries(20, OUTCOME_ALL, tenant),
-        { 
-          wrapper: createWrapper(),
-          initialProps: { tenant: undefined as string | undefined }
-        }
-      );
+      const { result, rerender } = renderHook(({ tenant }) => useGoldfishQueries(20, OUTCOME_ALL, tenant), {
+        wrapper: createWrapper(),
+        initialProps: { tenant: undefined as string | undefined },
+      });
 
       // Wait for initial load
       await waitFor(() => {
@@ -353,14 +338,17 @@ describe('useGoldfishQueries', () => {
         // Check that we're not loading anymore and have data
         expect(result.current.isLoading).toBe(false);
       });
-      
+
       // Give it a moment for the data to be processed
-      await waitFor(() => {
-        // The filtered data should have one query
-        expect(result.current.queries.length).toBeGreaterThan(0);
-        expect(result.current.queries).toHaveLength(1);
-      }, { timeout: 3000 });
-      
+      await waitFor(
+        () => {
+          // The filtered data should have one query
+          expect(result.current.queries.length).toBeGreaterThan(0);
+          expect(result.current.queries).toHaveLength(1);
+        },
+        { timeout: 3000 }
+      );
+
       // Now check the results
       expect(result.current.queries[0].correlationId).toBe('test-1');
     });
@@ -369,16 +357,16 @@ describe('useGoldfishQueries', () => {
       const from = new Date('2024-01-01T00:00:00Z');
       const to = new Date('2024-01-02T00:00:00Z');
 
-      mockFetchSampledQueries.mockResolvedValue({ 
+      mockFetchSampledQueries.mockResolvedValue({
         data: { queries: mockQueries, hasMore: false, page: 1, pageSize: 20 },
-        traceId: 'test-trace'
+        traceId: 'test-trace',
       });
 
       const { result, rerender } = renderHook(
         ({ from, to }) => useGoldfishQueries(20, OUTCOME_ALL, undefined, undefined, undefined, from, to),
-        { 
+        {
           wrapper: createWrapper(),
-          initialProps: { from: null as Date | null, to: null as Date | null }
+          initialProps: { from: null as Date | null, to: null as Date | null },
         }
       );
 
@@ -393,15 +381,7 @@ describe('useGoldfishQueries', () => {
         expect(mockFetchSampledQueries).toHaveBeenCalledTimes(2);
       });
 
-      expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(
-        1,
-        20,
-        undefined,
-        undefined,
-        undefined,
-        from,
-        to
-      );
+      expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(1, 20, undefined, undefined, undefined, from, to);
     });
   });
 
@@ -416,13 +396,10 @@ describe('useGoldfishQueries', () => {
       mockFetchSampledQueries.mockResolvedValueOnce({ data: mockData, traceId: 'test-trace' });
 
       // Test with MATCH filter
-      const { result, rerender } = renderHook(
-        ({ outcome }) => useGoldfishQueries(20, outcome),
-        { 
-          wrapper: createWrapper(),
-          initialProps: { outcome: OUTCOME_MATCH as typeof OUTCOME_MATCH | typeof OUTCOME_MISMATCH | typeof OUTCOME_ALL }
-        }
-      );
+      const { result, rerender } = renderHook(({ outcome }) => useGoldfishQueries(20, outcome), {
+        wrapper: createWrapper(),
+        initialProps: { outcome: OUTCOME_MATCH as typeof OUTCOME_MATCH | typeof OUTCOME_MISMATCH | typeof OUTCOME_ALL },
+      });
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -467,10 +444,7 @@ describe('useGoldfishQueries', () => {
         .mockResolvedValueOnce({ data: page1Data, traceId: 'trace-1' })
         .mockResolvedValueOnce({ data: page2Data, traceId: 'trace-2' });
 
-      const { result } = renderHook(
-        () => useGoldfishQueries(20, OUTCOME_MATCH),
-        { wrapper: createWrapper() }
-      );
+      const { result } = renderHook(() => useGoldfishQueries(20, OUTCOME_MATCH), { wrapper: createWrapper() });
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -491,7 +465,7 @@ describe('useGoldfishQueries', () => {
 
       // Should only show match queries from both pages
       expect(result.current.queries).toHaveLength(2);
-      expect(result.current.queries.every(q => q.comparisonStatus === 'match')).toBe(true);
+      expect(result.current.queries.every((q) => q.comparisonStatus === 'match')).toBe(true);
     });
   });
 
@@ -514,10 +488,7 @@ describe('useGoldfishQueries', () => {
         .mockResolvedValueOnce({ data: initialData, traceId: 'trace-1' })
         .mockResolvedValueOnce({ data: refreshedData, traceId: 'trace-2' });
 
-      const { result } = renderHook(
-        () => useGoldfishQueries(20, OUTCOME_ALL),
-        { wrapper: createWrapper() }
-      );
+      const { result } = renderHook(() => useGoldfishQueries(20, OUTCOME_ALL), { wrapper: createWrapper() });
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);
@@ -559,15 +530,12 @@ describe('useGoldfishQueries', () => {
         { ...mockQueries[0], correlationId: 'test-3', sampledAt: '2024-01-01T01:00:00Z' },
       ];
 
-      mockFetchSampledQueries.mockResolvedValueOnce({ 
+      mockFetchSampledQueries.mockResolvedValueOnce({
         data: { queries: unsortedQueries, hasMore: false, page: 1, pageSize: 20 },
-        traceId: 'test-trace'
+        traceId: 'test-trace',
       });
 
-      const { result } = renderHook(
-        () => useGoldfishQueries(20, OUTCOME_ALL),
-        { wrapper: createWrapper() }
-      );
+      const { result } = renderHook(() => useGoldfishQueries(20, OUTCOME_ALL), { wrapper: createWrapper() });
 
       await waitFor(() => {
         expect(result.current.isLoading).toBe(false);

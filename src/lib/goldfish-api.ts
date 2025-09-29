@@ -1,6 +1,6 @@
-import { GoldfishAPIResponse } from "types/goldfish";
-import { absolutePath } from "../util";
-import { createTraceContext, createTraceHeaders, extractTraceId } from "./tracing";
+import { GoldfishAPIResponse } from 'types/goldfish';
+import { absolutePath } from '../util';
+import { createTraceContext, createTraceHeaders, extractTraceId } from './tracing';
 
 export interface FetchResult<T> {
   data?: T;
@@ -21,47 +21,43 @@ export async function fetchSampledQueries(
     page: page.toString(),
     pageSize: pageSize.toString(),
   });
-  
-  if (tenant && tenant !== "all") {
-    params.append("tenant", tenant);
+
+  if (tenant && tenant !== 'all') {
+    params.append('tenant', tenant);
   }
-  
-  if (user && user !== "all") {
-    params.append("user", user);
+
+  if (user && user !== 'all') {
+    params.append('user', user);
   }
-  
+
   if (newEngine !== undefined) {
-    params.append("newEngine", newEngine.toString());
+    params.append('newEngine', newEngine.toString());
   }
-  
+
   if (from) {
-    params.append("from", from.toISOString());
+    params.append('from', from.toISOString());
   }
-  
+
   if (to) {
-    params.append("to", to.toISOString());
+    params.append('to', to.toISOString());
   }
-  
+
   // Create trace context for this request
   const traceContext = createTraceContext();
-  const traceHeaders = createTraceHeaders(
-    traceContext.traceId,
-    traceContext.spanId,
-    traceContext.parentSpanId
-  );
-  
+  const traceHeaders = createTraceHeaders(traceContext.traceId, traceContext.spanId, traceContext.parentSpanId);
+
   try {
     const response = await fetch(`${absolutePath('/api/v1/goldfish/queries')}?${params}`, {
       headers: traceHeaders,
     });
-    
+
     // Extract trace ID from response (might be different if backend generates its own)
     const responseTraceId = extractTraceId(response, null) || traceContext.traceId;
-    
+
     if (!response.ok) {
       const errorText = await response.text();
       let errorMessage = `Failed to fetch sampled queries: ${response.statusText}`;
-      
+
       try {
         const errorJson = JSON.parse(errorText);
         errorMessage = errorJson.error || errorMessage;
@@ -71,13 +67,13 @@ export async function fetchSampledQueries(
           errorMessage = errorText;
         }
       }
-      
+
       return {
         traceId: responseTraceId,
         error: new Error(errorMessage),
       };
     }
-    
+
     const data = await response.json();
     return {
       data,

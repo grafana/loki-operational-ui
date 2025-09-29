@@ -1,6 +1,6 @@
 import React from 'react';
-import useBreadcrumbs from "use-react-router-breadcrumbs";
-import { Link } from "react-router-dom";
+import useBreadcrumbs from 'use-react-router-breadcrumbs';
+import { Link } from 'react-router-dom';
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -8,8 +8,8 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "components/ui/breadcrumb";
-import { routes } from "config/routes";
+} from 'components/ui/breadcrumb';
+import { routes } from 'config/routes';
 
 export function BreadcrumbNav() {
   const breadcrumbs = useBreadcrumbs(routes, {
@@ -21,7 +21,7 @@ export function BreadcrumbNav() {
       <BreadcrumbList>
         {breadcrumbs.map(({ match, breadcrumb }, index) => (
           <React.Fragment key={match.pathname}>
-            <BreadcrumbItem className={index === 0 ? "hidden md:block" : ""}>
+            <BreadcrumbItem className={index === 0 ? 'hidden md:block' : ''}>
               {index === breadcrumbs.length - 1 ? (
                 <BreadcrumbPage>{breadcrumb}</BreadcrumbPage>
               ) : (
@@ -30,11 +30,7 @@ export function BreadcrumbNav() {
                 </BreadcrumbLink>
               )}
             </BreadcrumbItem>
-            {index < breadcrumbs.length - 1 && (
-              <BreadcrumbSeparator
-                className={index === 0 ? "hidden md:block" : ""}
-              />
-            )}
+            {index < breadcrumbs.length - 1 && <BreadcrumbSeparator className={index === 0 ? 'hidden md:block' : ''} />}
           </React.Fragment>
         ))}
       </BreadcrumbList>

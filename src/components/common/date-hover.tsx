@@ -1,25 +1,15 @@
-import React from "react";
-import { formatDistanceToNow, format } from "date-fns";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "components/ui/hover-card";
+import React from 'react';
+import { formatDistanceToNow, format } from 'date-fns';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from 'components/ui/hover-card';
 interface DateHoverProps {
   date: Date;
   className?: string;
 }
 
-export const DateHover: React.FC<DateHoverProps> = ({
-  date,
-  className = "",
-}) => {
+export const DateHover: React.FC<DateHoverProps> = ({ date, className = '' }) => {
   const relativeTime = formatDistanceToNow(date, { addSuffix: true });
-  const localTime = format(date, "yyyy-MM-dd HH:mm:ss");
-  const utcTime = format(
-    new Date(date.getTime() + date.getTimezoneOffset() * 60000),
-    "yyyy-MM-dd HH:mm:ss"
-  );
+  const localTime = format(date, 'yyyy-MM-dd HH:mm:ss');
+  const utcTime = format(new Date(date.getTime() + date.getTimezoneOffset() * 60000), 'yyyy-MM-dd HH:mm:ss');
 
   return (
     <HoverCard>

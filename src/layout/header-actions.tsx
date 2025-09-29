@@ -1,6 +1,6 @@
 import React from 'react';
-import { GitHubLink } from "./github-link";
-import { ThemeToggle } from "../features/theme";
+import { GitHubLink } from './github-link';
+import { ThemeToggle } from '../features/theme';
 
 export function HeaderActions() {
   return (

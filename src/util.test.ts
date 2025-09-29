@@ -85,20 +85,20 @@ describe('util functions', () => {
   describe('real-world nginx scenarios', () => {
     it('handles namespaced nginx configuration', () => {
       mockLocation('/namespace/ops/ui/rings/ingester');
-      
+
       // Test features API
       expect(absolutePath('/api/v1/features')).toBe('/namespace/ops/ui/api/v1/features');
-      
+
       // Test goldfish API
       expect(absolutePath('/api/v1/goldfish/queries')).toBe('/namespace/ops/ui/api/v1/goldfish/queries');
-      
+
       // Test cluster API
       expect(absolutePath('/api/v1/cluster/nodes')).toBe('/namespace/ops/ui/api/v1/cluster/nodes');
     });
 
     it('handles local development environment', () => {
       mockLocation('/ui/');
-      
+
       expect(absolutePath('/api/v1/features')).toBe('/ui/api/v1/features');
       expect(absolutePath('/api/v1/goldfish/queries')).toBe('/ui/api/v1/goldfish/queries');
     });

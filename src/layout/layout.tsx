@@ -1,15 +1,11 @@
-import React from "react";
-import { HeaderActions } from "./header-actions";
-import { BreadcrumbNav } from "components/shared/breadcrumb-nav";
-import { AppSidebar } from "./sidebar";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "../components/ui/sidebar";
-import { Separator } from "../components/ui/separator";
-import { ScrollToTop } from "../components/ui/scroll-to-top";
-import { Toaster } from "components/ui/toaster";
+import React from 'react';
+import { HeaderActions } from './header-actions';
+import { BreadcrumbNav } from 'components/shared/breadcrumb-nav';
+import { AppSidebar } from './sidebar';
+import { SidebarInset, SidebarProvider, SidebarTrigger } from '../components/ui/sidebar';
+import { Separator } from '../components/ui/separator';
+import { ScrollToTop } from '../components/ui/scroll-to-top';
+import { Toaster } from 'components/ui/toaster';
 
 interface AppLayoutProps {
   children: React.ReactNode;

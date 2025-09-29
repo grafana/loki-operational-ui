@@ -2,22 +2,12 @@ import React from 'react';
 
 // src/components/multi-select.tsx
 
-import { ChevronsUpDown } from "lucide-react";
-import { cn } from "lib/utils";
-import { Button } from "components/ui/button";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-} from "components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "components/ui/popover";
-import { Checkbox } from "components/ui/checkbox";
+import { ChevronsUpDown } from 'lucide-react';
+import { cn } from 'lib/utils';
+import { Button } from 'components/ui/button';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from 'components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
+import { Checkbox } from 'components/ui/checkbox';
 
 export interface Option {
   value: string;
@@ -37,16 +27,14 @@ export function MultiSelect({
   options = [],
   selected = [],
   onChange,
-  placeholder = "Select options...",
-  emptyMessage = "No options found.",
+  placeholder = 'Select options...',
+  emptyMessage = 'No options found.',
   className,
 }: MultiSelectProps) {
   const [open, setOpen] = React.useState(false);
 
   const handleSelect = (value: string) => {
-    const newSelected = selected.includes(value)
-      ? selected.filter((item) => item !== value)
-      : [...selected, value];
+    const newSelected = selected.includes(value) ? selected.filter((item) => item !== value) : [...selected, value];
     onChange(newSelected);
   };
 
@@ -64,12 +52,7 @@ export function MultiSelect({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          variant="outline"
-          role="combobox"
-          aria-expanded={open}
-          className={cn("justify-between", className)}
-        >
+        <Button variant="outline" role="combobox" aria-expanded={open} className={cn('justify-between', className)}>
           {selectedCount === 0 ? placeholder : `${selectedCount} selected`}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
@@ -82,21 +65,13 @@ export function MultiSelect({
             {totalOptions > 0 && (
               <CommandItem onSelect={handleSelectAll}>
                 <div className="flex items-center space-x-2">
-                  <Checkbox
-                    checked={
-                      selectedCount > 0 && selectedCount === totalOptions
-                    }
-                    aria-label="Select all"
-                  />
+                  <Checkbox checked={selectedCount > 0 && selectedCount === totalOptions} aria-label="Select all" />
                   <span>Select all</span>
                 </div>
               </CommandItem>
             )}
             {options.map((option) => (
-              <CommandItem
-                key={option.value}
-                onSelect={() => handleSelect(option.value)}
-              >
+              <CommandItem key={option.value} onSelect={() => handleSelect(option.value)}>
                 <div className="flex items-center space-x-2">
                   <Checkbox checked={selected.includes(option.value)} />
                   <span>{option.label}</span>

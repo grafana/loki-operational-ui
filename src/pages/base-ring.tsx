@@ -1,11 +1,11 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
-import { Link } from "react-router-dom";
-import { AlertCircle, CircleDot } from "lucide-react";
-import { AVAILABLE_RINGS } from "../hooks/use-ring";
-import { RingType } from "../types/ring";
-import { Alert, AlertTitle, AlertDescription } from "../components/ui/alert";
-import { PageContainer } from "../layout/page-container";
+import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+import { Link } from 'react-router-dom';
+import { AlertCircle, CircleDot } from 'lucide-react';
+import { AVAILABLE_RINGS } from '../hooks/use-ring';
+import { RingType } from '../types/ring';
+import { Alert, AlertTitle, AlertDescription } from '../components/ui/alert';
+import { PageContainer } from '../layout/page-container';
 
 interface BaseRingProps {
   error?: string;

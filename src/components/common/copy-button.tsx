@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import { Button } from "components/ui/button";
-import { Copy, Check } from "lucide-react";
-import { cn } from "lib/utils";
+import { Button } from 'components/ui/button';
+import { Copy, Check } from 'lucide-react';
+import { cn } from 'lib/utils';
 
 interface CopyButtonProps {
   text: string;
@@ -21,12 +21,7 @@ export function CopyButton({ text, className, onCopy }: CopyButtonProps) {
   };
 
   return (
-    <Button
-      variant="ghost"
-      size="sm"
-      onClick={copyToClipboard}
-      className={cn("h-8 px-2", className)}
-    >
+    <Button variant="ghost" size="sm" onClick={copyToClipboard} className={cn('h-8 px-2', className)}>
       {hasCopied ? (
         <>
           <Check className="h-4 w-4 mr-1" />

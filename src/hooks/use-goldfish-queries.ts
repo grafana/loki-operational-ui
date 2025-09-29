@@ -10,7 +10,7 @@ const QUERY_OPTIONS = {
 };
 
 export function useGoldfishQueries(
-  pageSize: number, 
+  pageSize: number,
   selectedOutcome: OutcomeFilter,
   tenant?: string,
   user?: string,
@@ -22,41 +22,41 @@ export function useGoldfishQueries(
   const [currentTraceId, setCurrentTraceId] = useState<string | null>(null);
   const [allQueries, setAllQueries] = useState<SampledQuery[]>([]);
   const [hasMore, setHasMore] = useState(true);
-  
+
   // Track current page
   const [currentPage, setCurrentPage] = useState(1);
-  
+
   // Create a stable filter key for tracking changes
   const filterKey = `${tenant ?? ''}-${user ?? ''}-${newEngine ?? ''}-${from?.getTime() ?? ''}-${to?.getTime() ?? ''}`;
   const prevFilterKeyRef = useRef<string | undefined>(undefined);
-  
+
   useEffect(() => {
     if (prevFilterKeyRef.current !== undefined && prevFilterKeyRef.current !== filterKey) {
       setCurrentPage(1);
     }
     prevFilterKeyRef.current = filterKey;
   }, [filterKey]);
-  
+
   // Single query - always sends ALL filters to backend
   const query = useQuery({
     queryKey: ['goldfish-queries', currentPage, pageSize, tenant, user, newEngine, from, to],
     queryFn: async () => {
       const result = await fetchSampledQueries(
-        currentPage, 
-        pageSize, 
-        tenant, 
-        user, 
-        newEngine, 
-        from ?? undefined, 
+        currentPage,
+        pageSize,
+        tenant,
+        user,
+        newEngine,
+        from ?? undefined,
         to ?? undefined
       );
-      
+
       setCurrentTraceId(result.traceId);
-      
+
       if (result.error) {
         throw result.error;
       }
-      
+
       return result.data;
     },
     ...QUERY_OPTIONS,
@@ -66,15 +66,15 @@ export function useGoldfishQueries(
   useEffect(() => {
     if (query.data) {
       const newQueries = query.data.queries || [];
-      
+
       if (currentPage === 1) {
         // Page 1 means fresh start (either filter change or refresh)
         setAllQueries(newQueries);
       } else {
         // Page 2+ means load more
-        setAllQueries(prev => [...prev, ...newQueries]);
+        setAllQueries((prev) => [...prev, ...newQueries]);
       }
-      
+
       setHasMore(query.data?.hasMore || false);
     }
   }, [query.data, currentPage]);
@@ -82,21 +82,19 @@ export function useGoldfishQueries(
   // Apply outcome filter on frontend for immediate response and sort
   const displayQueries = useMemo(() => {
     return allQueries
-      .filter(q => {
+      .filter((q) => {
         if (selectedOutcome && selectedOutcome !== 'all') {
           return q.comparisonStatus === selectedOutcome;
         }
         return true;
       })
-      .sort((a, b) => 
-        new Date(b.sampledAt).getTime() - new Date(a.sampledAt).getTime()
-      );
+      .sort((a, b) => new Date(b.sampledAt).getTime() - new Date(a.sampledAt).getTime());
   }, [allQueries, selectedOutcome]);
 
   // Load more function - increments page counter
   const loadMore = useCallback(() => {
     if (!query.isLoading && hasMore) {
-      setCurrentPage(prev => prev + 1);
+      setCurrentPage((prev) => prev + 1);
     }
   }, [query.isLoading, hasMore]);
 

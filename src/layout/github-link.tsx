@@ -1,19 +1,10 @@
 import React from 'react';
-import { Button } from "../components/ui/button";
+import { Button } from '../components/ui/button';
 
 export function GitHubLink() {
   return (
-    <Button
-      variant="ghost"
-      size="icon"
-      className="bg-muted hover:bg-muted-hover rounded-lg"
-      asChild
-    >
-      <a
-        href="https://github.com/grafana/loki"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
+    <Button variant="ghost" size="icon" className="bg-muted hover:bg-muted-hover rounded-lg" asChild>
+      <a href="https://github.com/grafana/loki" target="_blank" rel="noopener noreferrer">
         <svg viewBox="0 0 438.549 438.549" className="h-[1.2rem] w-[1.2rem]">
           <path
             fill="currentColor"

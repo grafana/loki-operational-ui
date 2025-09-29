@@ -64,7 +64,9 @@ describe('QueryDiffView - Trace ID Display', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Test that trace IDs are displayed
     expect(screen.getByText('span-abc-123')).toBeInTheDocument();
@@ -77,7 +79,9 @@ describe('QueryDiffView - Trace ID Display', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Should show N/A for both trace IDs
     const naElements = screen.getAllByText('N/A');
@@ -102,7 +106,9 @@ describe('QueryDiffView - Trace ID Display', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     expect(screen.getByText('span-only-a')).toBeInTheDocument();
     // Should still have at least one N/A for Cell B
@@ -121,7 +127,9 @@ describe('QueryDiffView - Trace ID Display', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     expect(screen.getByText('trace-only-b')).toBeInTheDocument();
     // Should still have at least one N/A for Cell A
@@ -190,7 +198,9 @@ describe('QueryDiffView - Trace ID Links', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Find the links by their text content
     const cellALink = screen.getByText('span-abc-123');
@@ -199,7 +209,7 @@ describe('QueryDiffView - Trace ID Links', () => {
     // Test that they are wrapped in anchor tags
     expect(cellALink.closest('a')).toBeInTheDocument();
     expect(cellBLink.closest('a')).toBeInTheDocument();
-    
+
     // Test that they have href attributes (even if just "#" for now)
     expect(cellALink.closest('a')).toHaveAttribute('href');
     expect(cellBLink.closest('a')).toHaveAttribute('href');
@@ -211,13 +221,15 @@ describe('QueryDiffView - Trace ID Links', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Find all N/A texts
     const naElements = screen.getAllByText('N/A');
-    
+
     // Verify none of them are wrapped in anchor tags
-    naElements.forEach(element => {
+    naElements.forEach((element) => {
       expect(element.closest('a')).not.toBeInTheDocument();
     });
   });
@@ -240,7 +252,9 @@ describe('QueryDiffView - Trace ID Links', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // The existing trace ID should be a link
     const traceLink = screen.getByText('span-exists');
@@ -311,11 +325,13 @@ describe('QueryDiffView - Trace ID Visual Indicators', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Find the section by its header
     const traceSection = screen.getByText('Trace IDs').closest('div');
-    
+
     // Look for an icon (SVG element) within the trace section
     const icon = traceSection?.querySelector('svg');
     expect(icon).toBeInTheDocument();
@@ -337,10 +353,12 @@ describe('QueryDiffView - Trace ID Visual Indicators', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     const traceLink = screen.getByText('span-abc-123').closest('a');
-    
+
     // Check that link has appropriate styling classes
     expect(traceLink).toHaveClass('text-blue-600');
     expect(traceLink).toHaveClass('hover:text-blue-800');
@@ -399,12 +417,14 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Find the performance metrics header
     expect(screen.getByText('Cell A')).toBeInTheDocument();
     expect(screen.getByText('Cell B')).toBeInTheDocument();
-    
+
     // Should not contain namespace in parentheses
     expect(screen.queryByText(/Cell A \(/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Cell B \(/)).not.toBeInTheDocument();
@@ -417,7 +437,9 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Should display namespaces in parentheses
     expect(screen.getByText('Cell A (loki-ops-002)')).toBeInTheDocument();
@@ -431,7 +453,9 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Cell A should have namespace
     expect(screen.getByText('Cell A (loki-ops-002)')).toBeInTheDocument();
@@ -447,7 +471,9 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
 
     // Expand the collapsible content to see the trace IDs
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Cell A should not have namespace
     expect(screen.getByText('Cell A')).toBeInTheDocument();
@@ -552,16 +578,18 @@ describe('QueryDiffView - New Engine Badge Display', () => {
 
     // Expand the collapsible content to see the engine details
     const trigger = container.querySelector('[type="button"]');
-    if (trigger) {await user.click(trigger);}
+    if (trigger) {
+      await user.click(trigger);
+    }
 
     // Find the query engine section and verify both cells show their engine status
     expect(screen.getByText('Query Engine')).toBeInTheDocument();
-    
+
     // Look for the engine status text in the expanded view
     // Cell A should show "New Engine"
     screen.getAllByText(/Engine/);
     const textContent = container.textContent || '';
-    
+
     // Verify that we can see indications of new engine for Cell A
     expect(textContent).toContain('New Engine');
     // Verify that we can see indications of legacy engine for Cell B

@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from "lib/utils";
+import { cn } from 'lib/utils';
 
 interface PageContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -10,15 +10,10 @@ interface PageContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   spacing?: boolean;
 }
 
-export function PageContainer({
-  children,
-  className,
-  spacing = true,
-  ...props
-}: PageContainerProps) {
+export function PageContainer({ children, className, spacing = true, ...props }: PageContainerProps) {
   return (
     <div className="container p-6">
-      <div className={cn(spacing && "space-y-6", className)} {...props}>
+      <div className={cn(spacing && 'space-y-6', className)} {...props}>
         {children}
       </div>
     </div>

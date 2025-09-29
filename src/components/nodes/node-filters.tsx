@@ -1,9 +1,9 @@
-import React from "react";
-import { NodeState, ALL_NODE_STATES } from "../../types/cluster";
-import { Button } from "components/ui/button";
-import { Input } from "components/ui/input";
-import { MultiSelect } from "components/common/multi-select";
-import { RefreshCw } from "lucide-react";
+import React from 'react';
+import { NodeState, ALL_NODE_STATES } from '../../types/cluster';
+import { Button } from 'components/ui/button';
+import { Input } from 'components/ui/input';
+import { MultiSelect } from 'components/common/multi-select';
+import { RefreshCw } from 'lucide-react';
 
 interface NodeFiltersProps {
   nameFilter: string;
@@ -40,14 +40,10 @@ const NodeFilters: React.FC<NodeFiltersProps> = ({
     <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-2">
       <div className="space-y-2">
         <div className="space-y-1.5">
-          <label className="text-sm font-medium text-muted-foreground">
-            Node filters
-          </label>
+          <label className="text-sm font-medium text-muted-foreground">Node filters</label>
           <Input
             value={nameFilter}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-              onNameFilterChange(e.target.value)
-            }
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => onNameFilterChange(e.target.value)}
             placeholder="Filter by node name..."
             className="w-[300px]"
           />
@@ -64,9 +60,7 @@ const NodeFilters: React.FC<NodeFiltersProps> = ({
         </div>
       </div>
       <div className="space-y-1.5 self-end">
-        <label className="text-sm font-medium text-muted-foreground">
-          Service states
-        </label>
+        <label className="text-sm font-medium text-muted-foreground">Service states</label>
         <MultiSelect
           options={stateOptions}
           selected={selectedStates}
@@ -76,12 +70,7 @@ const NodeFilters: React.FC<NodeFiltersProps> = ({
         />
       </div>
       <div className="self-end">
-        <Button
-          onClick={onRefresh}
-          size="sm"
-          variant="outline"
-          className="h-9 w-9"
-        >
+        <Button onClick={onRefresh} size="sm" variant="outline" className="h-9 w-9">
           <RefreshCw className="h-4 w-4" />
         </Button>
       </div>

@@ -1,34 +1,23 @@
 import React, { useMemo, useState } from 'react';
-import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
-import { Button } from "components/ui/button";
-import { Card, CardContent, CardHeader } from "components/ui/card";
-import { ToggleGroup, ToggleGroupItem } from "components/ui/toggle-group";
-import { useCluster } from "contexts/use-cluster";
-import { ServiceNames } from "lib/ring-utils";
-import { findNodeName } from "lib/utils";
-import { useQuery } from "@tanstack/react-query";
-import { AlertCircle, Loader2, Plus } from "lucide-react";
-import { Link } from "react-router-dom";
-import { fromUnixTime, formatDistance, format } from "date-fns";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "components/ui/table";
-import { DataTableColumnHeader } from "components/common/data-table-column-header";
-import { Badge } from "components/ui/badge";
-import { DateHover } from "components/common/date-hover";
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "components/ui/hover-card";
-import { Input } from "components/ui/input";
-import { PageContainer } from "layout/page-container";
-import { absolutePath } from "../util";
+import { Alert, AlertDescription, AlertTitle } from 'components/ui/alert';
+import { Button } from 'components/ui/button';
+import { Card, CardContent, CardHeader } from 'components/ui/card';
+import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group';
+import { useCluster } from 'contexts/use-cluster';
+import { ServiceNames } from 'lib/ring-utils';
+import { findNodeName } from 'lib/utils';
+import { useQuery } from '@tanstack/react-query';
+import { AlertCircle, Loader2, Plus } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { fromUnixTime, formatDistance, format } from 'date-fns';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
+import { DataTableColumnHeader } from 'components/common/data-table-column-header';
+import { Badge } from 'components/ui/badge';
+import { DateHover } from 'components/common/date-hover';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from 'components/ui/hover-card';
+import { Input } from 'components/ui/input';
+import { PageContainer } from 'layout/page-container';
+import { absolutePath } from '../util';
 
 interface DeleteRequest {
   request_id: string;
@@ -42,8 +31,8 @@ interface DeleteRequest {
 }
 
 const DeleteRequestStatus = {
-  Received: "received",
-  Processing: "processed",
+  Received: 'received',
+  Processing: 'processed',
 } as const;
 
 const useDeletes = (status: string[]) => {
@@ -53,21 +42,17 @@ const useDeletes = (status: string[]) => {
   }, [cluster?.members]);
 
   const { data, isLoading, error } = useQuery<DeleteRequest[]>({
-    queryKey: ["deletes", status, nodeName],
+    queryKey: ['deletes', status, nodeName],
     queryFn: async () => {
       try {
         const requests = await Promise.all(
           status.map(async (s) => {
             const response = await fetch(
-              absolutePath(
-                `/api/v1/proxy/${nodeName}/compactor/ui/api/v1/deletes?status=${s}`
-              )
+              absolutePath(`/api/v1/proxy/${nodeName}/compactor/ui/api/v1/deletes?status=${s}`)
             );
             if (!response.ok) {
               const errorText = await response.text();
-              throw new Error(
-                errorText || `HTTP error! status: ${response.status}`
-              );
+              throw new Error(errorText || `HTTP error! status: ${response.status}`);
             }
             return response.json();
           })
@@ -75,9 +60,7 @@ const useDeletes = (status: string[]) => {
         // Flatten the array of arrays into a single array of delete requests
         return requests.flat();
       } catch (err) {
-        throw err instanceof Error
-          ? err
-          : new Error("Failed to fetch delete requests");
+        throw err instanceof Error ? err : new Error('Failed to fetch delete requests');
       }
     },
     enabled: !!nodeName,
@@ -93,12 +76,7 @@ interface FiltersProps {
   onQueryFilterChange: (query: string) => void;
 }
 
-const Filters: React.FC<FiltersProps> = ({
-  selectedStatus,
-  onStatusChange,
-  queryFilter,
-  onQueryFilterChange,
-}) => {
+const Filters: React.FC<FiltersProps> = ({ selectedStatus, onStatusChange, queryFilter, onQueryFilterChange }) => {
   return (
     <div className="flex items-center gap-4">
       <div className="flex items-center gap-2">
@@ -137,18 +115,17 @@ const Filters: React.FC<FiltersProps> = ({
   );
 };
 
-type DeleteSortField = "status" | "user" | "createdAt" | "duration";
+type DeleteSortField = 'status' | 'user' | 'createdAt' | 'duration';
 
 interface DeleteListProps {
   requests: DeleteRequest[];
   sortField: DeleteSortField;
-  sortDirection: "asc" | "desc";
+  sortDirection: 'asc' | 'desc';
   onSort: (field: DeleteSortField) => void;
 }
 
 const StatusBadge = ({ status }: { status: string }) => {
-  const variant =
-    status === DeleteRequestStatus.Received ? "secondary" : "default";
+  const variant = status === DeleteRequestStatus.Received ? 'secondary' : 'default';
   return (
     <Badge variant={variant} className="capitalize">
       {status}
@@ -157,17 +134,11 @@ const StatusBadge = ({ status }: { status: string }) => {
 };
 
 const RangeHover = ({ start, end }: { start: number; end: number }) => {
-  const duration = formatDistance(
-    fromUnixTime(start / 1000),
-    fromUnixTime(end / 1000)
-  );
+  const duration = formatDistance(fromUnixTime(start / 1000), fromUnixTime(end / 1000));
 
   const formatUTC = (timestamp: number) => {
     const date = new Date(timestamp);
-    return format(
-      new Date(date.getTime() + date.getTimezoneOffset() * 60000),
-      "yyyy-MM-dd HH:mm:ss"
-    );
+    return format(new Date(date.getTime() + date.getTimezoneOffset() * 60000), 'yyyy-MM-dd HH:mm:ss');
   };
 
   return (
@@ -197,34 +168,29 @@ const RangeHover = ({ start, end }: { start: number; end: number }) => {
   );
 };
 
-const DeleteList: React.FC<DeleteListProps> = ({
-  requests,
-  sortField,
-  sortDirection,
-  onSort,
-}) => {
+const DeleteList: React.FC<DeleteListProps> = ({ requests, sortField, sortDirection, onSort }) => {
   const sortedRequests = [...requests].sort((a, b) => {
     let comparison = 0;
     let durationA: number;
     let durationB: number;
 
     switch (sortField) {
-      case "status":
+      case 'status':
         comparison = a.status.localeCompare(b.status);
         break;
-      case "user":
+      case 'user':
         comparison = a.user_id.localeCompare(b.user_id);
         break;
-      case "createdAt":
+      case 'createdAt':
         comparison = a.created_at - b.created_at;
         break;
-      case "duration":
+      case 'duration':
         durationA = a.end_time - a.start_time;
         durationB = b.end_time - b.start_time;
         comparison = durationA - durationB;
         break;
     }
-    return sortDirection === "asc" ? comparison : -comparison;
+    return sortDirection === 'asc' ? comparison : -comparison;
   });
 
   return (
@@ -274,9 +240,7 @@ const DeleteList: React.FC<DeleteListProps> = ({
         </TableHeader>
         <TableBody>
           {sortedRequests.map((request) => (
-            <TableRow
-              key={`${request.request_id}-${request.start_time}-${request.end_time}`}
-            >
+            <TableRow key={`${request.request_id}-${request.start_time}-${request.end_time}`}>
               <TableCell className="px-4">
                 <StatusBadge status={request.status} />
               </TableCell>
@@ -289,18 +253,14 @@ const DeleteList: React.FC<DeleteListProps> = ({
               </TableCell>
               <TableCell>{request.deleted_lines}</TableCell>
               <TableCell>
-                <code className="font-mono text-sm whitespace-pre-wrap break-all">
-                  {request.query}
-                </code>
+                <code className="font-mono text-sm whitespace-pre-wrap break-all">{request.query}</code>
               </TableCell>
             </TableRow>
           ))}
           {sortedRequests.length === 0 && (
             <TableRow>
               <TableCell colSpan={7} className="h-24 text-center">
-                <div className="text-muted-foreground">
-                  No delete requests found
-                </div>
+                <div className="text-muted-foreground">No delete requests found</div>
               </TableCell>
             </TableRow>
           )}
@@ -311,28 +271,25 @@ const DeleteList: React.FC<DeleteListProps> = ({
 };
 
 const DeletesPage = () => {
-  const [status, setStatus] = useState<string[]>([
-    DeleteRequestStatus.Received,
-    DeleteRequestStatus.Processing,
-  ]);
-  const [queryFilter, setQueryFilter] = useState("");
-  const [sortField, setSortField] = useState<DeleteSortField>("createdAt");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
+  const [status, setStatus] = useState<string[]>([DeleteRequestStatus.Received, DeleteRequestStatus.Processing]);
+  const [queryFilter, setQueryFilter] = useState('');
+  const [sortField, setSortField] = useState<DeleteSortField>('createdAt');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
   const { data, isLoading, error } = useDeletes(status);
 
   const filteredData = useMemo(() => {
-    if (!data || !queryFilter) {return data;}
-    return data.filter((request) =>
-      request.query.toLowerCase().includes(queryFilter.toLowerCase())
-    );
+    if (!data || !queryFilter) {
+      return data;
+    }
+    return data.filter((request) => request.query.toLowerCase().includes(queryFilter.toLowerCase()));
   }, [data, queryFilter]);
 
   const handleSort = (field: DeleteSortField) => {
     if (field === sortField) {
-      setSortDirection(sortDirection === "asc" ? "desc" : "asc");
+      setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
     } else {
       setSortField(field);
-      setSortDirection("desc");
+      setSortDirection('desc');
     }
   };
 
@@ -343,12 +300,8 @@ const DeletesPage = () => {
           <div className="flex flex-col gap-6">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-3xl font-semibold tracking-tight">
-                  Delete Requests
-                </h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  View and manage delete requests in your cluster
-                </p>
+                <h2 className="text-3xl font-semibold tracking-tight">Delete Requests</h2>
+                <p className="text-sm text-muted-foreground mt-1">View and manage delete requests in your cluster</p>
               </div>
               <Button variant="default" asChild>
                 <Link to="/tenants/deletes/new">

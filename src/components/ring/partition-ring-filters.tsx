@@ -1,8 +1,8 @@
 import React from 'react';
-import { Input } from "components/ui/input";
-import { MultiSelect, Option } from "components/common/multi-select";
-import { PartitionInstance, PartitionStates } from "types/ring";
-import { parseZoneFromOwner } from "lib/ring-utils";
+import { Input } from 'components/ui/input';
+import { MultiSelect, Option } from 'components/common/multi-select';
+import { PartitionInstance, PartitionStates } from 'types/ring';
+import { parseZoneFromOwner } from 'lib/ring-utils';
 
 interface PartitionRingFiltersProps {
   idFilter: string[];
@@ -41,7 +41,9 @@ export function PartitionRingFilters({
   partitions.forEach((partition) => {
     partition.owner_ids.forEach((owner) => {
       const zone = parseZoneFromOwner(owner);
-      if (zone) {allZones.add(zone);}
+      if (zone) {
+        allZones.add(zone);
+      }
     });
   });
 
@@ -53,9 +55,9 @@ export function PartitionRingFilters({
     }));
 
   // Get unique partition IDs
-  const uniquePartitions = Array.from(
-    new Set(partitions.map((p) => p.id.toString()))
-  ).sort((a, b) => parseInt(a, 10) - parseInt(b, 10));
+  const uniquePartitions = Array.from(new Set(partitions.map((p) => p.id.toString()))).sort(
+    (a, b) => parseInt(a, 10) - parseInt(b, 10)
+  );
 
   const partitionOptions: Option[] = uniquePartitions.map((id) => ({
     value: id,

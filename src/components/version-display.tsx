@@ -1,13 +1,9 @@
 import React, { useState } from 'react';
-import {
-  HoverCard,
-  HoverCardContent,
-  HoverCardTrigger,
-} from "components/ui/hover-card";
-import { useVersionInfo } from "hooks/use-version-info";
-import { Loader2 } from "lucide-react";
-import { cn } from "lib/utils";
-import { CopyButton } from "components/common/copy-button";
+import { HoverCard, HoverCardContent, HoverCardTrigger } from 'components/ui/hover-card';
+import { useVersionInfo } from 'hooks/use-version-info';
+import { Loader2 } from 'lucide-react';
+import { cn } from 'lib/utils';
+import { CopyButton } from 'components/common/copy-button';
 
 export function VersionDisplay() {
   const { mostCommonVersion, versionInfos, isLoading } = useVersionInfo();
@@ -24,7 +20,7 @@ Build Date: ${info.buildDate}
 Go Version: ${info.goVersion}
 `
       )
-      .join("\n");
+      .join('\n');
   };
 
   return (
@@ -34,10 +30,10 @@ Go Version: ${info.goVersion}
           <button
             onClick={() => setIsOpen(!isOpen)}
             className={cn(
-              "transition-opacity duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1 -mx-1",
+              'transition-opacity duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1 -mx-1',
               {
-                "opacity-0": isLoading,
-                "opacity-100": !isLoading,
+                'opacity-0': isLoading,
+                'opacity-100': !isLoading,
               }
             )}
           >
@@ -55,14 +51,12 @@ Go Version: ${info.goVersion}
         <div className="p-2">
           <div className="flex items-center justify-between mb-2">
             <div className="font-semibold">Build Information</div>
-            {!isLoading && versionInfos.length > 0 && (
-              <CopyButton text={getVersionText()} />
-            )}
+            {!isLoading && versionInfos.length > 0 && <CopyButton text={getVersionText()} />}
           </div>
           <div
-            className={cn("transition-opacity duration-200", {
-              "opacity-0": isLoading,
-              "opacity-100": !isLoading,
+            className={cn('transition-opacity duration-200', {
+              'opacity-0': isLoading,
+              'opacity-100': !isLoading,
             })}
           >
             {versionInfos.length > 0 ? (
@@ -79,9 +73,7 @@ Go Version: ${info.goVersion}
                 </div>
               ))
             ) : (
-              <div className="text-sm text-muted-foreground">
-                No build information available
-              </div>
+              <div className="text-sm text-muted-foreground">No build information available</div>
             )}
           </div>
           {isLoading && (

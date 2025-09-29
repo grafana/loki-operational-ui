@@ -1,5 +1,5 @@
 import React from 'react';
-import type { BreadcrumbComponentType } from "use-react-router-breadcrumbs";
+import type { BreadcrumbComponentType } from 'use-react-router-breadcrumbs';
 
 export const NodeBreadcrumb: BreadcrumbComponentType = ({ match }) => {
   const nodeName = match.params.nodeName;

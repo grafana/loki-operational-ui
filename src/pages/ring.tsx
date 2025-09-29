@@ -1,9 +1,9 @@
 import React from 'react';
-import { useParams } from "react-router-dom";
-import { RingType, RingTypes } from "types/ring";
-import { RegularRing } from "./regular-ring";
-import PartitionRing from "./partition-ring";
-import { BaseRing } from "./base-ring";
+import { useParams } from 'react-router-dom';
+import { RingType, RingTypes } from 'types/ring';
+import { RegularRing } from './regular-ring';
+import PartitionRing from './partition-ring';
+import { BaseRing } from './base-ring';
 
 export default function Ring() {
   const { ringName } = useParams<{ ringName: RingType }>();

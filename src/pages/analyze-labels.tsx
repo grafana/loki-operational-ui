@@ -1,72 +1,37 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { DataTableColumnHeader } from "../components/common/data-table-column-header";
-import { Badge } from "../components/ui/badge";
-import { Button } from "../components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "../components/ui/card";
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "../components/ui/chart";
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "../components/ui/collapsible";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "../components/ui/form";
-import { Input } from "../components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "../components/ui/select";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "../components/ui/table";
-import { useCluster } from "../contexts/use-cluster";
-import { useToast } from "../hooks/use-toast";
-import { cn, findNodeName } from "../lib/utils";
-import { absolutePath } from "../util";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useQuery } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
-import { useForm } from "react-hook-form";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
-import * as z from "zod";
+import React, { useEffect, useMemo, useState } from 'react';
+import { DataTableColumnHeader } from '../components/common/data-table-column-header';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '../components/ui/chart';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../components/ui/collapsible';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/form';
+import { Input } from '../components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
+import { useCluster } from '../contexts/use-cluster';
+import { useToast } from '../hooks/use-toast';
+import { cn, findNodeName } from '../lib/utils';
+import { absolutePath } from '../util';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useQuery } from '@tanstack/react-query';
+import { ChevronDown } from 'lucide-react';
+import { useForm } from 'react-hook-form';
+import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
+import * as z from 'zod';
 
 const formSchema = z.object({
-  tenant: z.string().min(1, "Tenant ID is required"),
+  tenant: z.string().min(1, 'Tenant ID is required'),
   since: z.string(),
-  matcher: z.string().default("{}"),
+  matcher: z.string().default('{}'),
 });
 
 const durationOptions = [
-  { value: "1h", label: "Last 1 hour" },
-  { value: "3h", label: "Last 3 hours" },
-  { value: "6h", label: "Last 6 hours" },
-  { value: "12h", label: "Last 12 hours" },
-  { value: "24h", label: "Last 24 hours" },
+  { value: '1h', label: 'Last 1 hour' },
+  { value: '3h', label: 'Last 3 hours' },
+  { value: '6h', label: 'Last 6 hours' },
+  { value: '12h', label: 'Last 12 hours' },
+  { value: '24h', label: 'Last 24 hours' },
 ];
 
 interface LabelValue {
@@ -81,8 +46,8 @@ interface LabelAnalysis {
   sampleValues: LabelValue[];
 }
 
-type SortField = "name" | "uniqueValues" | "inStreams" | "cardinality";
-type MetricType = "uniqueValues" | "inStreams";
+type SortField = 'name' | 'uniqueValues' | 'inStreams' | 'cardinality';
+type MetricType = 'uniqueValues' | 'inStreams';
 
 interface LabelValuesListProps {
   values: LabelValue[];
@@ -93,21 +58,12 @@ function LabelValuesList({ values, totalValues }: LabelValuesListProps) {
   return (
     <div className="space-y-2 py-2">
       {values.map(({ value, count }) => (
-        <div
-          key={value}
-          className="grid grid-cols-[200px_1fr_80px] items-center gap-4"
-        >
-          <Badge
-            variant="outline"
-            className="font-mono text-xs justify-self-start overflow-hidden"
-          >
+        <div key={value} className="grid grid-cols-[200px_1fr_80px] items-center gap-4">
+          <Badge variant="outline" className="font-mono text-xs justify-self-start overflow-hidden">
             {value}
           </Badge>
           <div className="h-2 bg-muted rounded-full overflow-hidden">
-            <div
-              className="h-full bg-primary"
-              style={{ width: `${(count / totalValues) * 100}%` }}
-            />
+            <div className="h-full bg-primary" style={{ width: `${(count / totalValues) * 100}%` }} />
           </div>
           <span className="text-xs text-muted-foreground tabular-nums justify-self-end">
             {((count / totalValues) * 100).toFixed(1)}%
@@ -126,24 +82,23 @@ export default function AnalyzeLabels() {
     uniqueLabels: number;
     labels: LabelAnalysis[];
   } | null>(null);
-  const [sortField, setSortField] = useState<SortField>("uniqueValues");
-  const [sortDirection, setSortDirection] = useState<"asc" | "desc">("desc");
-  const [selectedMetric, setSelectedMetric] =
-    useState<MetricType>("uniqueValues");
+  const [sortField, setSortField] = useState<SortField>('uniqueValues');
+  const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('desc');
+  const [selectedMetric, setSelectedMetric] = useState<MetricType>('uniqueValues');
   const [openRows, setOpenRows] = useState<Set<string>>(new Set());
 
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      matcher: "{}",
-      since: "1h",
+      matcher: '{}',
+      since: '1h',
     },
   });
 
-  const nodeName = findNodeName(cluster?.members, "query-frontend");
+  const nodeName = findNodeName(cluster?.members, 'query-frontend');
 
   const { isLoading, refetch } = useQuery({
-    queryKey: ["analyze-labels"],
+    queryKey: ['analyze-labels'],
     queryFn: async () => {
       try {
         const values = form.getValues();
@@ -152,27 +107,24 @@ export default function AnalyzeLabels() {
 
         const response = await fetch(
           absolutePath(
-            `/api/v1/proxy/${nodeName}/loki/api/v1/series?match[]=${encodeURIComponent(
-              values.matcher || ""
-            )}&start=${start.getTime() * 1e6}&end=${end.getTime() * 1e6}`
+            `/api/v1/proxy/${nodeName}/loki/api/v1/series?match[]=${encodeURIComponent(values.matcher || '')}&start=${
+              start.getTime() * 1e6
+            }&end=${end.getTime() * 1e6}`
           ),
           {
             headers: {
-              "X-Scope-OrgID": values.tenant,
+              'X-Scope-OrgID': values.tenant,
             },
           }
         );
 
         if (!response.ok) {
           const error = await response.text();
-          throw new Error(error || "Failed to fetch series");
+          throw new Error(error || 'Failed to fetch series');
         }
 
         const data = await response.json();
-        const labelMap = new Map<
-          string,
-          { uniqueValues: Set<string>; inStreams: number }
-        >();
+        const labelMap = new Map<string, { uniqueValues: Set<string>; inStreams: number }>();
         const valueCountMap = new Map<string, Map<string, number>>();
 
         // Process the streams similar to the CLI tool
@@ -219,12 +171,9 @@ export default function AnalyzeLabels() {
         return data;
       } catch (error) {
         toast({
-          variant: "destructive",
-          title: "Error analyzing labels",
-          description:
-            error instanceof Error
-              ? error.message
-              : "An unexpected error occurred",
+          variant: 'destructive',
+          title: 'Error analyzing labels',
+          description: error instanceof Error ? error.message : 'An unexpected error occurred',
         });
         throw error;
       }
@@ -238,7 +187,7 @@ export default function AnalyzeLabels() {
 
   // Generate CSS variables for colors
   const colorStyles = useMemo(() => {
-    const style = document.createElement("style");
+    const style = document.createElement('style');
     const colors =
       analysisResults?.labels
         .slice(0, 10)
@@ -246,7 +195,7 @@ export default function AnalyzeLabels() {
           const hue = (index * 137.5) % 360;
           return `--chart-color-${index}: hsl(${hue}, 70%, 50%);`;
         })
-        .join("\n") || "";
+        .join('\n') || '';
     style.textContent = `:root { ${colors} }`;
     document.head.appendChild(style);
     return () => style.remove();
@@ -260,38 +209,36 @@ export default function AnalyzeLabels() {
   // Update chart configuration
   const chartConfig = {
     value: {
-      label:
-        selectedMetric === "uniqueValues"
-          ? "Unique Values"
-          : "Found In Streams",
+      label: selectedMetric === 'uniqueValues' ? 'Unique Values' : 'Found In Streams',
       theme: {
-        light: "var(--chart-color-0)",
-        dark: "var(--chart-color-0)",
+        light: 'var(--chart-color-0)',
+        dark: 'var(--chart-color-0)',
       },
     },
   } satisfies ChartConfig;
 
   const sortedLabels = useMemo(() => {
-    if (!analysisResults) {return [];}
+    if (!analysisResults) {
+      return [];
+    }
 
     return [...analysisResults.labels].sort((a, b) => {
       let comparison = 0;
       switch (sortField) {
-        case "name":
+        case 'name':
           comparison = a.name.localeCompare(b.name);
           break;
-        case "uniqueValues":
+        case 'uniqueValues':
           comparison = a.uniqueValues - b.uniqueValues;
           break;
-        case "inStreams":
+        case 'inStreams':
           comparison = a.inStreams - b.inStreams;
           break;
-        case "cardinality":
-          comparison =
-            a.uniqueValues / a.inStreams - b.uniqueValues / b.inStreams;
+        case 'cardinality':
+          comparison = a.uniqueValues / a.inStreams - b.uniqueValues / b.inStreams;
           break;
       }
-      return sortDirection === "asc" ? comparison : -comparison;
+      return sortDirection === 'asc' ? comparison : -comparison;
     });
   }, [analysisResults, sortField, sortDirection]);
 
@@ -300,16 +247,11 @@ export default function AnalyzeLabels() {
       <Card>
         <CardHeader>
           <CardTitle>Analyze Labels</CardTitle>
-          <CardDescription>
-            Analyze label distribution across your log streams
-          </CardDescription>
+          <CardDescription>Analyze label distribution across your log streams</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
-            <form
-              onSubmit={form.handleSubmit(onSubmit)}
-              className="grid grid-cols-1 md:grid-cols-4 gap-4"
-            >
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <FormField
                 control={form.control}
                 name="tenant"
@@ -330,10 +272,7 @@ export default function AnalyzeLabels() {
                 render={({ field }) => (
                   <FormItem className="flex flex-col space-y-1.5">
                     <FormLabel>Time Range</FormLabel>
-                    <Select
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
                       <FormControl>
                         <SelectTrigger>
                           <SelectValue placeholder="Select time range" />
@@ -359,22 +298,15 @@ export default function AnalyzeLabels() {
                   <FormItem className="flex flex-col space-y-1.5">
                     <FormLabel>Matcher</FormLabel>
                     <FormControl>
-                      <Input
-                        placeholder="Enter matcher... (default: {})"
-                        {...field}
-                      />
+                      <Input placeholder="Enter matcher... (default: {})" {...field} />
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
                 )}
               />
 
-              <Button
-                type="submit"
-                disabled={isLoading}
-                className="self-end h-10"
-              >
-                {isLoading ? "Analyzing..." : "Analyze"}
+              <Button type="submit" disabled={isLoading} className="self-end h-10">
+                {isLoading ? 'Analyzing...' : 'Analyze'}
               </Button>
             </form>
           </Form>
@@ -387,23 +319,17 @@ export default function AnalyzeLabels() {
             <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
               <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
                 <CardTitle>Label Distribution</CardTitle>
-                <CardDescription>
-                  Top 20 labels by unique values
-                </CardDescription>
+                <CardDescription>Top 20 labels by unique values</CardDescription>
               </div>
               <div className="flex">
                 <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 px-6 py-4 text-left sm:px-8 sm:py-6">
-                  <span className="text-xs text-muted-foreground">
-                    Total Streams
-                  </span>
+                  <span className="text-xs text-muted-foreground">Total Streams</span>
                   <span className="text-lg font-bold leading-none sm:text-3xl">
                     {analysisResults.totalStreams.toLocaleString()}
                   </span>
                 </div>
                 <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-l px-6 py-4 text-left sm:px-8 sm:py-6">
-                  <span className="text-xs text-muted-foreground">
-                    Unique Labels
-                  </span>
+                  <span className="text-xs text-muted-foreground">Unique Labels</span>
                   <span className="text-lg font-bold leading-none sm:text-3xl">
                     {analysisResults.uniqueLabels.toLocaleString()}
                   </span>
@@ -412,12 +338,7 @@ export default function AnalyzeLabels() {
             </CardHeader>
             <CardContent className="px-2 sm:p-6">
               <div className="mb-4">
-                <Select
-                  value={selectedMetric}
-                  onValueChange={(value: MetricType) =>
-                    setSelectedMetric(value)
-                  }
-                >
+                <Select value={selectedMetric} onValueChange={(value: MetricType) => setSelectedMetric(value)}>
                   <SelectTrigger className="w-[200px]">
                     <SelectValue placeholder="Select metric" />
                   </SelectTrigger>
@@ -427,29 +348,18 @@ export default function AnalyzeLabels() {
                   </SelectContent>
                 </Select>
               </div>
-              <ChartContainer
-                config={chartConfig}
-                className="aspect-auto h-[500px] w-full"
-              >
+              <ChartContainer config={chartConfig} className="aspect-auto h-[500px] w-full">
                 <BarChart
-                  data={analysisResults.labels
-                    .slice(0, 20)
-                    .map((label, index) => ({
-                      name: label.name,
-                      value:
-                        selectedMetric === "uniqueValues"
-                          ? label.uniqueValues
-                          : label.inStreams,
-                      fill: `var(--chart-color-${index})`,
-                    }))}
+                  data={analysisResults.labels.slice(0, 20).map((label, index) => ({
+                    name: label.name,
+                    value: selectedMetric === 'uniqueValues' ? label.uniqueValues : label.inStreams,
+                    fill: `var(--chart-color-${index})`,
+                  }))}
                   layout="vertical"
                   margin={{
                     right: 24,
                   }}
-                  barSize={
-                    ((500 - 48) / Math.min(20, analysisResults.labels.length)) *
-                    0.6
-                  }
+                  barSize={((500 - 48) / Math.min(20, analysisResults.labels.length)) * 0.6}
                   maxBarSize={24}
                 >
                   <CartesianGrid horizontal={false} />
@@ -462,20 +372,9 @@ export default function AnalyzeLabels() {
                     fontSize={11}
                     interval={0}
                   />
-                  <XAxis
-                    type="number"
-                    tickLine={false}
-                    axisLine={false}
-                    tickMargin={8}
-                  />
-                  <ChartTooltip
-                    content={<ChartTooltipContent className="w-[200px]" />}
-                  />
-                  <Bar
-                    dataKey="value"
-                    fillOpacity={0.8}
-                    radius={[4, 4, 0, 0]}
-                  />
+                  <XAxis type="number" tickLine={false} axisLine={false} tickMargin={8} />
+                  <ChartTooltip content={<ChartTooltipContent className="w-[200px]" />} />
+                  <Bar dataKey="value" fillOpacity={0.8} radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ChartContainer>
             </CardContent>
@@ -497,12 +396,10 @@ export default function AnalyzeLabels() {
                         sortDirection={sortDirection}
                         onSort={(field) => {
                           if (field === sortField) {
-                            setSortDirection(
-                              sortDirection === "asc" ? "desc" : "asc"
-                            );
+                            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
                           } else {
                             setSortField(field as SortField);
-                            setSortDirection("desc");
+                            setSortDirection('desc');
                           }
                         }}
                       />
@@ -515,12 +412,10 @@ export default function AnalyzeLabels() {
                         sortDirection={sortDirection}
                         onSort={(field) => {
                           if (field === sortField) {
-                            setSortDirection(
-                              sortDirection === "asc" ? "desc" : "asc"
-                            );
+                            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
                           } else {
                             setSortField(field as SortField);
-                            setSortDirection("desc");
+                            setSortDirection('desc');
                           }
                         }}
                       />
@@ -533,12 +428,10 @@ export default function AnalyzeLabels() {
                         sortDirection={sortDirection}
                         onSort={(field) => {
                           if (field === sortField) {
-                            setSortDirection(
-                              sortDirection === "asc" ? "desc" : "asc"
-                            );
+                            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
                           } else {
                             setSortField(field as SortField);
-                            setSortDirection("desc");
+                            setSortDirection('desc');
                           }
                         }}
                       />
@@ -551,12 +444,10 @@ export default function AnalyzeLabels() {
                         sortDirection={sortDirection}
                         onSort={(field) => {
                           if (field === sortField) {
-                            setSortDirection(
-                              sortDirection === "asc" ? "desc" : "asc"
-                            );
+                            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
                           } else {
                             setSortField(field as SortField);
-                            setSortDirection("desc");
+                            setSortDirection('desc');
                           }
                         }}
                       />
@@ -584,39 +475,20 @@ export default function AnalyzeLabels() {
                           <TableCell className="font-medium">
                             <CollapsibleTrigger className="flex items-center gap-2 hover:text-primary">
                               <ChevronDown
-                                className={cn(
-                                  "h-4 w-4 transition-transform",
-                                  openRows.has(label.name) && "rotate-180"
-                                )}
+                                className={cn('h-4 w-4 transition-transform', openRows.has(label.name) && 'rotate-180')}
                               />
                               {label.name}
                             </CollapsibleTrigger>
                           </TableCell>
-                          <TableCell>
-                            {label.uniqueValues.toLocaleString()}
-                          </TableCell>
-                          <TableCell>
-                            {label.inStreams.toLocaleString()}
-                          </TableCell>
-                          <TableCell>
-                            {(
-                              (label.uniqueValues / label.inStreams) *
-                              100
-                            ).toFixed(2)}
-                            %
-                          </TableCell>
+                          <TableCell>{label.uniqueValues.toLocaleString()}</TableCell>
+                          <TableCell>{label.inStreams.toLocaleString()}</TableCell>
+                          <TableCell>{((label.uniqueValues / label.inStreams) * 100).toFixed(2)}%</TableCell>
                         </TableRow>
                         <CollapsibleContent asChild>
                           <TableRow>
-                            <TableCell
-                              colSpan={4}
-                              className="border-t-0 bg-muted/5"
-                            >
+                            <TableCell colSpan={4} className="border-t-0 bg-muted/5">
                               <div className="px-4">
-                                <LabelValuesList
-                                  values={label.sampleValues}
-                                  totalValues={label.inStreams}
-                                />
+                                <LabelValuesList values={label.sampleValues} totalValues={label.inStreams} />
                               </div>
                             </TableCell>
                           </TableRow>
@@ -637,6 +509,6 @@ export default function AnalyzeLabels() {
 function parseDuration(duration: string): number {
   const value = parseInt(duration, 10);
   const unit = duration.slice(-1);
-  const multiplier = unit === "h" ? 3600000 : 0; // Convert hours to milliseconds
+  const multiplier = unit === 'h' ? 3600000 : 0; // Convert hours to milliseconds
   return value * multiplier;
 }

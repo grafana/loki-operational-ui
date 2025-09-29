@@ -1,23 +1,21 @@
 import React, { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { NodeState } from "types/cluster";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { NodeState } from 'types/cluster';
 
 const STATE_COLORS: Record<NodeState, string> = {
-  Running: "#10B981", // emerald-500
-  Starting: "#F59E0B", // amber-500
-  New: "#3B82F6", // blue-500
-  Stopping: "#F59E0B", // amber-500
-  Terminated: "#6B7280", // gray-500
-  Failed: "#EF4444", // red-500
+  Running: '#10B981', // emerald-500
+  Starting: '#F59E0B', // amber-500
+  New: '#3B82F6', // blue-500
+  Stopping: '#F59E0B', // amber-500
+  Terminated: '#6B7280', // gray-500
+  Failed: '#EF4444', // red-500
 };
 
 interface ServiceStateDistributionProps {
   services: Array<{ service: string; status: string }>;
 }
 
-export function ServiceStateDistribution({
-  services,
-}: ServiceStateDistributionProps) {
+export function ServiceStateDistribution({ services }: ServiceStateDistributionProps) {
   const data = useMemo(() => {
     const stateCounts = services.reduce((acc, { status }) => {
       const state = status as NodeState;
@@ -61,23 +59,18 @@ export function ServiceStateDistribution({
               strokeWidth={2}
             >
               {data.map((entry) => (
-                <Cell
-                  key={`cell-${entry.name}`}
-                  fill={entry.color}
-                  stroke="hsl(var(--background))"
-                />
+                <Cell key={`cell-${entry.name}`} fill={entry.color} stroke="hsl(var(--background))" />
               ))}
             </Pie>
             <Tooltip
               content={({ active, payload }) => {
-                if (!active || !payload || !payload[0]) {return null;}
+                if (!active || !payload || !payload[0]) {
+                  return null;
+                }
                 const data = payload[0].payload;
                 return (
                   <div className="bg-background border rounded-lg shadow-lg px-3 py-2 flex items-center gap-2">
-                    <div
-                      className="w-2.5 h-2.5 rounded-sm"
-                      style={{ backgroundColor: data.color }}
-                    />
+                    <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: data.color }} />
                     <span className="text-sm font-medium">{data.name}</span>
                     <span className="text-sm font-semibold">{data.value}</span>
                   </div>
@@ -89,15 +82,9 @@ export function ServiceStateDistribution({
       </div>
       <div className="flex flex-col gap-1.5 min-w-[120px] pl-4">
         {data.map((item) => (
-          <div
-            key={item.name}
-            className="flex items-center justify-between gap-2 text-sm"
-          >
+          <div key={item.name} className="flex items-center justify-between gap-2 text-sm">
             <div className="flex items-center gap-2">
-              <div
-                className="w-2 h-2 rounded-full shrink-0"
-                style={{ backgroundColor: item.color }}
-              />
+              <div className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: item.color }} />
               <span className="text-muted-foreground">{item.name}</span>
             </div>
             <span className="font-medium tabular-nums">{item.value}</span>

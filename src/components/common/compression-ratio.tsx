@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 interface CompressionRatioProps {
   compressed: number;
@@ -20,9 +20,7 @@ export const CompressionRatio: React.FC<CompressionRatioProps> = ({
 
   return (
     <div className="flex items-center gap-2">
-      <div className="font-medium whitespace-nowrap dark:text-gray-200">
-        {ratio.toFixed(1)}x
-      </div>
+      <div className="font-medium whitespace-nowrap dark:text-gray-200">{ratio.toFixed(1)}x</div>
       {showVisualization && hasCompression && (
         <div className="flex-1 h-2.5 bg-gray-100 dark:bg-gray-600 border border-gray-200 dark:border-gray-500 rounded relative">
           <div

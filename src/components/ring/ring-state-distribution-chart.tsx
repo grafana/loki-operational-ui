@@ -1,22 +1,22 @@
 import React, { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { RingInstance } from "types/ring";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { RingInstance } from 'types/ring';
 
 // Map states to their corresponding hex colors
 const getStateColor = (state: string): string => {
   switch (state) {
-    case "ACTIVE":
-      return "#22c55e"; // green-500
-    case "LEAVING":
-      return "#eab308"; // yellow-500
-    case "PENDING":
-      return "#3b82f6"; // blue-500
-    case "JOINING":
-      return "#a855f7"; // purple-500
-    case "LEFT":
-      return "#ef4444"; // red-500
+    case 'ACTIVE':
+      return '#22c55e'; // green-500
+    case 'LEAVING':
+      return '#eab308'; // yellow-500
+    case 'PENDING':
+      return '#3b82f6'; // blue-500
+    case 'JOINING':
+      return '#a855f7'; // purple-500
+    case 'LEFT':
+      return '#ef4444'; // red-500
     default:
-      return "#6b7280"; // gray-500
+      return '#6b7280'; // gray-500
   }
 };
 
@@ -24,14 +24,12 @@ interface RingStateDistributionChartProps {
   instances: RingInstance[];
 }
 
-export function RingStateDistributionChart({
-  instances,
-}: RingStateDistributionChartProps) {
+export function RingStateDistributionChart({ instances }: RingStateDistributionChartProps) {
   const data = useMemo(() => {
     const stateCounts = new Map<string, number>();
 
     instances.forEach((instance) => {
-      const state = instance.state || "unknown";
+      const state = instance.state || 'unknown';
       stateCounts.set(state, (stateCounts.get(state) || 0) + 1);
     });
 
@@ -72,23 +70,18 @@ export function RingStateDistributionChart({
             strokeWidth={1}
           >
             {data.map((entry) => (
-              <Cell
-                key={`cell-${entry.name}`}
-                fill={entry.color}
-                stroke="hsl(var(--background))"
-              />
+              <Cell key={`cell-${entry.name}`} fill={entry.color} stroke="hsl(var(--background))" />
             ))}
           </Pie>
           <Tooltip
             content={({ active, payload }) => {
-              if (!active || !payload || !payload[0]) {return null;}
+              if (!active || !payload || !payload[0]) {
+                return null;
+              }
               const data = payload[0].payload;
               return (
                 <div className="bg-background border rounded-lg shadow-lg px-3 py-2 flex items-center gap-2">
-                  <div
-                    className="w-2.5 h-2.5 rounded-sm"
-                    style={{ backgroundColor: data.color }}
-                  />
+                  <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: data.color }} />
                   <span className="text-sm font-medium">{data.name}</span>
                   <span className="text-sm font-semibold">{data.value}</span>
                 </div>

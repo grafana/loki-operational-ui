@@ -1,7 +1,7 @@
-import React, { useState, useCallback, useRef, useEffect, ReactNode } from "react";
-import { Cluster } from "types/cluster";
-import { ClusterContext } from "./cluster-context";
-import { absolutePath } from "../util";
+import React, { useState, useCallback, useRef, useEffect, ReactNode } from 'react';
+import { Cluster } from 'types/cluster';
+import { ClusterContext } from './cluster-context';
+import { absolutePath } from '../util';
 
 interface ClusterProviderProps {
   children: ReactNode;
@@ -22,7 +22,7 @@ export function ClusterProvider({ children }: ClusterProviderProps) {
     setIsLoading(true);
 
     try {
-      const response = await fetch(absolutePath("/api/v1/cluster/nodes"));
+      const response = await fetch(absolutePath('/api/v1/cluster/nodes'));
       if (!response.ok) {
         throw new Error(`Failed to fetch cluster data: ${response.statusText}`);
       }
@@ -30,9 +30,7 @@ export function ClusterProvider({ children }: ClusterProviderProps) {
       setCluster(data);
       setError(null);
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An unknown error occurred"
-      );
+      setError(err instanceof Error ? err.message : 'An unknown error occurred');
     } finally {
       setIsLoading(false);
       isFetchingRef.current = false;
@@ -47,9 +45,5 @@ export function ClusterProvider({ children }: ClusterProviderProps) {
     fetchCluster();
   }, [fetchCluster]);
 
-  return (
-    <ClusterContext.Provider value={{ cluster, error, isLoading, refresh }}>
-      {children}
-    </ClusterContext.Provider>
-  );
+  return <ClusterContext.Provider value={{ cluster, error, isLoading, refresh }}>{children}</ClusterContext.Provider>;
 }

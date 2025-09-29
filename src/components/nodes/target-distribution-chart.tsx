@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from "recharts";
-import { Member } from "types/cluster";
+import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
+import { Member } from 'types/cluster';
 
 // Use theme chart colors directly
 const getChartColor = (index: number): string => {
@@ -11,14 +11,12 @@ interface TargetDistributionChartProps {
   nodes: { [key: string]: Member };
 }
 
-export function TargetDistributionChart({
-  nodes,
-}: TargetDistributionChartProps) {
+export function TargetDistributionChart({ nodes }: TargetDistributionChartProps) {
   const data = useMemo(() => {
     const targetCounts = new Map<string, number>();
 
     Object.values(nodes).forEach((node) => {
-      const target = node.target || "unknown";
+      const target = node.target || 'unknown';
       targetCounts.set(target, (targetCounts.get(target) || 0) + 1);
     });
 
@@ -60,23 +58,18 @@ export function TargetDistributionChart({
             strokeWidth={1}
           >
             {data.map((entry, index) => (
-              <Cell
-                key={`cell-${entry.name}`}
-                fill={getChartColor(index)}
-                stroke="hsl(var(--background))"
-              />
+              <Cell key={`cell-${entry.name}`} fill={getChartColor(index)} stroke="hsl(var(--background))" />
             ))}
           </Pie>
           <Tooltip
             content={({ active, payload }) => {
-              if (!active || !payload || !payload[0]) {return null;}
+              if (!active || !payload || !payload[0]) {
+                return null;
+              }
               const data = payload[0].payload;
               return (
                 <div className="bg-background border rounded-lg shadow-lg px-3 py-2 flex items-center gap-2">
-                  <div
-                    className="w-2.5 h-2.5 rounded-sm"
-                    style={{ backgroundColor: data.color }}
-                  />
+                  <div className="w-2.5 h-2.5 rounded-sm" style={{ backgroundColor: data.color }} />
                   <span className="text-sm font-medium">{data.name}</span>
                   <span className="text-sm font-semibold">{data.value}</span>
                 </div>

@@ -1,32 +1,32 @@
 import React, { useState } from 'react';
-import { useParams } from "react-router-dom";
-import { Card, CardHeader, CardContent, CardTitle } from "../components/ui/card";
-import { ErrorBoundary } from "../components/shared/errors/error-boundary";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../components/ui/tabs";
-import { CodeBlock } from "../components/ui/code-block";
-import { format } from "date-fns";
-import { useNodeDetails } from "../hooks/use-node-details";
-import { useNodeMetrics } from "../hooks/use-node-metrics";
-import { ServiceStateDistribution } from "../components/nodes/service-state-distribution";
-import { ServiceTable } from "../components/nodes/service-table";
-import { StorageTypeIndicator } from "../components/nodes/storage-type-indicator";
-import { Label } from "../components/ui/label";
-import { LogLevelSelect } from "../components/nodes/log-level-select";
-import { Switch } from "../components/ui/switch";
-import { VersionInformation } from "../components/nodes/version-information";
-import { NodeStatusIndicator } from "../components/nodes/node-status-indicator";
-import { PprofControls } from "../components/nodes/pprof-controls";
-import { CopyButton } from "../components/common/copy-button";
-import { PageContainer } from "../layout/page-container";
+import { useParams } from 'react-router-dom';
+import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/card';
+import { ErrorBoundary } from '../components/shared/errors/error-boundary';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
+import { CodeBlock } from '../components/ui/code-block';
+import { format } from 'date-fns';
+import { useNodeDetails } from '../hooks/use-node-details';
+import { useNodeMetrics } from '../hooks/use-node-metrics';
+import { ServiceStateDistribution } from '../components/nodes/service-state-distribution';
+import { ServiceTable } from '../components/nodes/service-table';
+import { StorageTypeIndicator } from '../components/nodes/storage-type-indicator';
+import { Label } from '../components/ui/label';
+import { LogLevelSelect } from '../components/nodes/log-level-select';
+import { Switch } from '../components/ui/switch';
+import { VersionInformation } from '../components/nodes/version-information';
+import { NodeStatusIndicator } from '../components/nodes/node-status-indicator';
+import { PprofControls } from '../components/nodes/pprof-controls';
+import { CopyButton } from '../components/common/copy-button';
+import { PageContainer } from '../layout/page-container';
 function NodeDetailsPage() {
   const { nodeName } = useParams();
-  const [activeTab, setActiveTab] = useState("config");
+  const [activeTab, setActiveTab] = useState('config');
   const { nodeDetails, isLoading, error } = useNodeDetails(nodeName);
   const {
     metrics: rawMetrics,
     isLoading: isLoadingMetrics,
     error: metricsError,
-  } = useNodeMetrics(nodeName, activeTab === "raw-metrics");
+  } = useNodeMetrics(nodeName, activeTab === 'raw-metrics');
   const [showTable, setShowTable] = useState(false);
 
   if (isLoading) {
@@ -46,9 +46,7 @@ function NodeDetailsPage() {
         <div className="bg-red-50 dark:bg-red-900 border-l-4 border-red-400 p-4">
           <div className="flex">
             <div className="ml-3">
-              <p className="text-sm text-red-700 dark:text-red-200">
-                {error || `Node "${nodeName}" not found`}
-              </p>
+              <p className="text-sm text-red-700 dark:text-red-200">{error || `Node "${nodeName}" not found`}</p>
             </div>
           </div>
         </div>
@@ -67,12 +65,12 @@ function NodeDetailsPage() {
                 <h2 className="text-3xl font-semibold tracking-tight">
                   <div className="flex items-center gap-2">
                     {nodeDetails.target} - {nodeName}
-                    <CopyButton text={nodeName || ""} />
+                    <CopyButton text={nodeName || ''} />
                   </div>
                 </h2>
               </CardTitle>
             </div>
-            <NodeStatusIndicator nodeName={nodeName || ""} />
+            <NodeStatusIndicator nodeName={nodeName || ''} />
           </div>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -97,17 +95,13 @@ function NodeDetailsPage() {
                   </div>
                   <div className="space-y-2">
                     <Label>Created</Label>
-                    <p className="text-sm">
-                      {format(nodeDetails.clusterSeededAt, "PPpp")}
-                    </p>
+                    <p className="text-sm">{format(nodeDetails.clusterSeededAt, 'PPpp')}</p>
                   </div>
                   <div className="space-y-2">
                     <Label>Storage</Label>
                     <p>
                       <StorageTypeIndicator
-                        type={(
-                          nodeDetails.metrics.store_object_type || "filesystem"
-                        ).toLowerCase()}
+                        type={(nodeDetails.metrics.store_object_type || 'filesystem').toLowerCase()}
                         className=""
                       />
                     </p>
@@ -121,11 +115,7 @@ function NodeDetailsPage() {
                 <CardTitle>Service Status</CardTitle>
                 <div className="flex items-center space-x-2">
                   <Label htmlFor="view-mode">Table View</Label>
-                  <Switch
-                    id="view-mode"
-                    checked={showTable}
-                    onCheckedChange={setShowTable}
-                  />
+                  <Switch id="view-mode" checked={showTable} onCheckedChange={setShowTable} />
                 </div>
               </CardHeader>
               <CardContent>
@@ -142,10 +132,10 @@ function NodeDetailsPage() {
           <div className="flex items-center gap-6">
             <div className="flex items-center gap-2 mr-4">
               <Label>Log Level</Label>
-              <LogLevelSelect nodeName={nodeName || ""} />
+              <LogLevelSelect nodeName={nodeName || ''} />
             </div>
 
-            <PprofControls nodeName={nodeName || ""} />
+            <PprofControls nodeName={nodeName || ''} />
           </div>
 
           <div>
@@ -156,11 +146,7 @@ function NodeDetailsPage() {
                 <TabsTrigger value="raw-metrics">Raw Metrics</TabsTrigger>
               </TabsList>
               <TabsContent value="config" className="mt-6">
-                <CodeBlock
-                  language="yaml"
-                  code={nodeDetails.config}
-                  fileName="loki.yaml"
-                />
+                <CodeBlock language="yaml" code={nodeDetails.config} fileName="loki.yaml" />
               </TabsContent>
               <TabsContent value="metrics" className="mt-6">
                 {nodeDetails.metrics && (
@@ -175,22 +161,14 @@ function NodeDetailsPage() {
                 {isLoadingMetrics ? (
                   <div className="flex items-center justify-center p-6">
                     <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                    <span className="ml-2 text-sm text-muted-foreground">
-                      Loading metrics...
-                    </span>
+                    <span className="ml-2 text-sm text-muted-foreground">Loading metrics...</span>
                   </div>
                 ) : metricsError ? (
                   <div className="bg-red-50 dark:bg-red-900 border-l-4 border-red-400 p-4">
-                    <p className="text-sm text-red-700 dark:text-red-200">
-                      {metricsError}
-                    </p>
+                    <p className="text-sm text-red-700 dark:text-red-200">{metricsError}</p>
                   </div>
                 ) : rawMetrics ? (
-                  <CodeBlock
-                    code={rawMetrics}
-                    language="yaml"
-                    fileName="metrics"
-                  />
+                  <CodeBlock code={rawMetrics} language="yaml" fileName="metrics" />
                 ) : null}
               </TabsContent>
             </Tabs>

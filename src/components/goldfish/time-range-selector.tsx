@@ -138,7 +138,7 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
     setSelectedPreset(value);
     setIsCustom(false);
     setIsDefault(false);
-    const preset = PRESET_RANGES.find(p => p.value === value);
+    const preset = PRESET_RANGES.find((p) => p.value === value);
     if (preset) {
       const range = preset.getRange();
       onChange(range.from, range.to);
@@ -173,7 +173,7 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
     if (isCustom && from && to) {
       return `${formatDate(from)} - ${formatDate(to)}`;
     }
-    const preset = PRESET_RANGES.find(p => p.value === selectedPreset);
+    const preset = PRESET_RANGES.find((p) => p.value === selectedPreset);
     return preset ? preset.label : 'Custom';
   };
 
@@ -188,19 +188,12 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
       <PopoverContent className="w-[320px] p-4" align="end">
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label className="text-sm font-medium">
-              Time Range
-            </Label>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClear}
-              className="h-8 px-2 text-xs"
-            >
+            <Label className="text-sm font-medium">Time Range</Label>
+            <Button variant="ghost" size="sm" onClick={handleClear} className="h-8 px-2 text-xs">
               Clear to Default
             </Button>
           </div>
-          
+
           <div>
             <Label htmlFor="preset" className="text-sm font-medium mb-2 block">
               Quick ranges
@@ -210,7 +203,7 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
                 <SelectValue placeholder="Select a preset" />
               </SelectTrigger>
               <SelectContent>
-                {PRESET_RANGES.map(preset => (
+                {PRESET_RANGES.map((preset) => (
                   <SelectItem key={preset.value} value={preset.value}>
                     {preset.label}
                   </SelectItem>
@@ -220,12 +213,12 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
           </div>
 
           <div className="border-t pt-4">
-            <Label className="text-sm font-medium mb-2 block">
-              Custom range
-            </Label>
+            <Label className="text-sm font-medium mb-2 block">Custom range</Label>
             <div className="space-y-2">
               <div>
-                <Label htmlFor="from" className="text-xs text-muted-foreground">From</Label>
+                <Label htmlFor="from" className="text-xs text-muted-foreground">
+                  From
+                </Label>
                 <Input
                   id="from"
                   type="datetime-local"
@@ -235,7 +228,9 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
                 />
               </div>
               <div>
-                <Label htmlFor="to" className="text-xs text-muted-foreground">To</Label>
+                <Label htmlFor="to" className="text-xs text-muted-foreground">
+                  To
+                </Label>
                 <Input
                   id="to"
                   type="datetime-local"
@@ -244,8 +239,8 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
                   className="w-full"
                 />
               </div>
-              <Button 
-                onClick={handleCustomApply} 
+              <Button
+                onClick={handleCustomApply}
                 className="w-full"
                 disabled={!customFrom || !customTo || new Date(customFrom) >= new Date(customTo)}
               >

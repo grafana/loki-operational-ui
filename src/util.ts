@@ -5,11 +5,11 @@
 export function getBasename(): string {
   const pathname = window.location.pathname;
   const match = pathname.match(/(.*\/ui\/)/);
-  return match?.[1] || "/ui/";
+  return match?.[1] || '/ui/';
 }
 
 export function absolutePath(path: string): string {
   const basename = getBasename();
-  const apiPath = `${basename}${path.startsWith("/") ? path.slice(1) : path}`;
-  return "/api/datasources/proxy/uid/loki/" + apiPath;
+  const apiPath = `${basename}${path.startsWith('/') ? path.slice(1) : path}`;
+  return '/api/datasources/proxy/uid/loki/' + apiPath;
 }
