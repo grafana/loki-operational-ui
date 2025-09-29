@@ -1,27 +1,21 @@
-import React from "react";
-import { formatDistanceToNow, parseISO, isValid } from "date-fns";
-import { Member } from "types/cluster";
-import StatusBadge from "components/nodes/status-badge";
-import { ReadinessIndicator } from "components/nodes/readiness-indicator";
-import { DataTableColumnHeader } from "components/common/data-table-column-header";
-import { Button } from "components/ui/button";
-import { ArrowRightCircle } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "components/ui/table";
+import React from 'react';
+import { formatDistanceToNow, parseISO, isValid } from 'date-fns';
+import { Member } from 'types/cluster';
+import StatusBadge from 'components/nodes/status-badge';
+import { ReadinessIndicator } from 'components/nodes/readiness-indicator';
+import { DataTableColumnHeader } from 'components/common/data-table-column-header';
+import { Button } from 'components/ui/button';
+import { ArrowRightCircle } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import { prefixRoute } from 'utils/utils.routing';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
 
-type NodeSortField = "name" | "target" | "version" | "buildDate";
+type NodeSortField = 'name' | 'target' | 'version' | 'buildDate';
 
 interface NodeListProps {
   nodes: { [key: string]: Member };
   sortField: NodeSortField;
-  sortDirection: "asc" | "desc";
+  sortDirection: 'asc' | 'desc';
   onSort: (field: NodeSortField) => void;
 }
 
@@ -35,22 +29,18 @@ const formatBuildDate = (dateStr: string) => {
   try {
     const date = parseISO(dateStr);
     if (!isValid(date)) {
-      return "Invalid date";
+      return 'Invalid date';
     }
     return formatDistanceToNow(date, { addSuffix: true });
   } catch (error) {
-    console.warn("Error parsing date:", dateStr, error);
-    return "Invalid date";
+    console.warn('Error parsing date:', dateStr, error);
+    return 'Invalid date';
   }
 };
 
 const NodeRow: React.FC<NodeRowProps> = ({ name, node, onNavigate }) => {
   return (
-    <TableRow
-      key={name}
-      className="hover:bg-muted/50 cursor-pointer"
-      onClick={() => onNavigate(name)}
-    >
+    <TableRow key={name} className="hover:bg-muted/50 cursor-pointer" onClick={() => onNavigate(name)}>
       <TableCell className="font-medium">{name}</TableCell>
       <TableCell>{node.target}</TableCell>
       <TableCell className="font-mono text-sm">{node.build.version}</TableCell>
@@ -59,10 +49,7 @@ const NodeRow: React.FC<NodeRowProps> = ({ name, node, onNavigate }) => {
         <StatusBadge services={node.services} error={node.error} />
       </TableCell>
       <TableCell>
-        <ReadinessIndicator
-          isReady={node.ready?.isReady}
-          message={node.ready?.message}
-        />
+        <ReadinessIndicator isReady={node.ready?.isReady} message={node.ready?.message} />
       </TableCell>
       <TableCell>
         <Button
@@ -82,44 +69,45 @@ const NodeRow: React.FC<NodeRowProps> = ({ name, node, onNavigate }) => {
   );
 };
 
-const NodeList: React.FC<NodeListProps> = ({
-  nodes,
-  sortField,
-  sortDirection,
-  onSort,
-}) => {
+const NodeList: React.FC<NodeListProps> = ({ nodes, sortField, sortDirection, onSort }) => {
   const navigate = useNavigate();
 
   const compareDates = (dateStrA: string, dateStrB: string) => {
     const dateA = parseISO(dateStrA);
     const dateB = parseISO(dateStrB);
-    if (!isValid(dateA) && !isValid(dateB)) {return 0;}
-    if (!isValid(dateA)) {return 1;}
-    if (!isValid(dateB)) {return -1;}
+    if (!isValid(dateA) && !isValid(dateB)) {
+      return 0;
+    }
+    if (!isValid(dateA)) {
+      return 1;
+    }
+    if (!isValid(dateB)) {
+      return -1;
+    }
     return dateA.getTime() - dateB.getTime();
   };
 
   const sortedNodes = Object.entries(nodes).sort(([aKey, a], [bKey, b]) => {
     let comparison = 0;
     switch (sortField) {
-      case "name":
+      case 'name':
         comparison = aKey.localeCompare(bKey);
         break;
-      case "target":
+      case 'target':
         comparison = a.target.localeCompare(b.target);
         break;
-      case "version":
+      case 'version':
         comparison = a.build.version.localeCompare(b.build.version);
         break;
-      case "buildDate":
+      case 'buildDate':
         comparison = compareDates(a.build.buildDate, b.build.buildDate);
         break;
     }
-    return sortDirection === "asc" ? comparison : -comparison;
+    return sortDirection === 'asc' ? comparison : -comparison;
   });
 
   const handleNavigate = (name: string) => {
-    navigate(`/nodes/${name}`);
+    navigate(prefixRoute(`nodes/${name}`));
   };
 
   return (
@@ -170,12 +158,7 @@ const NodeList: React.FC<NodeListProps> = ({
         </TableHeader>
         <TableBody>
           {sortedNodes.map(([name, node]) => (
-            <NodeRow
-              key={name}
-              name={name}
-              node={node}
-              onNavigate={handleNavigate}
-            />
+            <NodeRow key={name} name={name} node={node} onNavigate={handleNavigate} />
           ))}
           {sortedNodes.length === 0 && (
             <TableRow>

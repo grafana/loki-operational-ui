@@ -1,20 +1,15 @@
 import React from 'react';
-import { Button } from "components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "components/ui/card";
-import { Home, RotateCcw } from "lucide-react";
-import { useNavigate, useSearchParams } from "react-router-dom";
-import { cn } from "lib/utils";
+import { Button } from 'components/ui/button';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from 'components/ui/card';
+import { Home, RotateCcw } from 'lucide-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
+import { cn } from 'lib/utils';
+import { prefixRoute } from 'utils/utils.routing';
 
 export function NotFound() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
-  const pathToShow = searchParams.get("path") || window.location.pathname;
+  const pathToShow = searchParams.get('path') || window.location.pathname;
 
   return (
     <div className="flex min-h-[calc(100vh-12rem)] items-center justify-center bg-dot-pattern px-4">
@@ -28,8 +23,8 @@ export function NotFound() {
                   src="https://grafana.com/media/docs/loki/logo-grafana-loki.png"
                   alt="Loki Logo"
                   className={cn(
-                    "h-16 w-16 sm:h-24 sm:w-24",
-                    "rotate-180 animate-swing hover:animate-shake cursor-pointer transition-all duration-300"
+                    'h-16 w-16 sm:h-24 sm:w-24',
+                    'rotate-180 animate-swing hover:animate-shake cursor-pointer transition-all duration-300'
                   )}
                 />
               </div>
@@ -40,33 +35,20 @@ export function NotFound() {
           </CardTitle>
         </CardHeader>
         <CardContent className="text-center space-y-3 pb-8">
-          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">
-            Oops! Page Not Found
-          </h2>
+          <h2 className="text-xl sm:text-2xl font-semibold tracking-tight">Oops! Page Not Found</h2>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Even with our powerful log aggregation, we couldn&apos;t find this page
-            in any of our streams!
+            Even with our powerful log aggregation, we couldn&apos;t find this page in any of our streams!
           </p>
           <p className="text-xs sm:text-sm text-muted-foreground italic">
-            Error: LogQL query returned 0 results for label{" "}
-            {`{path="${pathToShow}"}`}
+            Error: LogQL query returned 0 results for label {`{path="${pathToShow}"}`}
           </p>
         </CardContent>
         <CardFooter className="flex justify-center gap-4 pb-8">
-          <Button
-            variant="outline"
-            onClick={() => navigate(-1)}
-            className="gap-2 group"
-            size="sm"
-          >
+          <Button variant="outline" onClick={() => navigate(-1)} className="gap-2 group" size="sm">
             <RotateCcw className="h-4 w-4 group-hover:animate-spin" />
             Go Back
           </Button>
-          <Button
-            onClick={() => navigate(`/`)}
-            className="gap-2 group"
-            size="sm"
-          >
+          <Button onClick={() => navigate(prefixRoute(''))} className="gap-2 group" size="sm">
             <Home className="h-4 w-4 group-hover:animate-bounce" />
             Go Home
           </Button>

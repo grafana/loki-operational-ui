@@ -1,44 +1,34 @@
-import React, { useCallback, useMemo, useState } from "react";
-import { Alert, AlertDescription, AlertTitle } from "components/ui/alert";
-import { Button } from "components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "components/ui/card";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "components/ui/form";
-import { Input } from "components/ui/input";
-import { Textarea } from "components/ui/textarea";
-import { useCluster } from "contexts/use-cluster";
-import { ServiceNames } from "lib/ring-utils";
-import { findNodeName } from "lib/utils";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { formatDuration, intervalToDuration } from "date-fns";
-import debounce from "lodash/debounce";
-import { AlertCircle, Loader2 } from "lucide-react";
-import { useForm, ControllerRenderProps } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
-import { useQueryClient } from "@tanstack/react-query";
-import * as z from "zod";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
-import { PageContainer } from "layout/page-container";
-import { absolutePath } from "../util";
+import React, { useCallback, useMemo, useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from 'components/ui/alert';
+import { Button } from 'components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
+import { Input } from 'components/ui/input';
+import { Textarea } from 'components/ui/textarea';
+import { useCluster } from 'contexts/use-cluster';
+import { ServiceNames } from 'lib/ring-utils';
+import { findNodeName } from 'lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { formatDuration, intervalToDuration } from 'date-fns';
+import debounce from 'lodash/debounce';
+import { AlertCircle, Loader2 } from 'lucide-react';
+import { useForm, ControllerRenderProps } from 'react-hook-form';
+import { useNavigate } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
+import * as z from 'zod';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { PageContainer } from 'layout/page-container';
+import { absolutePath } from '../util';
+import { prefixRoute } from 'utils/utils.routing';
 
 const formSchema = z.object({
-  tenant_id: z.string().min(1, "Tenant ID is required"),
-  query: z.string().min(1, "Query is required"),
+  tenant_id: z.string().min(1, 'Tenant ID is required'),
+  query: z.string().min(1, 'Query is required'),
   start_time: z.date(),
   end_time: z
     .date()
-    .refine(
-      (date) => date > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
-      "End time must be after start time"
-    ),
+    .refine((date) => date > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), 'End time must be after start time'),
 });
 
 type FormValues = z.infer<typeof formSchema>;
@@ -59,8 +49,8 @@ const NewDeleteRequest = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      tenant_id: "",
-      query: "",
+      tenant_id: '',
+      query: '',
       start_time: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), // 1 week ago
       end_time: new Date(), // now
     },
@@ -68,35 +58,34 @@ const NewDeleteRequest = () => {
 
   const validateQuery = useCallback(
     async (query: string, shouldFormat = false) => {
-      if (!query.trim()) {return;}
+      if (!query.trim()) {
+        return;
+      }
 
       setQueryValidating(true);
       try {
         const response = await fetch(
-          absolutePath(
-            `/api/v1/proxy/${nodeName}/loki/api/v1/format_query?query=${query}`
-          ),
+          absolutePath(`/api/v1/proxy/${nodeName}/loki/api/v1/format_query?query=${query}`),
           {
-            method: "POST",
+            method: 'POST',
           }
         );
 
         const result = await response.json();
 
-        if (!response.ok || result.status === "invalid-query") {
-          throw new Error(result.error || "Invalid LogQL query");
+        if (!response.ok || result.status === 'invalid-query') {
+          throw new Error(result.error || 'Invalid LogQL query');
         }
 
         // Clear any existing query errors when validation succeeds
-        form.clearErrors("query");
+        form.clearErrors('query');
 
         if (shouldFormat) {
-          form.setValue("query", result.data);
+          form.setValue('query', result.data);
         }
       } catch (error) {
-        form.setError("query", {
-          message:
-            error instanceof Error ? error.message : "Invalid LogQL query",
+        form.setError('query', {
+          message: error instanceof Error ? error.message : 'Invalid LogQL query',
         });
       } finally {
         setQueryValidating(false);
@@ -112,56 +101,44 @@ const NewDeleteRequest = () => {
 
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     const params = new URLSearchParams();
-    params.append("query", values.query);
-    params.append(
-      "start",
-      Math.floor(values.start_time.getTime() / 1000).toString()
-    );
-    params.append(
-      "end",
-      Math.floor(values.end_time.getTime() / 1000).toString()
-    );
+    params.append('query', values.query);
+    params.append('start', Math.floor(values.start_time.getTime() / 1000).toString());
+    params.append('end', Math.floor(values.end_time.getTime() / 1000).toString());
 
     try {
       const response = await fetch(
-        absolutePath(
-          `/api/v1/proxy/${nodeName}/compactor/ui/api/v1/deletes?${params.toString()}`
-        ),
+        absolutePath(`/api/v1/proxy/${nodeName}/compactor/ui/api/v1/deletes?${params.toString()}`),
         {
-          method: "POST",
+          method: 'POST',
           headers: {
-            "X-Scope-OrgID": values.tenant_id,
+            'X-Scope-OrgID': values.tenant_id,
           },
         }
       );
 
       if (!response.ok) {
         const text = await response.text();
-        throw new Error(text || "Failed to create delete request");
+        throw new Error(text || 'Failed to create delete request');
       }
 
-      await queryClient.invalidateQueries({ queryKey: ["deletes"] });
-      navigate("/tenants/deletes");
+      await queryClient.invalidateQueries({ queryKey: ['deletes'] });
+      navigate(prefixRoute('tenants/deletes'));
     } catch (error) {
-      console.error("Error creating delete request:", error);
-      setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to create delete request"
-      );
+      console.error('Error creating delete request:', error);
+      setError(error instanceof Error ? error.message : 'Failed to create delete request');
     }
   };
 
   const duration = useMemo(() => {
-    const start = form.watch("start_time");
-    const end = form.watch("end_time");
+    const start = form.watch('start_time');
+    const end = form.watch('end_time');
     return formatDuration(
       intervalToDuration({
         start,
         end,
       }),
       {
-        format: ["years", "months", "weeks", "days", "hours", "minutes"],
+        format: ['years', 'months', 'weeks', 'days', 'hours', 'minutes'],
         zero: false,
       }
     );
@@ -187,11 +164,7 @@ const NewDeleteRequest = () => {
               <FormField
                 control={form.control}
                 name="tenant_id"
-                render={({
-                  field,
-                }: {
-                  field: ControllerRenderProps<FormValues, "tenant_id">;
-                }) => (
+                render={({ field }: { field: ControllerRenderProps<FormValues, 'tenant_id'> }) => (
                   <FormItem>
                     <FormLabel>TENANT ID</FormLabel>
                     <FormControl>
@@ -205,11 +178,7 @@ const NewDeleteRequest = () => {
               <FormField
                 control={form.control}
                 name="query"
-                render={({
-                  field,
-                }: {
-                  field: ControllerRenderProps<FormValues, "query">;
-                }) => (
+                render={({ field }: { field: ControllerRenderProps<FormValues, 'query'> }) => (
                   <FormItem>
                     <FormLabel>LOGQL QUERY</FormLabel>
                     <FormControl>
@@ -236,9 +205,7 @@ const NewDeleteRequest = () => {
                         )}
                       </div>
                     </FormControl>
-                    <FormDescription>
-                      Enter a LogQL query with labels in curly braces
-                    </FormDescription>
+                    <FormDescription>Enter a LogQL query with labels in curly braces</FormDescription>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -248,11 +215,7 @@ const NewDeleteRequest = () => {
                 <FormField
                   control={form.control}
                   name="start_time"
-                  render={({
-                    field,
-                  }: {
-                    field: ControllerRenderProps<FormValues, "start_time">;
-                  }) => (
+                  render={({ field }: { field: ControllerRenderProps<FormValues, 'start_time'> }) => (
                     <FormItem>
                       <FormLabel>START TIME</FormLabel>
                       <FormControl>
@@ -274,11 +237,7 @@ const NewDeleteRequest = () => {
                 <FormField
                   control={form.control}
                   name="end_time"
-                  render={({
-                    field,
-                  }: {
-                    field: ControllerRenderProps<FormValues, "end_time">;
-                  }) => (
+                  render={({ field }: { field: ControllerRenderProps<FormValues, 'end_time'> }) => (
                     <FormItem>
                       <FormLabel>END TIME</FormLabel>
                       <FormControl>
@@ -289,7 +248,7 @@ const NewDeleteRequest = () => {
                           timeFormat="HH:mm"
                           timeIntervals={15}
                           dateFormat="yyyy-MM-dd HH:mm"
-                          minDate={form.watch("start_time")}
+                          minDate={form.watch('start_time')}
                           className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                         />
                       </FormControl>
@@ -301,30 +260,17 @@ const NewDeleteRequest = () => {
                 <div className="space-y-2">
                   <FormLabel>DURATION</FormLabel>
                   <div className="h-10 flex items-center">
-                    <span className="text-sm text-muted-foreground">
-                      {duration}
-                    </span>
+                    <span className="text-sm text-muted-foreground">{duration}</span>
                   </div>
                 </div>
               </div>
 
               <div className="flex justify-end space-x-3 pt-6 border-t">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => navigate("/tenants/deletes")}
-                >
+                <Button type="button" variant="outline" onClick={() => navigate(prefixRoute('tenants/deletes'))}>
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  disabled={
-                    !form.formState.isValid || form.formState.isSubmitting
-                  }
-                >
-                  {form.formState.isSubmitting
-                    ? "Creating..."
-                    : "Create Delete Request"}
+                <Button type="submit" disabled={!form.formState.isValid || form.formState.isSubmitting}>
+                  {form.formState.isSubmitting ? 'Creating...' : 'Create Delete Request'}
                 </Button>
               </div>
             </form>

@@ -1,18 +1,12 @@
 import React from 'react';
-import { useNavigate, useSearchParams, Link } from "react-router-dom";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "components/ui/table";
-import { FolderIcon, FileIcon, DownloadIcon } from "lucide-react";
-import { ExplorerFile } from "types/explorer";
-import { formatBytes } from "lib/utils";
-import { DateHover } from "../common/date-hover";
-import { Button } from "../ui/button";
+import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
+import { FolderIcon, FileIcon, DownloadIcon } from 'lucide-react';
+import { ExplorerFile } from 'types/explorer';
+import { formatBytes } from 'lib/utils';
+import { DateHover } from '../common/date-hover';
+import { Button } from '../ui/button';
+import { prefixRoute } from 'utils/utils.routing';
 
 interface FileListProps {
   current: string;
@@ -30,11 +24,7 @@ export function FileList({ current, parent, files, folders }: FileListProps) {
   };
 
   const handleFileClick = (file: ExplorerFile) => {
-    navigate(
-      `/storage/dataobj/metadata?path=${encodeURIComponent(
-        current + "/" + file.name
-      )}`
-    );
+    navigate(prefixRoute(`storage/dataobj/metadata?path=${encodeURIComponent(current + '/' + file.name)}`));
   };
 
   return (
@@ -53,22 +43,12 @@ export function FileList({ current, parent, files, folders }: FileListProps) {
             <TableRow
               key="parent"
               className="h-12 cursor-pointer hover:bg-muted/50"
-              onClick={() => handleNavigate(parent || "")}
+              onClick={() => handleNavigate(parent || '')}
             >
               <TableCell className="font-medium">
                 <div className="flex items-center">
-                  <svg
-                    className="w-5 h-5 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="2"
-                      d="M15 19l-7-7 7-7"
-                    />
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
                   </svg>
                   ..
                 </div>
@@ -82,9 +62,7 @@ export function FileList({ current, parent, files, folders }: FileListProps) {
             <TableRow
               key={folder}
               className="h-12 cursor-pointer hover:bg-muted/50"
-              onClick={() =>
-                handleNavigate(current ? `${current}/${folder}` : folder)
-              }
+              onClick={() => handleNavigate(current ? `${current}/${folder}` : folder)}
             >
               <TableCell className="font-medium">
                 <div className="flex items-center">
@@ -103,7 +81,7 @@ export function FileList({ current, parent, files, folders }: FileListProps) {
               key={file.name}
               className="h-12 cursor-pointer hover:bg-muted/50"
               onClick={(e) => {
-                if ((e.target as HTMLElement).closest("a[download]")) {
+                if ((e.target as HTMLElement).closest('a[download]')) {
                   return;
                 }
                 handleFileClick(file);
@@ -120,18 +98,8 @@ export function FileList({ current, parent, files, folders }: FileListProps) {
               </TableCell>
               <TableCell>{formatBytes(file.size)}</TableCell>
               <TableCell>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  asChild
-                  className="h-8 w-8"
-                >
-                  <Link
-                    to={file.downloadUrl}
-                    target="_blank"
-                    download
-                    onClick={(e) => e.stopPropagation()}
-                  >
+                <Button variant="outline" size="icon" asChild className="h-8 w-8">
+                  <Link to={file.downloadUrl} target="_blank" download onClick={(e) => e.stopPropagation()}>
                     <DownloadIcon className="h-4 w-4" />
                   </Link>
                 </Button>
