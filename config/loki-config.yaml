@@ -48,7 +48,17 @@ schema_config:
 ui:
   enabled: true
   goldfish:
-    enable: false
+    enable: true
+    cloudsql_user: admin
+    cloudsql_host: docker.host.internal
+    cloudsql_port: 3306 
+    cloudsql_database: loki-goldfish-dev-database
+    grafana_url: http://localhost:3000
+    traces_datasource_uid: traces
+    logs_datasource_uid: logs
+    cell_a_namespace: loki-001
+    cell_b_namespace: loki-002
+
 
 ruler:
   alertmanager_url: http://localhost:9093

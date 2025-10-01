@@ -8,6 +8,8 @@ services:
     environment:
       LOG_CLUSTER_DEPTH: '8'
       LOG_SIM_TH: '0.3'
+    env_file:
+      - ./config/.env
     ports:
       - '3100:3100'
     volumes:
