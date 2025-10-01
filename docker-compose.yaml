@@ -1,15 +1,25 @@
 services:
   grafana:
+    env_file:
+      - .env
     extends:
       file: .config/docker-compose-base.yaml
       service: grafana
+    logging: &logging
+      driver: loki-compose
+      options:
+        loki-url: "https://${GRAFANA_CLOUD_LOGS_TENANT}:${GRAFANA_CLOUD_LOGS_API_KEY}@${GRAFANA_CLOUD_LOGS_HOST}/loki/api/v1/push"
+        loki-retries: "3"
+        loki-tenant-id: "${GRAFANA_CLOUD_LOGS_TENANT}"
   loki:
+    logging:
+      <<: *logging
     image: grafana/loki:k272-e15c650
     environment:
       LOG_CLUSTER_DEPTH: '8'
       LOG_SIM_TH: '0.3'
     env_file:
-      - ./config/.env
+      - .env
     ports:
       - '3100:3100'
     volumes:
@@ -18,4 +28,5 @@ services:
     command:
       - -config.file=/etc/loki/local-config.yaml
       - -runtime-config.file=/etc/loki/overrides.yaml
+      - -target=all,dataobj-explorer
     restart: on-failure

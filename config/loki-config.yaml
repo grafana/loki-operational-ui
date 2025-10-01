@@ -7,15 +7,21 @@ server:
   grpc_server_max_send_msg_size: 8194304
 common:
   instance_addr: 127.0.0.1
-  path_prefix: /tmp/loki
-  storage:
-    filesystem:
-      chunks_directory: /tmp/loki/chunks
-      rules_directory: /tmp/loki/rules
+  path_prefix: /tmp/loki/workingdir
   replication_factor: 1
   ring:
     kvstore:
       store: inmemory
+dataobj:
+    storage_bucket_prefix: dataobj
+    index:
+      events_per_index: 8
+storage_config:
+  use_thanos_objstore: true
+  object_store:
+    filesystem:
+      dir: /tmp/loki/storage
+
 frontend:
   max_outstanding_per_tenant: 2048
   encoding: protobuf
@@ -24,17 +30,23 @@ pattern_ingester:
   metric_aggregation:
     loki_address: 127.0.0.1:3100
 limits_config:
-  max_global_streams_per_user: 0
-  ingestion_rate_mb: 50000
+  allow_structured_metadata: true
   ingestion_burst_size_mb: 50000
+  ingestion_rate_mb: 50000
+  max_global_streams_per_user: 0
+  query_timeout: 1h
+  split_queries_by_interval: 1h
+  tsdb_max_bytes_per_shard: 128MB
+  tsdb_max_query_parallelism: 1
+  tsdb_sharding_strategy: power_of_two
   volume_enabled: true
+
 query_range:
   results_cache:
     cache:
       embedded_cache:
         enabled: true
         max_size_mb: 100
-
 schema_config:
   configs:
     - from: 2020-10-24
@@ -42,6 +54,7 @@ schema_config:
       object_store: filesystem
       schema: v13
       index:
+        path_prefix: index/
         prefix: index_
         period: 24h
 
