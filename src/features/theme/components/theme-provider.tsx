@@ -7,22 +7,10 @@ export function ThemeProvider({
   storageKey = 'loki-ui-theme',
   ...props
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    try {
-      const storedTheme = localStorage.getItem(storageKey);
-      return storedTheme === 'dark' || storedTheme === 'light' ? storedTheme : defaultTheme;
-    } catch {
-      return defaultTheme;
-    }
-  });
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
 
   const handleThemeChange = (newTheme: Theme) => {
-    try {
-      localStorage.setItem(storageKey, newTheme);
-      setTheme(newTheme);
-    } catch (error) {
-      console.error('Failed to save theme:', error);
-    }
+    setTheme(newTheme);
   };
 
   useEffect(() => {

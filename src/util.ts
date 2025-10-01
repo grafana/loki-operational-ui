@@ -5,7 +5,7 @@
 export function getBasename(): string {
   const pathname = window.location.pathname;
   const match = pathname.match(/(.*\/ui\/)/);
-  return match?.[1] || '/ui/';
+  return match?.[1] || 'ui/';
 }
 
 export function absolutePath(path: string): string {
