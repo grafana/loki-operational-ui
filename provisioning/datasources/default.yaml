@@ -4,6 +4,7 @@ datasources:
   - name: loki
     type: loki
     uid: loki
+    isDefault: true
     access: proxy
     url: http://host.docker.internal:3100
     jsonData:
