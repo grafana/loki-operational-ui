@@ -26,8 +26,8 @@ function App(_: AppRootProps) {
             <TooltipProvider>
               <PluginPage
                 renderTitle={() => (
-                  <div className="flex items-center justify-between w-full">
-                    <div className="flex items-center gap-3">
+                  <div className="flex justify-between w-full">
+                    <div className="flex gap-3">
                       <div className="flex flex-col gap-0.5">
                         <span className="text-lg font-semibold leading-none">Loki Operational UI</span>
                         <VersionDisplay />
