@@ -1,7 +1,8 @@
 import React from 'react';
 import { NodeState, ALL_NODE_STATES } from '../../types/cluster';
-import { Button } from 'components/ui/button';
-import { Input } from 'components/ui/input';
+import { Button, Input, useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 import { MultiSelect } from 'components/common/multi-select';
 import { RefreshCw } from 'lucide-react';
 
@@ -27,6 +28,8 @@ const NodeFilters: React.FC<NodeFiltersProps> = ({
   onRefresh,
   availableTargets,
 }) => {
+  const styles = useStyles2(getStyles);
+
   const stateOptions = ALL_NODE_STATES.map((state) => ({
     label: state,
     value: state,
@@ -37,15 +40,15 @@ const NodeFilters: React.FC<NodeFiltersProps> = ({
   };
 
   return (
-    <div className="grid grid-cols-[auto_1fr_auto] gap-x-4 gap-y-2">
-      <div className="space-y-2">
-        <div className="space-y-1.5">
-          <label className="text-sm font-medium text-muted-foreground">Node filters</label>
+    <div className={styles.container}>
+      <div className={styles.nodeFilters}>
+        <div className={styles.filterGroup}>
+          <label className={styles.label}>Node filters</label>
           <Input
             value={nameFilter}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => onNameFilterChange(e.target.value)}
             placeholder="Filter by node name..."
-            className="w-[300px]"
+            width={40}
           />
           <MultiSelect
             options={availableTargets.map((target) => ({
@@ -55,27 +58,66 @@ const NodeFilters: React.FC<NodeFiltersProps> = ({
             selected={targetFilter}
             onChange={onTargetFilterChange}
             placeholder="All Targets"
-            className="w-[300px]"
+            className={styles.multiSelect}
           />
         </div>
       </div>
-      <div className="space-y-1.5 self-end">
-        <label className="text-sm font-medium text-muted-foreground">Service states</label>
+      <div className={styles.stateFilters}>
+        <label className={styles.label}>Service states</label>
         <MultiSelect
           options={stateOptions}
           selected={selectedStates}
           onChange={handleStateChange}
           placeholder="Filter nodes by service states..."
-          className="w-full min-w-[300px]"
+          className={styles.multiSelectFull}
         />
       </div>
-      <div className="self-end">
-        <Button onClick={onRefresh} size="sm" variant="outline" className="h-9 w-9">
+      <div className={styles.refreshButton}>
+        <Button onClick={onRefresh} size="sm" variant="secondary" icon="sync">
           <RefreshCw className="h-4 w-4" />
         </Button>
       </div>
     </div>
   );
 };
+
+const getStyles = (theme: GrafanaTheme2) => ({
+  container: css`
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: ${theme.spacing(2)} ${theme.spacing(2)};
+  `,
+  nodeFilters: css`
+    display: flex;
+    flex-direction: column;
+    gap: ${theme.spacing(1)};
+  `,
+  filterGroup: css`
+    display: flex;
+    flex-direction: column;
+    gap: ${theme.spacing(1.5)};
+  `,
+  label: css`
+    font-size: ${theme.typography.bodySmall.fontSize};
+    font-weight: ${theme.typography.fontWeightMedium};
+    color: ${theme.colors.text.secondary};
+  `,
+  stateFilters: css`
+    display: flex;
+    flex-direction: column;
+    gap: ${theme.spacing(1.5)};
+    align-self: end;
+  `,
+  multiSelect: css`
+    width: 300px;
+  `,
+  multiSelectFull: css`
+    width: 100%;
+    min-width: 300px;
+  `,
+  refreshButton: css`
+    align-self: end;
+  `,
+});
 
 export default NodeFilters;

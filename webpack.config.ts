@@ -7,23 +7,7 @@ const config = async (env: any): Promise<Configuration> => {
   const baseConfig = await grafanaConfig(env);
 
   return merge(baseConfig, {
-    module: {
-      rules: [
-        {
-          test: /\.css$/,
-          use: [
-            {
-              loader: 'postcss-loader',
-              options: {
-                postcssOptions: {
-                  plugins: [require('tailwindcss'), require('autoprefixer')],
-                },
-              },
-            },
-          ],
-        },
-      ],
-    },
+    // No additional config needed after removing Tailwind
   });
 };
 

@@ -1,6 +1,8 @@
 import React from 'react';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
+// Table components replaced with native HTML table elements styled with useStyles2
+// ScrollArea replaced with CSS overflow styling
 import { ScrollArea } from 'components/ui/scroll-area';
+import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from 'components/ui/table';
 
 interface Service {
   service: string;

@@ -1,17 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import { Button } from './button';
-import { ArrowUp } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
 
 export function ScrollToTop() {
-  const [show, setShow] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setShow(window.scrollY > 300);
+    const toggleVisibility = () => {
+      if (window.pageYOffset > 300) {
+        setIsVisible(true);
+      } else {
+        setIsVisible(false);
+      }
     };
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', toggleVisibility);
+    return () => window.removeEventListener('scroll', toggleVisibility);
   }, []);
 
   const scrollToTop = () => {
@@ -21,18 +23,19 @@ export function ScrollToTop() {
     });
   };
 
-  if (!show) {
+  if (!isVisible) {
     return null;
   }
 
   return (
-    <Button
+    <button
       onClick={scrollToTop}
-      size="icon"
-      className="fixed bottom-8 right-8 rounded-full shadow-lg transition-all duration-300"
-      aria-label="Back to top"
+      className="fixed bottom-4 right-4 z-50 rounded-full bg-primary p-3 text-primary-foreground shadow-lg transition-opacity hover:opacity-90"
+      aria-label="Scroll to top"
     >
-      <ArrowUp className="h-4 w-4" />
-    </Button>
+      <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
+      </svg>
+    </button>
   );
 }

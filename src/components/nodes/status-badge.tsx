@@ -1,7 +1,8 @@
 import React from 'react';
 import { ServiceState } from '../../types/cluster';
-import { Badge } from 'components/ui/badge';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from 'components/ui/hover-card';
+import { Badge, Tooltip, useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 
 interface StatusBadgeProps {
   services: ServiceState[];
@@ -9,11 +10,12 @@ interface StatusBadgeProps {
 }
 
 const StatusBadge: React.FC<StatusBadgeProps> = ({ services, error }) => {
+  const styles = useStyles2(getStyles);
+
   const getStatusInfo = () => {
     if (error) {
       return {
-        className: 'bg-red-500 dark:bg-red-500/80 hover:bg-red-600 dark:hover:bg-red-500 text-white border-transparent',
-        tooltip: `Error: ${error}`,
+        color: 'red' as const,
         status: 'error',
       };
     }
@@ -23,75 +25,100 @@ const StatusBadge: React.FC<StatusBadgeProps> = ({ services, error }) => {
 
     if (allRunning) {
       return {
-        className:
-          'bg-green-500 dark:bg-green-500/80 hover:bg-green-600 dark:hover:bg-green-500 text-white border-transparent',
+        color: 'green' as const,
         status: 'healthy',
       };
     } else if (onlyStartingOrRunning) {
       return {
-        className:
-          'bg-yellow-500 dark:bg-yellow-500/80 hover:bg-yellow-600 dark:hover:bg-yellow-500 text-white border-transparent',
+        color: 'orange' as const,
         status: 'pending',
       };
     } else {
       return {
-        className: 'bg-red-500 dark:bg-red-500/80 hover:bg-red-600 dark:hover:bg-red-500 text-white border-transparent',
+        color: 'red' as const,
         status: 'unhealthy',
       };
     }
   };
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string, theme: GrafanaTheme2) => {
     switch (status) {
       case 'Running':
-        return 'text-green-600 dark:text-green-400';
+        return theme.colors.success.text;
       case 'Starting':
-        return 'text-yellow-600 dark:text-yellow-400';
+        return theme.colors.warning.text;
       case 'Failed':
-        return 'text-red-600 dark:text-red-400';
+        return theme.colors.error.text;
       case 'Terminated':
-        return 'text-gray-600 dark:text-gray-400';
+        return theme.colors.text.secondary;
       case 'Stopping':
-        return 'text-orange-600 dark:text-orange-400';
+        return theme.colors.warning.text;
       case 'New':
-        return 'text-blue-600 dark:text-blue-400';
+        return theme.colors.info.text;
       default:
-        return 'text-gray-600 dark:text-gray-400';
+        return theme.colors.text.secondary;
     }
   };
 
-  const { className } = getStatusInfo();
+  const { color } = getStatusInfo();
+
+  const tooltipContent = (
+    <div className={styles.tooltipContent}>
+      <div className={styles.tooltipHeader}>Service Status</div>
+      <div className={styles.serviceList}>
+        {services.map((service, idx) => (
+          <div key={idx} className={styles.serviceItem}>
+            <span className={styles.serviceName}>{service.service}</span>
+            <span style={{ color: getStatusColor(service.status, useStyles2(getStyles).theme) }}>
+              {service.status}
+            </span>
+          </div>
+        ))}
+      </div>
+      {error && <div className={styles.errorText}>{error}</div>}
+    </div>
+  );
 
   return (
-    <HoverCard>
-      <HoverCardTrigger>
-        <button type="button">
-          <Badge className={className}>{services.length} services</Badge>
-        </button>
-      </HoverCardTrigger>
-      <HoverCardContent
-        className="w-80 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2"
-        sideOffset={5}
-      >
-        <div className="space-y-2">
-          <div className="font-medium border-b border-gray-200 dark:border-gray-700 pb-1">Service Status</div>
-          <div className="space-y-1">
-            {services.map((service, idx) => (
-              <div key={idx} className="flex justify-between items-center">
-                <span className="mr-4 font-medium">{service.service}</span>
-                <span className={`${getStatusColor(service.status)}`}>{service.status}</span>
-              </div>
-            ))}
-          </div>
-          {error && (
-            <div className="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 text-red-600 dark:text-red-400">
-              {error}
-            </div>
-          )}
-        </div>
-      </HoverCardContent>
-    </HoverCard>
+    <Tooltip content={tooltipContent} placement="bottom">
+      <span>
+        <Badge text={`${services.length} services`} color={color} />
+      </span>
+    </Tooltip>
   );
 };
+
+const getStyles = (theme: GrafanaTheme2) => ({
+  theme,
+  tooltipContent: css`
+    min-width: 250px;
+  `,
+  tooltipHeader: css`
+    font-weight: ${theme.typography.fontWeightMedium};
+    border-bottom: 1px solid ${theme.colors.border.weak};
+    padding-bottom: ${theme.spacing(1)};
+    margin-bottom: ${theme.spacing(1)};
+  `,
+  serviceList: css`
+    display: flex;
+    flex-direction: column;
+    gap: ${theme.spacing(0.5)};
+  `,
+  serviceItem: css`
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  `,
+  serviceName: css`
+    margin-right: ${theme.spacing(2)};
+    font-weight: ${theme.typography.fontWeightMedium};
+  `,
+  errorText: css`
+    margin-top: ${theme.spacing(1)};
+    padding-top: ${theme.spacing(1)};
+    border-top: 1px solid ${theme.colors.border.weak};
+    color: ${theme.colors.error.text};
+  `,
+});
 
 export default StatusBadge;

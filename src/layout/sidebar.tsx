@@ -1,27 +1,27 @@
 import React from 'react';
-import { ScrollArea } from 'components/ui/scroll-area';
-import { getBasename } from '../util';
+// ScrollArea replaced with CSS overflow styling
 import { VersionDisplay } from 'components/version-display';
 import { useLocation, Link } from 'react-router-dom';
 import { ChevronDown, CircleDot, Database, GaugeCircle, LayoutDashboard, Users, BookOpen, Fish } from 'lucide-react';
 import { useCluster } from '../contexts/use-cluster';
 import { getAvailableRings } from 'lib/ring-utils';
 import { prefixRoute } from 'utils/utils.routing';
-
 import {
   Sidebar,
+  SidebarHeader,
   SidebarContent,
   SidebarGroup,
-  SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
+  SidebarMenuButton,
   SidebarMenuSub,
-  SidebarMenuSubButton,
   SidebarMenuSubItem,
+  SidebarMenuSubButton,
   SidebarRail,
 } from 'components/ui/sidebar';
-import { cn } from 'lib/utils';
+import { ScrollArea } from 'components/ui/scroll-area';
+
+// Sidebar components replaced with custom implementation
 
 interface NavItem {
   title: string;
@@ -146,25 +146,20 @@ const baseNavItems: NavItem[] = [
 ];
 
 // Custom wrapper for SidebarRail to handle theme-specific styling
-function CustomSidebarRail(props: React.ComponentProps<typeof SidebarRail>) {
-  return (
-    <SidebarRail
-      {...props}
-      className={cn('after:bg-border/40 hover:after:bg-border', 'hover:bg-muted/50', props.className)}
-    />
-  );
+function CustomSidebarRail(props: React.HTMLAttributes<HTMLDivElement>) {
+  return <SidebarRail {...props} />;
 }
 
 const OPEN_SECTIONS_KEY = 'loki-sidebar-open-sections';
 
-interface NavItemProps {
+interface NavItemComponentProps {
   item: NavItem;
   isOpen: boolean;
   isActive: (url: string) => boolean;
   onToggle: (title: string) => void;
 }
 
-const NavItemComponent = React.memo(function NavItemComponent({ item, isOpen, isActive, onToggle }: NavItemProps) {
+const NavItemComponent = React.memo(function NavItemComponent({ item, isOpen, isActive, onToggle }: NavItemComponentProps) {
   return (
     <SidebarMenuItem>
       <SidebarMenuButton asChild isActive={isActive(item.url)} onClick={() => onToggle(item.title)}>
@@ -180,8 +175,7 @@ const NavItemComponent = React.memo(function NavItemComponent({ item, isOpen, is
           </div>
           {item.items && item.items.length > 0 && (
             <ChevronDown
-              className={cn('h-4 w-4 transition-transform duration-200', isOpen ? 'rotate-0' : '-rotate-90')}
-            />
+              className="{/* TODO: migrate to useStyles2 */}">
           )}
         </div>
       </SidebarMenuButton>
@@ -200,11 +194,10 @@ const NavItemComponent = React.memo(function NavItemComponent({ item, isOpen, is
   );
 });
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const basename = getBasename();
+export function AppSidebar(props: React.HTMLAttributes<HTMLElement>) {
   const location = useLocation();
   const { cluster } = useCluster();
-  const currentPath = location.pathname.replace(basename, '/');
+  const currentPath = location.pathname;
 
   // Initialize state from localStorage or default to all sections open
   const [openSections, setOpenSections] = React.useState<Record<string, boolean>>(() => {

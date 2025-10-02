@@ -10,7 +10,7 @@ import { ClusterProvider } from '../../contexts/cluster-provider';
 import { VersionDisplay } from 'components/version-display';
 import { PluginPage } from '@grafana/runtime';
 import { HeaderActions } from '../../layout/header-actions';
-import { TooltipProvider } from 'components/ui/tooltip';
+
 import { getGrafanaTheme } from '../../utils/theme';
 
 function App(_: AppRootProps) {
@@ -20,7 +20,7 @@ function App(_: AppRootProps) {
     <QueryProvider>
       <ThemeProvider defaultTheme={grafanaTheme}>
         <ClusterProvider>
-          <TooltipProvider>
+          
             <PluginPage
               renderTitle={() => (
                 <div className="flex items-center justify-between w-full">
@@ -42,7 +42,7 @@ function App(_: AppRootProps) {
                 </Routes>
               </AppLayout>
             </PluginPage>
-          </TooltipProvider>
+          
         </ClusterProvider>
       </ThemeProvider>
     </QueryProvider>

@@ -1,6 +1,7 @@
 import React from 'react';
-import { cn } from 'lib/utils';
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'components/ui/tooltip';
+import { Tooltip, useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 
 interface ReadinessIndicatorProps {
   isReady?: boolean;
@@ -9,18 +10,28 @@ interface ReadinessIndicatorProps {
 }
 
 export function ReadinessIndicator({ isReady, message, className }: ReadinessIndicatorProps) {
+  const styles = useStyles2(getStyles);
+
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <div className={cn('flex items-center gap-2', className)}>
-            <div className={cn('h-2.5 w-2.5 rounded-full', isReady ? 'bg-green-500' : 'bg-red-500')} />
-          </div>
-        </TooltipTrigger>
-        <TooltipContent>
-          <p className="text-sm">{message || (isReady ? 'Ready' : 'Not Ready')}</p>
-        </TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+    <Tooltip content={message || (isReady ? 'Ready' : 'Not Ready')} placement="top">
+      <div className={className} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div className={isReady ? styles.indicatorReady : styles.indicatorNotReady} />
+      </div>
+    </Tooltip>
   );
 }
+
+const getStyles = (theme: GrafanaTheme2) => ({
+  indicatorReady: css`
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: ${theme.colors.success.main};
+  `,
+  indicatorNotReady: css`
+    height: 10px;
+    width: 10px;
+    border-radius: 50%;
+    background-color: ${theme.colors.error.main};
+  `,
+});

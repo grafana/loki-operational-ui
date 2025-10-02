@@ -2,12 +2,10 @@ import React, { useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { PartitionInstance } from 'types/ring';
 import { prefixRoute } from 'utils/utils.routing';
-import { formatTimestamp, formatRelativeTime, getZoneColors } from 'lib/ring-utils';
-import { cn } from 'lib/utils';
-import { Checkbox } from 'components/ui/checkbox';
-import { ArrowRightCircle } from 'lucide-react';
-import { Button } from 'components/ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
+import { formatTimestamp, formatRelativeTime, getStateColor, getZoneColorIndex } from 'lib/ring-utils';
+import { Checkbox, Badge, useStyles2, Button } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 import { DataTableColumnHeader } from 'components/common/data-table-column-header';
 import { RateWithTrend } from './rate-with-trend';
 
@@ -39,26 +37,11 @@ function SelectAllCheckbox({ allPartitions, selectedIds, onChange }: SelectAllCh
 
   return (
     <Checkbox
-      checked={uniquePartitionIds.length > 0 && allSelected}
-      onCheckedChange={handleChange}
+      value={uniquePartitionIds.length > 0 && allSelected}
+      onChange={handleChange}
       aria-label="Select all partitions"
     />
   );
-}
-
-function getStateColors(state: number): string {
-  switch (state) {
-    case 2: // Active
-      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
-    case 1: // Pending
-      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
-    case 3: // Inactive
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
-    case 4: // Deleted
-      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
-    default: // Unknown
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
-  }
 }
 
 interface PartitionRingTableProps {
@@ -79,6 +62,98 @@ const STATE_OPTIONS = [
   { value: 4, label: 'Deleted' },
 ];
 
+const getStyles = (theme: GrafanaTheme2) => ({
+  table: css`
+    width: 100%;
+    border-collapse: collapse;
+  `,
+  thead: css`
+    background: ${theme.colors.background.secondary};
+  `,
+  th: css`
+    padding: ${theme.spacing(1.5)};
+    text-align: left;
+    font-weight: ${theme.typography.fontWeightMedium};
+    color: ${theme.colors.text.secondary};
+    border-bottom: 1px solid ${theme.colors.border.weak};
+  `,
+  tr: css`
+    border-bottom: 1px solid ${theme.colors.border.weak};
+    &:hover {
+      background: ${theme.colors.background.secondary};
+    }
+  `,
+  trNoHover: css`
+    border-bottom: 1px solid ${theme.colors.border.weak};
+  `,
+  td: css`
+    padding: ${theme.spacing(1.5)};
+    color: ${theme.colors.text.primary};
+  `,
+  zoneBadge: css`
+    display: inline-flex;
+    align-items: center;
+    padding: ${theme.spacing(0.5, 1)};
+    border-radius: ${theme.shape.radius.default};
+    font-size: ${theme.typography.bodySmall.fontSize};
+    font-weight: ${theme.typography.fontWeightMedium};
+  `,
+  partitionBadge: css`
+    display: inline-flex;
+    align-items: center;
+    padding: ${theme.spacing(0.5, 1)};
+    border-radius: ${theme.shape.radius.default};
+    font-size: ${theme.typography.bodySmall.fontSize};
+    font-weight: ${theme.typography.fontWeightMedium};
+    background: ${theme.colors.background.secondary};
+  `,
+  partitionBadgeCorrupted: css`
+    display: inline-flex;
+    align-items: center;
+    padding: ${theme.spacing(0.5, 1)};
+    border-radius: ${theme.shape.radius.default};
+    font-size: ${theme.typography.bodySmall.fontSize};
+    font-weight: ${theme.typography.fontWeightMedium};
+    background: ${theme.colors.error.transparent};
+    color: ${theme.colors.error.text};
+  `,
+  link: css`
+    color: ${theme.colors.text.link};
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  `,
+  fontMedium: css`
+    font-weight: ${theme.typography.fontWeightMedium};
+  `,
+  textMuted: css`
+    color: ${theme.colors.text.secondary};
+  `,
+  noResults: css`
+    padding: ${theme.spacing(3)};
+    text-align: center;
+    color: ${theme.colors.text.secondary};
+  `,
+});
+
+// Map zone color index to Badge color
+const ZONE_BADGE_COLORS: Array<'blue' | 'green' | 'red' | 'orange' | 'purple'> = [
+  'red',
+  'orange',
+  'orange',
+  'green',
+  'green',
+  'blue',
+  'blue',
+  'purple',
+];
+
+function getZoneBadgeColor(zone: string): 'blue' | 'green' | 'red' | 'orange' | 'purple' {
+  const index = getZoneColorIndex(zone);
+  return ZONE_BADGE_COLORS[index % ZONE_BADGE_COLORS.length];
+}
+
 export function PartitionRingTable({
   partitions,
   selectedPartitions,
@@ -87,6 +162,7 @@ export function PartitionRingTable({
   sortDirection,
   onSort,
 }: PartitionRingTableProps) {
+  const styles = useStyles2(getStyles);
   // Sort partitions according to the current sort field
   const sortedPartitions = useMemo(() => {
     return [...partitions].sort((a, b) => {
@@ -121,175 +197,154 @@ export function PartitionRingTable({
   }, [partitions, sortField, sortDirection]);
 
   return (
-    <>
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="w-[50px]">
-              <SelectAllCheckbox
-                allPartitions={partitions}
-                selectedIds={selectedPartitions}
-                onChange={(newSelection) => {
-                  const uniqueIds = new Set(partitions.map((p) => p.id));
-                  uniqueIds.forEach((id) => {
-                    if (newSelection.has(id) !== selectedPartitions.has(id)) {
-                      onSelectPartition(id);
-                    }
-                  });
-                }}
-              />
-            </TableHead>
-            <TableHead className="w-[200px]">
-              <DataTableColumnHeader<SortField>
-                title="Owner"
-                field="owner"
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSort={onSort}
-              />
-            </TableHead>
-            <TableHead className="w-[150px]">
-              <DataTableColumnHeader<SortField>
-                title="Zone"
-                field="zone"
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSort={onSort}
-              />
-            </TableHead>
-            <TableHead className="w-[100px]">
-              <DataTableColumnHeader<SortField>
-                title="Partition ID"
-                field="id"
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSort={onSort}
-              />
-            </TableHead>
-            <TableHead className="w-[150px]">
-              <DataTableColumnHeader<SortField>
-                title="State"
-                field="state"
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSort={onSort}
-              />
-            </TableHead>
-            <TableHead className="w-[200px]">
-              <DataTableColumnHeader<SortField>
-                title="Last Update"
-                field="timestamp"
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSort={onSort}
-              />
-            </TableHead>
-            <TableHead className="w-[150px]">
-              <DataTableColumnHeader<SortField>
-                title="Uncompressed Rate"
-                field="uncompressed_rate"
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSort={onSort}
-              />
-            </TableHead>
-            <TableHead className="w-[150px]">
-              <DataTableColumnHeader<SortField>
-                title="Compressed Rate"
-                field="compressed_rate"
-                sortField={sortField}
-                sortDirection={sortDirection}
-                onSort={onSort}
-              />
-            </TableHead>
-            <TableHead className="w-[100px]" />
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {sortedPartitions.map((partition) => {
-            return (
-              <TableRow key={`${partition.owner_id}-${partition.id}`}>
-                <TableCell>
-                  <Checkbox
-                    checked={selectedPartitions.has(partition.id)}
-                    onCheckedChange={() => onSelectPartition(partition.id)}
-                    aria-label={`Select partition ${partition.id}`}
+    <table className={styles.table}>
+      <thead className={styles.thead}>
+        <tr className={styles.trNoHover}>
+          <th className={styles.th} style={{ width: '50px' }}>
+            <SelectAllCheckbox
+              allPartitions={partitions}
+              selectedIds={selectedPartitions}
+              onChange={(newSelection) => {
+                const uniqueIds = new Set(partitions.map((p) => p.id));
+                uniqueIds.forEach((id) => {
+                  if (newSelection.has(id) !== selectedPartitions.has(id)) {
+                    onSelectPartition(id);
+                  }
+                });
+              }}
+            />
+          </th>
+          <th className={styles.th} style={{ width: '200px' }}>
+            <DataTableColumnHeader<SortField>
+              title="Owner"
+              field="owner"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+          </th>
+          <th className={styles.th} style={{ width: '150px' }}>
+            <DataTableColumnHeader<SortField>
+              title="Zone"
+              field="zone"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+          </th>
+          <th className={styles.th} style={{ width: '100px' }}>
+            <DataTableColumnHeader<SortField>
+              title="Partition ID"
+              field="id"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+          </th>
+          <th className={styles.th} style={{ width: '150px' }}>
+            <DataTableColumnHeader<SortField>
+              title="State"
+              field="state"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+          </th>
+          <th className={styles.th} style={{ width: '200px' }}>
+            <DataTableColumnHeader<SortField>
+              title="Last Update"
+              field="timestamp"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+          </th>
+          <th className={styles.th} style={{ width: '150px' }}>
+            <DataTableColumnHeader<SortField>
+              title="Uncompressed Rate"
+              field="uncompressed_rate"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+          </th>
+          <th className={styles.th} style={{ width: '150px' }}>
+            <DataTableColumnHeader<SortField>
+              title="Compressed Rate"
+              field="compressed_rate"
+              sortField={sortField}
+              sortDirection={sortDirection}
+              onSort={onSort}
+            />
+          </th>
+          <th className={styles.th} style={{ width: '100px' }} />
+        </tr>
+      </thead>
+      <tbody>
+        {sortedPartitions.map((partition) => {
+          return (
+            <tr key={`${partition.owner_id}-${partition.id}`} className={styles.tr}>
+              <td className={styles.td}>
+                <Checkbox
+                  checked={selectedPartitions.has(partition.id)}
+                  onChange={() => onSelectPartition(partition.id)}
+                  aria-label={`Select partition ${partition.id}`}
+                />
+              </td>
+              <td className={`${styles.td} ${styles.fontMedium}`}>
+                <Link to={prefixRoute(`nodes/${partition.owner_id}`)} className={styles.link}>
+                  {partition.owner_id}
+                </Link>
+              </td>
+              <td className={styles.td}>
+                <Badge text={partition.zone || '-'} color={getZoneBadgeColor(partition.zone || '')} />
+              </td>
+              <td className={styles.td}>
+                <span
+                  className={partition.corrupted ? styles.partitionBadgeCorrupted : styles.partitionBadge}
+                  title={partition.corrupted ? 'Corrupted' : undefined}
+                >
+                  {partition.id}
+                </span>
+              </td>
+              <td className={styles.td}>
+                <Badge
+                  text={STATE_OPTIONS.find((opt) => opt.value === partition.state)?.label || 'Unknown'}
+                  color={getStateColor(partition.state)}
+                />
+              </td>
+              <td className={styles.td}>
+                <span title={formatTimestamp(partition.state_timestamp)} className={styles.textMuted}>
+                  {formatRelativeTime(partition.state_timestamp)}
+                </span>
+              </td>
+              <td className={styles.td}>
+                <RateWithTrend currentRate={partition.uncompressedRate || 0} />
+              </td>
+              <td className={styles.td}>
+                <RateWithTrend currentRate={partition.compressedRate || 0} />
+              </td>
+              <td className={styles.td}>
+                <Link to={prefixRoute(`nodes/${partition.owner_id}`)}>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    icon="arrow-right"
+                    tooltip="View instance details"
                   />
-                </TableCell>
-                <TableCell className="font-medium">
-                  <Link to={prefixRoute(`nodes/${partition.owner_id}`)} className="hover:underline">
-                    {partition.owner_id}
-                  </Link>
-                </TableCell>
-                <TableCell>
-                  <span
-                    className={cn(
-                      'inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium',
-                      getZoneColors(partition.zone || '')
-                    )}
-                  >
-                    {partition.zone || '-'}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <span
-                    className={cn(
-                      'inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium',
-                      partition.corrupted ? 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200' : 'bg-muted'
-                    )}
-                    title={partition.corrupted ? 'Corrupted' : undefined}
-                  >
-                    {partition.id}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <span
-                    className={cn(
-                      'inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium',
-                      getStateColors(partition.state)
-                    )}
-                  >
-                    {STATE_OPTIONS.find((opt) => opt.value === partition.state)?.label || 'Unknown'}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <span title={formatTimestamp(partition.state_timestamp)} className="text-muted-foreground">
-                    {formatRelativeTime(partition.state_timestamp)}
-                  </span>
-                </TableCell>
-                <TableCell>
-                  <RateWithTrend
-                    currentRate={partition.uncompressedRate || 0}
-                    className="text-muted-foreground inline-flex items-center"
-                  />
-                </TableCell>
-                <TableCell>
-                  <RateWithTrend
-                    currentRate={partition.compressedRate || 0}
-                    className="text-muted-foreground inline-flex items-center"
-                  />
-                </TableCell>
-                <TableCell>
-                  <div className="flex items-center gap-2">
-                    <Link to={prefixRoute(`nodes/${partition.owner_id}`)} className="hover:underline">
-                      <Button variant="ghost" size="icon" className="h-8 w-8" title="View instance details">
-                        <ArrowRightCircle className="h-4 w-4" />
-                      </Button>
-                    </Link>
-                  </div>
-                </TableCell>
-              </TableRow>
-            );
-          })}
-          {sortedPartitions.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={7} className="h-24 text-center">
-                <div className="text-muted-foreground">No partitions found</div>
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
-    </>
+                </Link>
+              </td>
+            </tr>
+          );
+        })}
+        {sortedPartitions.length === 0 && (
+          <tr className={styles.trNoHover}>
+            <td colSpan={9} className={styles.noResults}>
+              No partitions found
+            </td>
+          </tr>
+        )}
+      </tbody>
+    </table>
   );
 }

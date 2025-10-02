@@ -13,43 +13,32 @@ export function formatTimestamp(timestamp: string) {
   return formatISO(date, { format: 'extended' });
 }
 
-export function getStateColors(state: string | number): string {
+// Returns Grafana theme color names for state badges
+export function getStateColor(state: string | number): 'blue' | 'green' | 'red' | 'orange' | 'purple' {
   const numericState = typeof state === 'string' ? parseInt(state, 10) : state;
   switch (numericState) {
     case 2: // Active
-      return 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200';
+      return 'green';
     case 1: // Pending
-      return 'bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200';
+      return 'orange';
     case 3: // Inactive
-      return 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200';
+      return 'orange';
     case 4: // Deleted
-      return 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200';
+      return 'red';
     default: // Unknown
-      return 'bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200';
+      return 'orange';
   }
 }
 
-export function getZoneColors(zone: string) {
-  // Create a consistent hash of the zone name to always get the same color for the same zone
-  const hash = zone.split('').reduce((acc, char) => {
+// Hash function for consistent zone colors
+function hashZone(zone: string): number {
+  return zone.split('').reduce((acc, char) => {
     return char.charCodeAt(0) + ((acc << 5) - acc);
   }, 0);
+}
 
-  // Using only colors not used in state indicators
-  // Avoiding: green, yellow, blue, purple, red, gray
-  const colors = [
-    'bg-rose-100 text-rose-800 dark:bg-rose-900 dark:text-rose-200',
-    'bg-orange-100 text-orange-800 dark:bg-orange-900 dark:text-orange-200',
-    'bg-amber-100 text-amber-800 dark:bg-amber-900 dark:text-amber-200',
-    'bg-lime-100 text-lime-800 dark:bg-lime-900 dark:text-lime-200',
-    'bg-teal-100 text-teal-800 dark:bg-teal-900 dark:text-teal-200',
-    'bg-cyan-100 text-cyan-800 dark:bg-cyan-900 dark:text-cyan-200',
-    'bg-indigo-100 text-indigo-800 dark:bg-indigo-900 dark:text-indigo-200',
-    'bg-fuchsia-100 text-fuchsia-800 dark:bg-fuchsia-900 dark:text-fuchsia-200',
-  ];
-
-  const index = Math.abs(hash) % colors.length;
-  return colors[index];
+export function getZoneColorIndex(zone: string): number {
+  return Math.abs(hashZone(zone)) % 8;
 }
 
 export function parseZoneFromOwner(owner: string): string {

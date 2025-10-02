@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Button } from 'components/ui/button';
+import { Button, useStyles2 } from '@grafana/ui';
 import { Loader2, Pause } from 'lucide-react';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css, keyframes } from '@emotion/css';
 
 interface RefreshLoopProps {
   onRefresh: () => void;
@@ -9,8 +11,53 @@ interface RefreshLoopProps {
   className?: string;
 }
 
+const spin = keyframes({
+  '0%': { transform: 'rotate(0deg)' },
+  '100%': { transform: 'rotate(360deg)' },
+});
+
+const getStyles = (theme: GrafanaTheme2) => ({
+  container: css({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 8,
+    fontSize: 14,
+    color: theme.colors.text.secondary,
+  }),
+  refreshButton: css({
+    height: 24,
+    padding: '0 8px',
+    fontSize: 12,
+  }),
+  icon: css({
+    height: 12,
+    width: 12,
+  }),
+  pauseIcon: css({
+    height: 12,
+    width: 12,
+    color: theme.colors.warning.main,
+  }),
+  loadingIcon: css({
+    height: 12,
+    width: 12,
+    color: theme.colors.success.main,
+  }),
+  spinning: css({
+    animation: `${spin} 1s linear infinite`,
+  }),
+  hidden: css({
+    opacity: 0,
+    transition: 'opacity 1s',
+  }),
+  statusText: css({
+    transition: 'opacity 1s',
+  }),
+});
+
 export function RefreshLoop({ onRefresh, isPaused = false, isLoading, className }: RefreshLoopProps) {
   const [delayedLoading, setDelayedLoading] = useState(isLoading);
+  const styles = useStyles2(getStyles);
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
@@ -29,21 +76,21 @@ export function RefreshLoop({ onRefresh, isPaused = false, isLoading, className 
   }, [isLoading]);
 
   return (
-    <div className={`flex items-center gap-2 text-sm text-muted-foreground ${className}`}>
-      <Button variant="secondary" size="sm" className="h-6 px-2 text-xs hover:bg-muted" onClick={onRefresh}>
+    <div className={`${styles.container} ${className || ''}`}>
+      <Button variant="secondary" size="sm" className={styles.refreshButton} onClick={onRefresh}>
         Refresh now
       </Button>
       {isPaused ? (
-        <Pause className="h-3 w-3 text-orange-500" />
+        <Pause className={styles.pauseIcon} />
       ) : (
         <Loader2
-          className={`h-3 w-3 ${
-            delayedLoading ? 'animate-spin text-emerald-500 ' : 'opacity-0 transition-opacity duration-1000'
-          } `}
+          className={`${styles.loadingIcon} ${
+            delayedLoading ? styles.spinning : styles.hidden
+          }`}
         />
       )}
-      <span className="transition-opacity duration-1000">
-        {isPaused ? 'Auto-refresh paused' : delayedLoading ? 'Refreshing...' : ``}
+      <span className={styles.statusText}>
+        {isPaused ? 'Auto-refresh paused' : delayedLoading ? 'Refreshing...' : ''}
       </span>
     </div>
   );

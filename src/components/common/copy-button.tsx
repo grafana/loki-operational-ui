@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Button } from 'components/ui/button';
+import { Button, useStyles2 } from '@grafana/ui';
 import { Copy, Check } from 'lucide-react';
-import { cn } from 'lib/utils';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 
 interface CopyButtonProps {
   text: string;
@@ -9,8 +10,23 @@ interface CopyButtonProps {
   onCopy?: () => void;
 }
 
+const getStyles = (theme: GrafanaTheme2) => ({
+  copyButton: css({
+    display: 'flex',
+    alignItems: 'center',
+    gap: 4,
+    height: 32,
+    padding: '0 8px',
+  }),
+  icon: css({
+    height: 16,
+    width: 16,
+  }),
+});
+
 export function CopyButton({ text, className, onCopy }: CopyButtonProps) {
   const [hasCopied, setHasCopied] = useState(false);
+  const styles = useStyles2(getStyles);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(text).then(() => {
@@ -21,15 +37,15 @@ export function CopyButton({ text, className, onCopy }: CopyButtonProps) {
   };
 
   return (
-    <Button variant="ghost" size="sm" onClick={copyToClipboard} className={cn('h-8 px-2', className)}>
+    <Button variant="secondary" size="sm" onClick={copyToClipboard} className={`${styles.copyButton} ${className || ''}`}>
       {hasCopied ? (
         <>
-          <Check className="h-4 w-4 mr-1" />
+          <Check className={styles.icon} />
           Copied
         </>
       ) : (
         <>
-          <Copy className="h-4 w-4 mr-1" />
+          <Copy className={styles.icon} />
           Copy
         </>
       )}

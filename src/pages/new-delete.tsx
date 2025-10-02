@@ -1,10 +1,6 @@
 import React, { useCallback, useMemo, useState } from 'react';
-import { Alert, AlertDescription, AlertTitle } from 'components/ui/alert';
-import { Button } from 'components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from 'components/ui/form';
-import { Input } from 'components/ui/input';
-import { Textarea } from 'components/ui/textarea';
+import { Button, Input } from '@grafana/ui';
+// Card components replaced with styled divs using useStyles2
 import { useCluster } from 'contexts/use-cluster';
 import { ServiceNames } from 'lib/ring-utils';
 import { findNodeName } from 'lib/utils';
@@ -21,6 +17,10 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { PageContainer } from 'layout/page-container';
 import { absolutePath } from '../util';
 import { prefixRoute } from 'utils/utils.routing';
+import { Card, CardHeader, CardTitle, CardContent } from 'components/ui/card';
+import { Alert, AlertTitle, AlertDescription } from 'components/ui/alert';
+import { Form, FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from 'components/ui/form';
+import { Textarea } from 'components/ui/textarea';
 
 const formSchema = z.object({
   tenant_id: z.string().min(1, 'Tenant ID is required'),
@@ -266,7 +266,7 @@ const NewDeleteRequest = () => {
               </div>
 
               <div className="flex justify-end space-x-3 pt-6 border-t">
-                <Button type="button" variant="outline" onClick={() => navigate(prefixRoute('tenants/deletes'))}>
+                <Button type="button" variant="secondary" onClick={() => navigate(prefixRoute('tenants/deletes'))}>
                   Cancel
                 </Button>
                 <Button type="submit" disabled={!form.formState.isValid || form.formState.isSubmitting}>

@@ -2,10 +2,11 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FileMetadataView } from 'components/explorer/file-metadata';
 import { useFileMetadata } from 'hooks/use-file-metadata';
-import { ScrollArea } from 'components/ui/scroll-area';
+// ScrollArea replaced with CSS overflow styling
 import { ExplorerBreadcrumb } from 'components/explorer/breadcrumb';
 import { Loader2 } from 'lucide-react';
-import { Alert, AlertDescription, AlertTitle } from 'components/ui/alert';
+import { ScrollArea } from 'components/ui/scroll-area';
+import { Alert, AlertTitle, AlertDescription } from 'components/ui/alert';
 import { PageContainer } from 'layout/page-container';
 
 export function FileMetadataPage() {

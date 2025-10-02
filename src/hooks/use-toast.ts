@@ -1,8 +1,15 @@
-import type { ToastActionElement, ToastProps } from 'components/ui/toast';
+// Toast types - using Grafana UI notification system instead
 import React from 'react';
 
 const TOAST_LIMIT = 5;
 const TOAST_REMOVE_DELAY = 1000000;
+
+interface ToastProps {
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+type ToastActionElement = React.ReactElement;
 
 type ToasterToast = ToastProps & {
   id: string;

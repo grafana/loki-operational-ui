@@ -3,11 +3,11 @@ import NodeFilters from 'components/nodes/node-filters';
 import NodeList from 'components/nodes/node-list';
 import { TargetDistributionChart } from 'components/nodes/target-distribution-chart';
 import { Member, NodeState } from '../types/cluster';
-import { Card, CardHeader, CardContent } from 'components/ui/card';
 import { ErrorBoundary } from 'components/shared/errors/error-boundary';
 import { useCluster } from '../contexts/use-cluster';
-import { Alert, AlertDescription, AlertTitle } from 'components/ui/alert';
-import { AlertCircle } from 'lucide-react';
+import { Alert, useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 import { PageContainer } from 'layout/page-container';
 
 const NodesPage = () => {
@@ -70,15 +70,17 @@ const NodesPage = () => {
     return Array.from(targets).sort();
   };
 
+  const styles = useStyles2(getStyles);
+
   return (
     <PageContainer>
-      <Card className="shadow-sm">
-        <CardHeader>
-          <div className="grid grid-cols-[1fr_auto] gap-8">
-            <div className="space-y-6">
-              <div>
-                <h2 className="text-3xl font-semibold tracking-tight">Nodes</h2>
-                <p className="text-sm text-muted-foreground mt-1">
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <div className={styles.headerGrid}>
+            <div className={styles.headerContent}>
+              <div className={styles.titleSection}>
+                <h2 className={styles.title}>Nodes</h2>
+                <p className={styles.subtitle}>
                   View and manage Loki nodes in your cluster with their current status and configuration
                 </p>
               </div>
@@ -94,27 +96,25 @@ const NodesPage = () => {
                 isLoading={isLoading}
               />
             </div>
-            <div className="flex items-center">
-              <div className="w-[250px]">
+            <div className={styles.chartContainer}>
+              <div className={styles.chart}>
                 <TargetDistributionChart nodes={filterNodes()} />
               </div>
             </div>
           </div>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
+        </div>
+        <div className={styles.cardContent}>
+          <div className={styles.contentSpace}>
             {error && (
-              <Alert variant="destructive">
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>Error</AlertTitle>
-                <AlertDescription>{error}</AlertDescription>
+              <Alert severity="error" title="Error">
+                {error}
               </Alert>
             )}
 
             {isLoading && (
-              <div className="flex items-center justify-center py-4">
-                <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary border-t-transparent"></div>
-                <span className="ml-2 text-sm text-muted-foreground">Loading...</span>
+              <div className={styles.loadingContainer}>
+                <div className={styles.spinner}></div>
+                <span className={styles.loadingText}>Loading...</span>
               </div>
             )}
 
@@ -122,11 +122,84 @@ const NodesPage = () => {
               <NodeList nodes={filterNodes()} sortField={sortField} sortDirection={sortDirection} onSort={handleSort} />
             )}
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </PageContainer>
   );
 };
+
+const getStyles = (theme: GrafanaTheme2) => ({
+  card: css`
+    box-shadow: ${theme.shadows.z1};
+  `,
+  cardHeader: css`
+    padding: ${theme.spacing(3)};
+    border-bottom: 1px solid ${theme.colors.border.weak};
+  `,
+  headerGrid: css`
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: ${theme.spacing(4)};
+  `,
+  headerContent: css`
+    display: flex;
+    flex-direction: column;
+    gap: ${theme.spacing(3)};
+  `,
+  titleSection: css`
+    display: flex;
+    flex-direction: column;
+  `,
+  title: css`
+    font-size: ${theme.typography.h2.fontSize};
+    font-weight: ${theme.typography.fontWeightMedium};
+    letter-spacing: -0.025em;
+  `,
+  subtitle: css`
+    font-size: ${theme.typography.bodySmall.fontSize};
+    color: ${theme.colors.text.secondary};
+    margin-top: ${theme.spacing(0.5)};
+  `,
+  chartContainer: css`
+    display: flex;
+    align-items: center;
+  `,
+  chart: css`
+    width: 250px;
+  `,
+  cardContent: css`
+    padding: ${theme.spacing(3)};
+  `,
+  contentSpace: css`
+    display: flex;
+    flex-direction: column;
+    gap: ${theme.spacing(2)};
+  `,
+  loadingContainer: css`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: ${theme.spacing(2)};
+  `,
+  spinner: css`
+    width: 24px;
+    height: 24px;
+    border: 2px solid ${theme.colors.primary.main};
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+  `,
+  loadingText: css`
+    margin-left: ${theme.spacing(1)};
+    font-size: ${theme.typography.bodySmall.fontSize};
+    color: ${theme.colors.text.secondary};
+  `,
+});
 
 export default function NodesPageWithErrorBoundary() {
   return (

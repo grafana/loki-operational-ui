@@ -4,11 +4,12 @@ import { Member } from 'types/cluster';
 import StatusBadge from 'components/nodes/status-badge';
 import { ReadinessIndicator } from 'components/nodes/readiness-indicator';
 import { DataTableColumnHeader } from 'components/common/data-table-column-header';
-import { Button } from 'components/ui/button';
+import { Button, useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 import { ArrowRightCircle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { prefixRoute } from 'utils/utils.routing';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
 
 type NodeSortField = 'name' | 'target' | 'version' | 'buildDate';
 
@@ -39,23 +40,25 @@ const formatBuildDate = (dateStr: string) => {
 };
 
 const NodeRow: React.FC<NodeRowProps> = ({ name, node, onNavigate }) => {
+  const styles = useStyles2(getRowStyles);
+
   return (
-    <TableRow key={name} className="hover:bg-muted/50 cursor-pointer" onClick={() => onNavigate(name)}>
-      <TableCell className="font-medium">{name}</TableCell>
-      <TableCell>{node.target}</TableCell>
-      <TableCell className="font-mono text-sm">{node.build.version}</TableCell>
-      <TableCell>{formatBuildDate(node.build.buildDate)}</TableCell>
-      <TableCell>
+    <tr key={name} className={styles.row} onClick={() => onNavigate(name)}>
+      <td className={styles.cellMedium}>{name}</td>
+      <td className={styles.cell}>{node.target}</td>
+      <td className={styles.cellMono}>{node.build.version}</td>
+      <td className={styles.cell}>{formatBuildDate(node.build.buildDate)}</td>
+      <td className={styles.cell}>
         <StatusBadge services={node.services} error={node.error} />
-      </TableCell>
-      <TableCell>
+      </td>
+      <td className={styles.cell}>
         <ReadinessIndicator isReady={node.ready?.isReady} message={node.ready?.message} />
-      </TableCell>
-      <TableCell>
+      </td>
+      <td className={styles.cell}>
         <Button
-          variant="ghost"
+          variant="secondary"
           size="sm"
-          className="h-8 w-8 p-0"
+          fill="text"
           onClick={(e) => {
             e.stopPropagation();
             onNavigate(name);
@@ -64,8 +67,8 @@ const NodeRow: React.FC<NodeRowProps> = ({ name, node, onNavigate }) => {
           <ArrowRightCircle className="h-4 w-4" />
           <span className="sr-only">View details</span>
         </Button>
-      </TableCell>
-    </TableRow>
+      </td>
+    </tr>
   );
 };
 
@@ -110,12 +113,14 @@ const NodeList: React.FC<NodeListProps> = ({ nodes, sortField, sortDirection, on
     navigate(prefixRoute(`nodes/${name}`));
   };
 
+  const styles = useStyles2(getTableStyles);
+
   return (
-    <div className="rounded-md border bg-card">
-      <Table>
-        <TableHeader>
-          <TableRow className="hover:bg-transparent">
-            <TableHead className="w-[300px]">
+    <div className={styles.container}>
+      <table className={styles.table}>
+        <thead>
+          <tr className={styles.headerRow}>
+            <th className={styles.headerCell} style={{ width: '300px' }}>
               <DataTableColumnHeader<NodeSortField>
                 title="Node Name"
                 field="name"
@@ -123,8 +128,8 @@ const NodeList: React.FC<NodeListProps> = ({ nodes, sortField, sortDirection, on
                 sortDirection={sortDirection}
                 onSort={onSort}
               />
-            </TableHead>
-            <TableHead className="w-[200px]">
+            </th>
+            <th className={styles.headerCell} style={{ width: '200px' }}>
               <DataTableColumnHeader<NodeSortField>
                 title="Target"
                 field="target"
@@ -132,8 +137,8 @@ const NodeList: React.FC<NodeListProps> = ({ nodes, sortField, sortDirection, on
                 sortDirection={sortDirection}
                 onSort={onSort}
               />
-            </TableHead>
-            <TableHead className="w-[200px]">
+            </th>
+            <th className={styles.headerCell} style={{ width: '200px' }}>
               <DataTableColumnHeader<NodeSortField>
                 title="Version"
                 field="version"
@@ -141,8 +146,8 @@ const NodeList: React.FC<NodeListProps> = ({ nodes, sortField, sortDirection, on
                 sortDirection={sortDirection}
                 onSort={onSort}
               />
-            </TableHead>
-            <TableHead className="w-[200px]">
+            </th>
+            <th className={styles.headerCell} style={{ width: '200px' }}>
               <DataTableColumnHeader<NodeSortField>
                 title="Build Date"
                 field="buildDate"
@@ -150,27 +155,87 @@ const NodeList: React.FC<NodeListProps> = ({ nodes, sortField, sortDirection, on
                 sortDirection={sortDirection}
                 onSort={onSort}
               />
-            </TableHead>
-            <TableHead className="w-[150px]">Status</TableHead>
-            <TableHead className="w-[50px]">Ready</TableHead>
-            <TableHead className="w-[100px]">Actions</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+            </th>
+            <th className={styles.headerCell} style={{ width: '150px' }}>
+              Status
+            </th>
+            <th className={styles.headerCell} style={{ width: '50px' }}>
+              Ready
+            </th>
+            <th className={styles.headerCell} style={{ width: '100px' }}>
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
           {sortedNodes.map(([name, node]) => (
             <NodeRow key={name} name={name} node={node} onNavigate={handleNavigate} />
           ))}
           {sortedNodes.length === 0 && (
-            <TableRow>
-              <TableCell colSpan={7} className="h-24 text-center">
-                <div className="text-muted-foreground">No nodes found</div>
-              </TableCell>
-            </TableRow>
+            <tr>
+              <td colSpan={7} className={styles.emptyCell}>
+                <div className={styles.emptyText}>No nodes found</div>
+              </td>
+            </tr>
           )}
-        </TableBody>
-      </Table>
+        </tbody>
+      </table>
     </div>
   );
 };
+
+const getTableStyles = (theme: GrafanaTheme2) => ({
+  container: css`
+    border-radius: ${theme.shape.radius.default};
+    border: 1px solid ${theme.colors.border.weak};
+    background: ${theme.colors.background.primary};
+    overflow: hidden;
+  `,
+  table: css`
+    width: 100%;
+    border-collapse: collapse;
+  `,
+  headerRow: css`
+    background: ${theme.colors.background.secondary};
+  `,
+  headerCell: css`
+    padding: ${theme.spacing(1.5)};
+    text-align: left;
+    font-weight: ${theme.typography.fontWeightMedium};
+    color: ${theme.colors.text.primary};
+    border-bottom: 1px solid ${theme.colors.border.weak};
+  `,
+  emptyCell: css`
+    padding: ${theme.spacing(3)};
+    text-align: center;
+  `,
+  emptyText: css`
+    color: ${theme.colors.text.secondary};
+  `,
+});
+
+const getRowStyles = (theme: GrafanaTheme2) => ({
+  row: css`
+    cursor: pointer;
+    &:hover {
+      background: ${theme.colors.background.secondary};
+    }
+  `,
+  cell: css`
+    padding: ${theme.spacing(1.5)};
+    border-bottom: 1px solid ${theme.colors.border.weak};
+  `,
+  cellMedium: css`
+    padding: ${theme.spacing(1.5)};
+    border-bottom: 1px solid ${theme.colors.border.weak};
+    font-weight: ${theme.typography.fontWeightMedium};
+  `,
+  cellMono: css`
+    padding: ${theme.spacing(1.5)};
+    border-bottom: 1px solid ${theme.colors.border.weak};
+    font-family: ${theme.typography.fontFamilyMonospace};
+    font-size: ${theme.typography.bodySmall.fontSize};
+  `,
+});
 
 export default NodeList;

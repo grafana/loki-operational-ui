@@ -1,6 +1,6 @@
 import React from 'react';
 import { Search } from 'lucide-react';
-import { Input } from 'components/ui/input';
+import { Input } from '@grafana/ui';
 import { MultiSelect } from '../common/multi-select';
 
 interface RingFiltersProps {
@@ -31,7 +31,7 @@ export function RingFilters({
         <Input
           placeholder="Filter by ID..."
           value={idFilter}
-          onChange={(e) => onIdFilterChange(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onIdFilterChange(e.target.value)}
           className="pl-8"
         />
       </div>

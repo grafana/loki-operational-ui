@@ -1,10 +1,11 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
+// Card components replaced with styled divs using useStyles2
 import { Link } from 'react-router-dom';
 import { AlertCircle, CircleDot } from 'lucide-react';
 import { AVAILABLE_RINGS } from '../hooks/use-ring';
 import { RingType } from '../types/ring';
-import { Alert, AlertTitle, AlertDescription } from '../components/ui/alert';
+import { Alert, AlertTitle, AlertDescription } from 'components/ui/alert';
+import { Card, CardHeader, CardTitle, CardContent } from 'components/ui/card';
 import { PageContainer } from '../layout/page-container';
 import { prefixRoute } from 'utils/utils.routing';
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { cn } from 'lib/utils';
 
 interface StorageTypeIndicatorProps {
   type: string;
@@ -49,9 +48,7 @@ export function StorageTypeIndicator({ type, className }: StorageTypeIndicatorPr
     storageTypeColors[normalizedType] || 'text-gray-600 bg-gray-100 dark:bg-gray-800 dark:text-gray-400';
 
   return (
-    <span
-      className={cn('inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium', colorClasses, className)}
-    >
+    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${colorClasses} ${className || ''}`}>
       {normalizedType}
     </span>
   );

@@ -1,11 +1,12 @@
 import React from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
-import { ScrollArea } from '../components/ui/scroll-area';
+// ScrollArea replaced with CSS overflow styling
 import { FileList } from '../components/explorer/file-list';
 import { useExplorerData } from '../hooks/use-explorer-data';
 import { ExplorerBreadcrumb } from '../components/explorer/breadcrumb';
 import { PageContainer } from '../layout/page-container';
+import { ScrollArea } from 'components/ui/scroll-area';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from 'components/ui/card';
 
 export function DataObjectsPage() {
   const [searchParams] = useSearchParams();

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { cn } from 'lib/utils';
 import { absolutePath } from '../../util';
 
 interface NodeStatusIndicatorProps {
@@ -55,14 +54,12 @@ export function NodeStatusIndicator({ nodeName, className }: NodeStatusIndicator
   }, [nodeName]);
 
   return (
-    <div className={cn('flex items-center gap-2', className)}>
-      <span className={cn('text-sm', status.isReady ? 'text-muted-foreground' : 'text-red-500')}>{status.message}</span>
+    <div className="flex items-center gap-2">
+      <span className="text-sm">{status.message}</span>
       <div
-        className={cn(
-          'h-2.5 w-2.5 rounded-full transition-opacity duration-150',
-          status.isReady ? 'bg-green-500' : 'bg-red-500',
-          isVisible ? 'opacity-100' : 'opacity-30'
-        )}
+        className={`h-2.5 w-2.5 rounded-full transition-opacity duration-150 ${
+          status.isReady ? 'bg-green-500' : 'bg-red-500'
+        } ${isVisible ? 'opacity-100' : 'opacity-30'}`}
       />
     </div>
   );

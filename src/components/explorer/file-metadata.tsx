@@ -1,34 +1,14 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { DownloadIcon } from 'lucide-react';
-import { cn, formatBytes } from 'lib/utils';
-import { Button } from 'components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
+import { Button } from '@grafana/ui';
 import { Badge } from 'components/ui/badge';
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from 'components/ui/card';
+import { formatBytes } from 'lib/utils';
 import { FileMetadataResponse } from 'types/explorer';
 import { DateHover } from 'components/common/date-hover';
 import { CopyButton } from '../common/copy-button';
 import { CompressionRatio } from '../common/compression-ratio';
-
-// Value type to badge styling mapping
-const getValueTypeBadgeStyle = (valueType: string): string => {
-  switch (valueType) {
-    case 'INT64':
-      return 'bg-blue-500/20 text-blue-700 dark:bg-blue-500/30 dark:text-blue-300 hover:bg-blue-500/30';
-    case 'BYTES':
-      return 'bg-red-500/20 text-red-700 dark:bg-red-500/30 dark:text-red-300 hover:bg-red-500/30';
-    case 'FLOAT64':
-      return 'bg-purple-500/20 text-purple-700 dark:bg-purple-500/30 dark:text-purple-300 hover:bg-purple-500/30';
-    case 'BOOL':
-      return 'bg-yellow-500/20 text-yellow-700 dark:bg-yellow-500/30 dark:text-yellow-300 hover:bg-yellow-500/30';
-    case 'STRING':
-      return 'bg-green-500/20 text-green-700 dark:bg-green-500/30 dark:text-green-300 hover:bg-green-500/30';
-    case 'TIMESTAMP':
-      return 'bg-orange-500/20 text-orange-700 dark:bg-orange-500/30 dark:text-orange-300 hover:bg-orange-500/30';
-    default:
-      return 'bg-gray-500/20 text-gray-700 dark:bg-gray-500/30 dark:text-gray-300 hover:bg-gray-500/30';
-  }
-};
 
 interface FileMetadataViewProps {
   metadata: FileMetadataResponse;
@@ -98,7 +78,7 @@ function FileHeader({ filename, downloadUrl, lastModified }: FileHeaderProps) {
     <CardHeader className="space-y-4">
       <div className="flex items-center justify-between">
         <CardTitle className="text-2xl font-semibold tracking-tight">Thor Dataobj File</CardTitle>
-        <Button asChild variant="outline">
+        <Button variant="secondary" fill="outline">
           <Link to={downloadUrl} target="_blank" download>
             <DownloadIcon className="h-4 w-4 mr-2" />
             Download
@@ -356,9 +336,7 @@ function Column({ column, isExpanded, onToggle }: ColumnProps) {
         <div>
           <h5 className="font-medium text-lg">{column.name ? `${column.name} (${column.type})` : column.type}</h5>
           <div className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
-            <Badge variant="secondary" className={cn('font-mono text-xs', getValueTypeBadgeStyle(column.value_type))}>
-              {column.value_type}
-            </Badge>
+            <Badge variant="outline" className="font-mono">{column.value_type}</Badge>
           </div>
         </div>
         <div className="flex items-center gap-4">

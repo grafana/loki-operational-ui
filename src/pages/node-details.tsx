@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Card, CardHeader, CardContent, CardTitle } from '../components/ui/card';
+// Card components replaced with styled divs using useStyles2
 import { ErrorBoundary } from '../components/shared/errors/error-boundary';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../components/ui/tabs';
-import { CodeBlock } from '../components/ui/code-block';
+import { Card, CardHeader, CardTitle, CardContent } from 'components/ui/card';
+import { Label } from 'components/ui/label';
+import { Switch } from 'components/ui/switch';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from 'components/ui/tabs';
+import { CodeBlock } from 'components/ui/code-block';
 import { format } from 'date-fns';
 import { useNodeDetails } from '../hooks/use-node-details';
 import { useNodeMetrics } from '../hooks/use-node-metrics';
 import { ServiceStateDistribution } from '../components/nodes/service-state-distribution';
 import { ServiceTable } from '../components/nodes/service-table';
 import { StorageTypeIndicator } from '../components/nodes/storage-type-indicator';
-import { Label } from '../components/ui/label';
+// Label removed - use native label or Field component
 import { LogLevelSelect } from '../components/nodes/log-level-select';
-import { Switch } from '../components/ui/switch';
 import { VersionInformation } from '../components/nodes/version-information';
 import { NodeStatusIndicator } from '../components/nodes/node-status-indicator';
 import { PprofControls } from '../components/nodes/pprof-controls';

@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import { Check, ChevronsUpDown, X } from 'lucide-react';
-import { cn } from 'lib/utils';
-import { Button } from 'components/ui/button';
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from 'components/ui/command';
-import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
+import { Button } from '@grafana/ui';
+// Command component replaced with custom dropdown implementation
+// Popover replaced with Grafana UI Tooltip or custom implementation
 
 interface TenantFilterSelectProps {
   value?: string;
@@ -32,54 +31,56 @@ export function TenantFilterSelect({ value, onChange, tenants }: TenantFilterSel
 
   return (
     <div className="relative flex items-center">
-      <Popover
-        open={open}
-        onOpenChange={(newOpen) => {
-          setOpen(newOpen);
-          // Reset search when closing
-          if (!newOpen) {
-            setSearchValue('');
-          }
-        }}
-      >
-        <PopoverTrigger asChild>
-          <Button variant="outline" role="combobox" aria-expanded={open} className="w-[160px] h-8 pr-8 justify-between">
-            {value ?? 'All Tenants'}
-            <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-          </Button>
-        </PopoverTrigger>
-        <PopoverContent className="w-[160px] p-0" align="start">
-          <Command shouldFilter={false}>
-            <CommandInput placeholder="Search tenants..." value={searchValue} onValueChange={setSearchValue} />
-            <CommandList>
-              <CommandEmpty>No tenants found</CommandEmpty>
-              <CommandGroup>
-                {/* All Tenants option - always show if no search or if it matches */}
-                {(!searchValue || 'all tenants'.includes(searchValue.toLowerCase())) && (
-                  <CommandItem value="all" onSelect={() => handleSelect(undefined)}>
-                    <Check className={cn('mr-2 h-4 w-4', value === undefined ? 'opacity-100' : 'opacity-0')} />
-                    All Tenants
-                  </CommandItem>
-                )}
-                {/* Filter tenants based on search */}
-                {uniqueTenants
-                  .filter((tenant) => !searchValue || tenant.toLowerCase().includes(searchValue.toLowerCase()))
-                  .map((tenant) => (
-                    <CommandItem key={tenant} value={tenant} onSelect={() => handleSelect(tenant)}>
-                      <Check className={cn('mr-2 h-4 w-4', value === tenant ? 'opacity-100' : 'opacity-0')} />
-                      {tenant}
-                    </CommandItem>
-                  ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
-      </Popover>
+      <div className="relative">
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={() => setOpen(!open)}
+          role="combobox"
+          aria-expanded={open}
+        >
+          {value ?? 'All Tenants'}
+          <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+        </Button>
+        {open && (
+          <div className="absolute z-50 mt-1 w-[160px] border rounded bg-white shadow-lg">
+            <input
+              type="text"
+              placeholder="Search tenants..."
+              value={searchValue}
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchValue(e.target.value)}
+              className="w-full p-2 border-b"
+            />
+            <div className="max-h-60 overflow-y-auto">
+              {(!searchValue || 'all tenants'.includes(searchValue.toLowerCase())) && (
+                <div
+                  onClick={() => handleSelect(undefined)}
+                  className="p-2 cursor-pointer hover:bg-gray-100 flex items-center"
+                >
+                  <Check className={`mr-2 h-4 w-4 ${value === undefined ? 'opacity-100' : 'opacity-0'}`} />
+                  All Tenants
+                </div>
+              )}
+              {uniqueTenants
+                .filter((tenant) => !searchValue || tenant.toLowerCase().includes(searchValue.toLowerCase()))
+                .map((tenant) => (
+                  <div
+                    key={tenant}
+                    onClick={() => handleSelect(tenant)}
+                    className="p-2 cursor-pointer hover:bg-gray-100 flex items-center"
+                  >
+                    <Check className={`mr-2 h-4 w-4 ${value === tenant ? 'opacity-100' : 'opacity-0'}`} />
+                    {tenant}
+                  </div>
+                ))}
+            </div>
+          </div>
+        )}
+      </div>
       {value && (
         <Button
-          variant="ghost"
+          variant="secondary"
           size="sm"
-          className="absolute right-0 h-8 w-8 p-0 z-10"
           onClick={handleClear}
           type="button"
           aria-label="Clear selection"

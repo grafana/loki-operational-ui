@@ -1,25 +1,18 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import { usePartitionRing } from '../hooks/use-partition-ring';
 import { PartitionRingTable, SortField } from '../components/ring/partition-ring-table';
-import { getStateColors, parseZoneFromOwner } from '../lib/ring-utils';
+import { getStateColor, parseZoneFromOwner } from '../lib/ring-utils';
 import { useToast } from '../hooks/use-toast';
-import { Card, CardContent, CardHeader, CardTitle } from '../components/ui/card';
 import { RefreshLoop } from '../components/common/refresh-loop';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from '../components/ui/dialog';
-import { cn } from '../lib/utils';
-import { Loader2, ArrowRightCircle } from 'lucide-react';
-import { Button } from '../components/ui/button';
+import { Select, Badge } from '@grafana/ui';
+import { ArrowRightCircle } from 'lucide-react';
+import { Button, useStyles2, ConfirmModal } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 import { PartitionStateDistributionChart } from '../components/ring/partition-state-distribution-chart';
 import { PartitionRingFilters } from '../components/ring/partition-ring-filters';
 import { BaseRing } from './base-ring';
+import { PageContainer } from 'layout/page-container';
 
 const STATE_OPTIONS = [
   { value: 1, label: 'Pending' },
@@ -28,7 +21,90 @@ const STATE_OPTIONS = [
   { value: 4, label: 'Deleted' },
 ] as const;
 
+const getStyles = (theme: GrafanaTheme2) => ({
+  card: css`
+    background: ${theme.colors.background.primary};
+    border: 1px solid ${theme.colors.border.weak};
+    border-radius: ${theme.shape.radius.default};
+    padding: ${theme.spacing(3)};
+  `,
+  cardHeader: css`
+    margin-bottom: ${theme.spacing(3)};
+  `,
+  headerGrid: css`
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: ${theme.spacing(4)};
+  `,
+  headerContent: css`
+    display: flex;
+    flex-direction: column;
+    gap: ${theme.spacing(3)};
+  `,
+  titleSection: css``,
+  title: css`
+    font-size: ${theme.typography.h2.fontSize};
+    font-weight: ${theme.typography.h2.fontWeight};
+    margin: 0 0 ${theme.spacing(0.5)} 0;
+  `,
+  subtitle: css`
+    font-size: ${theme.typography.bodySmall.fontSize};
+    color: ${theme.colors.text.secondary};
+    margin: 0;
+  `,
+  controls: css`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 32px;
+  `,
+  selectedInfo: css`
+    display: flex;
+    align-items: center;
+    gap: ${theme.spacing(2)};
+  `,
+  selectedText: css`
+    font-size: ${theme.typography.bodySmall.fontSize};
+    color: ${theme.colors.text.secondary};
+  `,
+  chartContainer: css`
+    display: flex;
+    align-items: center;
+  `,
+  chart: css`
+    width: 250px;
+  `,
+  cardContent: css`
+    display: flex;
+    flex-direction: column;
+    gap: ${theme.spacing(3)};
+  `,
+  tableContainer: css`
+    border: 1px solid ${theme.colors.border.weak};
+    border-radius: ${theme.shape.radius.default};
+    background: ${theme.colors.background.primary};
+  `,
+  modalPartition: css`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: ${theme.spacing(1)};
+    border-radius: ${theme.shape.radius.default};
+    background: ${theme.colors.background.secondary};
+    margin-bottom: ${theme.spacing(1)};
+  `,
+  modalPartitionInfo: css`
+    display: flex;
+    align-items: center;
+    gap: ${theme.spacing(1)};
+  `,
+  modalPartitionLabel: css`
+    font-weight: ${theme.typography.fontWeightMedium};
+  `,
+});
+
 export default function PartitionRing() {
+  const styles = useStyles2(getStyles);
   const [selectedPartitions, setSelectedPartitions] = useState<Set<number>>(new Set());
   const [sortField, setSortField] = useState<SortField>('id');
   const [sortDirection, setSortDirection] = useState<'asc' | 'desc'>('asc');
@@ -37,7 +113,7 @@ export default function PartitionRing() {
   const [zoneFilter, setZoneFilter] = useState<string[]>([]);
   const [ownerFilter, setOwnerFilter] = useState('');
   const [isStateChangeLoading, setIsStateChangeLoading] = useState(false);
-  const [selectedNewState, setSelectedNewState] = useState<string>();
+  const [selectedNewState, setSelectedNewState] = useState<number>();
   const [isStateChangeDialogOpen, setIsStateChangeDialogOpen] = useState(false);
   const { toast } = useToast();
 
@@ -114,24 +190,22 @@ export default function PartitionRing() {
 
     try {
       setIsStateChangeLoading(true);
-      const newState = parseInt(selectedNewState, 10);
       const { success, total } = await changePartitionState(
         selectedPartitionDetails.map((p) => p.id),
-        selectedNewState
+        selectedNewState.toString()
       );
 
       if (success > 0 && total === success) {
         toast({
           title: 'State Change Success',
           description: `Successfully changed state for ${success} partition${success !== 1 ? 's' : ''} to ${
-            STATE_OPTIONS.find((opt) => opt.value === newState)?.label
+            STATE_OPTIONS.find((opt) => opt.value === selectedNewState)?.label
           }`,
         });
         await fetchPartitions();
       } else if (success < total) {
         toast({
           title: 'State Change Failed',
-          variant: 'destructive',
           description: `Failed to change state for ${total - success} partition${total - success !== 1 ? 's' : ''}.`,
         });
       }
@@ -165,62 +239,61 @@ export default function PartitionRing() {
   }
 
   return (
-    <div className="container space-y-6 p-6">
-      <Card>
-        <CardHeader>
-          <div className="grid grid-cols-[1fr_auto] gap-8">
-            <div className="space-y-6">
-              <div>
-                <CardTitle className="text-3xl font-semibold tracking-tight">Partition Ring Members</CardTitle>
-                <p className="text-sm text-muted-foreground mt-1">
+    <PageContainer>
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <div className={styles.headerGrid}>
+            <div className={styles.headerContent}>
+              <div className={styles.titleSection}>
+                <h2 className={styles.title}>Partition Ring Members</h2>
+                <p className={styles.subtitle}>
                   View and manage partition ring instances with their current status and configuration
                 </p>
               </div>
-              <div className="flex items-center justify-between min-h-[32px]">
+              <div className={styles.controls}>
                 <RefreshLoop
                   onRefresh={fetchPartitions}
                   isPaused={selectedPartitions.size > 0}
                   isLoading={isPartitionsLoading}
                 />
                 {selectedPartitions.size > 0 && (
-                  <div className="flex items-center gap-4">
-                    <span className="text-sm text-muted-foreground">
+                  <div className={styles.selectedInfo}>
+                    <span className={styles.selectedText}>
                       {selectedPartitions.size} partition
                       {selectedPartitions.size !== 1 ? 's' : ''} selected
                     </span>
-                    <Select value={selectedNewState} onValueChange={setSelectedNewState}>
-                      <SelectTrigger className="w-[160px]">
-                        <SelectValue placeholder="Select new state" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {STATE_OPTIONS.map((option) => (
-                          <SelectItem key={option.value} value={option.value.toString()}>
-                            {option.label}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
+                    <Select
+                      value={selectedNewState}
+                      onChange={(e) => setSelectedNewState(Number(e.currentTarget.value))}
+                      width={20}
+                    >
+                      <option value="">Select new state</option>
+                      {STATE_OPTIONS.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.label}
+                        </option>
+                      ))}
                     </Select>
                     <Button
                       onClick={() => setIsStateChangeDialogOpen(true)}
                       disabled={isStateChangeLoading || !selectedNewState}
                       size="sm"
-                      variant="outline"
+                      variant="secondary"
                     >
-                      {isStateChangeLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                       Change State
                     </Button>
                   </div>
                 )}
               </div>
             </div>
-            <div className="flex items-center">
-              <div className="w-[250px]">
+            <div className={styles.chartContainer}>
+              <div className={styles.chart}>
                 <PartitionStateDistributionChart partitions={partitions} />
               </div>
             </div>
           </div>
-        </CardHeader>
-        <CardContent className="space-y-6">
+        </div>
+        <div className={styles.cardContent}>
           <PartitionRingFilters
             idFilter={idFilter}
             onIdFilterChange={setIdFilter}
@@ -234,62 +307,49 @@ export default function PartitionRing() {
             uniqueZones={uniqueZones}
             partitions={partitions}
           />
-          <div className="rounded-md border bg-card">
+          <div className={styles.tableContainer}>
             <PartitionRingTable {...tableProps} />
           </div>
-        </CardContent>
-      </Card>
+        </div>
+      </div>
 
-      <Dialog open={isStateChangeDialogOpen} onOpenChange={setIsStateChangeDialogOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Confirm State Change</DialogTitle>
-            <DialogDescription>Are you sure you want to change the state of these partitions?</DialogDescription>
-          </DialogHeader>
-          <div className="max-h-[300px] overflow-y-auto">
-            <div className="space-y-2">
+      <ConfirmModal
+        isOpen={isStateChangeDialogOpen}
+        title="Confirm State Change"
+        body={
+          <div>
+            <p>Are you sure you want to change the state of these partitions?</p>
+            <div style={{ maxHeight: '300px', overflowY: 'auto', marginTop: '16px' }}>
               {Array.from(new Set(selectedPartitionDetails.map((p) => p.id))).map((partitionId) => {
                 const partition = partitions.find((p) => p.id === partitionId);
                 if (!partition) {
                   return null;
                 }
                 return (
-                  <div key={partitionId} className="flex items-center justify-between p-2 rounded-md bg-muted">
-                    <div className="flex items-center gap-2">
-                      <span className="font-medium">Partition {partitionId}</span>
-                      <span
-                        className={cn(
-                          'inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium',
-                          getStateColors(partition.state)
-                        )}
-                      >
-                        {STATE_OPTIONS.find((opt) => opt.value === partition.state)?.label}
-                      </span>
-                      <ArrowRightCircle className="h-4 w-4 text-muted-foreground" />
-                      <span
-                        className={cn(
-                          'inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium',
-                          getStateColors(parseInt(selectedNewState || '0', 10))
-                        )}
-                      >
-                        {STATE_OPTIONS.find((opt) => opt.value === parseInt(selectedNewState!, 10))?.label}
-                      </span>
+                  <div key={partitionId} className={styles.modalPartition}>
+                    <div className={styles.modalPartitionInfo}>
+                      <span className={styles.modalPartitionLabel}>Partition {partitionId}</span>
+                      <Badge
+                        text={STATE_OPTIONS.find((opt) => opt.value === partition.state)?.label || 'Unknown'}
+                        color={getStateColor(partition.state)}
+                      />
+                      <ArrowRightCircle size={16} />
+                      <Badge
+                        text={STATE_OPTIONS.find((opt) => opt.value === selectedNewState)?.label || 'Unknown'}
+                        color={getStateColor(selectedNewState || 0)}
+                      />
                     </div>
                   </div>
                 );
               })}
             </div>
           </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={() => setIsStateChangeDialogOpen(false)} disabled={isStateChangeLoading}>
-              Cancel
-            </Button>
-            <Button onClick={handleStateChange} disabled={isStateChangeLoading}>
-              {isStateChangeLoading ? 'Changing States...' : 'Confirm Changes'}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-    </div>
+        }
+        confirmText={isStateChangeLoading ? 'Changing States...' : 'Confirm Changes'}
+        dismissText="Cancel"
+        onConfirm={handleStateChange}
+        onDismiss={() => setIsStateChangeDialogOpen(false)}
+      />
+    </PageContainer>
   );
 }

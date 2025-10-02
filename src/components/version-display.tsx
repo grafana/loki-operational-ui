@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { HoverCard, HoverCardContent, HoverCardTrigger } from 'components/ui/hover-card';
 import { useVersionInfo } from 'hooks/use-version-info';
 import { Loader2 } from 'lucide-react';
-import { cn } from 'lib/utils';
 import { CopyButton } from 'components/common/copy-button';
 
 export function VersionDisplay() {
@@ -24,41 +22,30 @@ Go Version: ${info.goVersion}
   };
 
   return (
-    <HoverCard open={isOpen} onOpenChange={setIsOpen}>
-      <HoverCardTrigger asChild>
-        <span className="text-sm text-muted-foreground flex items-center gap-1">
-          <button
-            onClick={() => setIsOpen(!isOpen)}
-            className={cn(
-              'transition-opacity duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1 -mx-1',
-              {
-                'opacity-0': isLoading,
-                'opacity-100': !isLoading,
-              }
-            )}
-          >
-            {mostCommonVersion}
-          </button>
-          {isLoading && (
-            <>
-              <Loader2 className="h-3 w-3 animate-spin" />
-              Loading...
-            </>
-          )}
-        </span>
-      </HoverCardTrigger>
-      <HoverCardContent side="bottom" align="start" className="w-[400px]">
-        <div className="p-2">
+    <div className="relative">
+      <span className="text-sm text-muted-foreground flex items-center gap-1">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className={`transition-opacity duration-200 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded px-1 -mx-1 ${
+            isLoading ? 'opacity-0' : 'opacity-100'
+          }`}
+        >
+          {mostCommonVersion}
+        </button>
+        {isLoading && (
+          <>
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Loading...
+          </>
+        )}
+      </span>
+      {isOpen && (
+        <div className="absolute z-50 bottom-full mb-2 left-0 w-[400px] border rounded bg-white shadow-lg p-4">
           <div className="flex items-center justify-between mb-2">
             <div className="font-semibold">Build Information</div>
             {!isLoading && versionInfos.length > 0 && <CopyButton text={getVersionText()} />}
           </div>
-          <div
-            className={cn('transition-opacity duration-200', {
-              'opacity-0': isLoading,
-              'opacity-100': !isLoading,
-            })}
-          >
+          <div>
             {versionInfos.length > 0 ? (
               versionInfos.map(({ version, info }) => (
                 <div key={version} className="mb-2 last:mb-0">
@@ -83,7 +70,7 @@ Go Version: ${info.goVersion}
             </div>
           )}
         </div>
-      </HoverCardContent>
-    </HoverCard>
+      )}
+    </div>
   );
 }

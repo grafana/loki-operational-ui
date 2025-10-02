@@ -1,5 +1,7 @@
 import React from 'react';
-import { cn } from 'lib/utils';
+import { useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 
 interface PageContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
@@ -10,10 +12,27 @@ interface PageContainerProps extends React.HTMLAttributes<HTMLDivElement> {
   spacing?: boolean;
 }
 
+const getStyles = (theme: GrafanaTheme2, spacing: boolean) => ({
+  container: css({
+    maxWidth: '100%',
+    margin: '0 auto',
+    padding: 24,
+  }),
+  content: css({
+    ...(spacing && {
+      '& > * + *': {
+        marginTop: 24,
+      },
+    }),
+  }),
+});
+
 export function PageContainer({ children, className, spacing = true, ...props }: PageContainerProps) {
+  const styles = useStyles2((theme) => getStyles(theme, spacing));
+
   return (
-    <div className="container p-6">
-      <div className={cn(spacing && 'space-y-6', className)} {...props}>
+    <div className={styles.container}>
+      <div className={`${styles.content} ${className || ''}`} {...props}>
         {children}
       </div>
     </div>

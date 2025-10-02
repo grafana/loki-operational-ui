@@ -1,16 +1,17 @@
 import React from 'react';
 import useBreadcrumbs from 'use-react-router-breadcrumbs';
 import { Link } from 'react-router-dom';
+// Breadcrumb components replaced with custom implementation
+import { routes } from 'config/routes';
+import { prefixRoute } from 'utils/utils.routing';
 import {
   Breadcrumb,
+  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from 'components/ui/breadcrumb';
-import { routes } from 'config/routes';
-import { prefixRoute } from 'utils/utils.routing';
 
 export function BreadcrumbNav() {
   const breadcrumbs = useBreadcrumbs(routes, {

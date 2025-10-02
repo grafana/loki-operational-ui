@@ -1,10 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Check, X } from 'lucide-react';
-import { cn } from 'lib/utils';
-import { Button } from 'components/ui/button';
-import { Input } from 'components/ui/input';
-import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
-import { Command, CommandEmpty, CommandGroup, CommandItem, CommandList } from 'components/ui/command';
+import { Button, Input } from '@grafana/ui';
+// Popover replaced with Grafana UI Tooltip or custom implementation
 
 interface UserFilterComboboxProps {
   value?: string;
@@ -99,63 +96,52 @@ export function UserFilterCombobox({ value, onChange, suggestions }: UserFilterC
   };
 
   return (
-    <Popover open={open} onOpenChange={() => {}}>
-      <div className="relative flex items-center">
-        <PopoverTrigger asChild>
-          <Input
-            type="text"
-            placeholder="Filter by user..."
-            value={inputValue}
-            onChange={handleInputChange}
-            onKeyDown={handleKeyDown}
-            onFocus={handleFocus}
-            onBlur={() => {
-              // Small delay to allow clicking on suggestions
-              setTimeout(() => {
-                setOpen(false);
-              }, 200);
-            }}
-            className="w-[240px] h-8 pr-8"
-            aria-autocomplete="list"
-            aria-expanded={open}
-            aria-haspopup="listbox"
-          />
-        </PopoverTrigger>
-        {inputValue && (
-          <Button
-            variant="ghost"
-            size="sm"
-            className="absolute right-0 h-8 w-8 p-0 z-10"
-            onClick={handleClear}
-            type="button"
-            aria-label="Clear selection"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-        )}
-      </div>
-      {open && filteredSuggestions.length > 0 && (
-        <PopoverContent
-          className="w-[240px] p-0"
-          align="start"
-          onOpenAutoFocus={(e) => e.preventDefault()}
-          sideOffset={4}
+    <div className="relative flex items-center">
+      <Input
+        type="text"
+        placeholder="Filter by user..."
+        value={inputValue}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        onFocus={handleFocus}
+        onBlur={() => {
+          // Small delay to allow clicking on suggestions
+          setTimeout(() => {
+            setOpen(false);
+          }, 200);
+        }}
+        width={30}
+        aria-autocomplete="list"
+        aria-expanded={open}
+        aria-haspopup="listbox"
+      />
+      {inputValue && (
+        <Button
+          variant="secondary"
+          size="sm"
+          onClick={handleClear}
+          type="button"
+          aria-label="Clear selection"
         >
-          <Command>
-            <CommandList>
-              <CommandEmpty>No users found.</CommandEmpty>
-              <CommandGroup>
-                {filteredSuggestions.map((user) => (
-                  <CommandItem key={user} value={user} onSelect={() => handleSelect(user)}>
-                    <Check className={cn('mr-2 h-4 w-4', value === user ? 'opacity-100' : 'opacity-0')} />
-                    {user}
-                  </CommandItem>
-                ))}
-              </CommandGroup>
-            </CommandList>
-          </Command>
-        </PopoverContent>
+          <X className="h-4 w-4" />
+        </Button>
       )}
-    </Popover>
+      {open && filteredSuggestions.length > 0 && (
+        <div className="absolute z-50 top-full mt-1 w-[240px] border rounded bg-white shadow-lg">
+          <div className="max-h-60 overflow-y-auto">
+            {filteredSuggestions.map((user) => (
+              <div
+                key={user}
+                onClick={() => handleSelect(user)}
+                className="p-2 cursor-pointer hover:bg-gray-100 flex items-center"
+              >
+                <Check className={`mr-2 h-4 w-4 ${value === user ? 'opacity-100' : 'opacity-0'}`} />
+                {user}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }

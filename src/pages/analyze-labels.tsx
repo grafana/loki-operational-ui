@@ -275,7 +275,6 @@ export default function AnalyzeLabels() {
         return data;
       } catch (error) {
         toast({
-          variant: 'destructive',
           title: 'Error analyzing labels',
           description: error instanceof Error ? error.message : 'An unexpected error occurred',
         });

@@ -2,15 +2,16 @@ import { useSearchParams, Link } from 'react-router-dom';
 import React, { useMemo } from 'react';
 import { findNodeName } from 'lib/utils';
 import { useCluster } from 'contexts/use-cluster';
+// Breadcrumb components replaced with custom implementation
+import { absolutePath } from '../../util';
+import { prefixRoute } from 'utils/utils.routing';
 import {
+  Breadcrumb,
   BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
-  Breadcrumb,
   BreadcrumbSeparator,
 } from 'components/ui/breadcrumb';
-import { absolutePath } from '../../util';
-import { prefixRoute } from 'utils/utils.routing';
 
 const getProviderStyles = (provider: string): { bg: string; text: string; darkBg: string; darkText: string } => {
   switch (provider) {

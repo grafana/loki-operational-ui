@@ -5,14 +5,13 @@ import { QueryDiffView } from '../components/goldfish/query-diff-view';
 import { TimeRangeSelector } from '../components/goldfish/time-range-selector';
 import { UserFilterCombobox } from '../components/goldfish/user-filter-combobox';
 import { TenantFilterSelect } from '../components/goldfish/tenant-filter-select';
-import { Button } from '../components/ui/button';
-import { Skeleton } from '../components/ui/skeleton';
-import { Alert, AlertDescription } from '../components/ui/alert';
-import { Card, CardHeader, CardContent } from '../components/ui/card';
-import { Checkbox } from '../components/ui/checkbox';
+import { Button, Checkbox } from '@grafana/ui';
 import { RefreshCw, AlertCircle, CheckCircle2, XCircle, Rocket, ChevronDown } from 'lucide-react';
 import { OutcomeFilter, OUTCOME_ALL, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from '../types/goldfish';
 import { PageContainer } from '../layout/page-container';
+import { Card, CardHeader, CardContent } from 'components/ui/card';
+import { Alert, AlertDescription } from 'components/ui/alert';
+import { Skeleton } from 'components/ui/skeleton';
 
 // Define preset ranges (matching TimeRangeSelector)
 const PRESET_RANGES = [
@@ -231,7 +230,7 @@ export default function GoldfishPage() {
                 Side-by-side performance comparison between Cell A and Cell B
               </p>
             </div>
-            <Button variant="outline" size="sm" onClick={refresh} disabled={isLoading}>
+            <Button variant="secondary" size="sm" onClick={refresh} disabled={isLoading}>
               <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} />
               Refresh
             </Button>
@@ -254,7 +253,7 @@ export default function GoldfishPage() {
               {/* Outcome Filter Tabs - Left Aligned */}
               <div className="flex items-center bg-muted p-1 rounded-lg">
                 <Button
-                  variant={selectedOutcome === OUTCOME_ALL ? 'default' : 'ghost'}
+                  variant={selectedOutcome === OUTCOME_ALL ? 'primary' : 'secondary'}
                   size="sm"
                   onClick={() => setSelectedOutcome(OUTCOME_ALL)}
                   className="px-3 py-1"
@@ -262,7 +261,7 @@ export default function GoldfishPage() {
                   All
                 </Button>
                 <Button
-                  variant={selectedOutcome === OUTCOME_MATCH ? 'default' : 'ghost'}
+                  variant={selectedOutcome === OUTCOME_MATCH ? 'primary' : 'secondary'}
                   size="sm"
                   onClick={() => setSelectedOutcome(OUTCOME_MATCH)}
                   className="px-3 py-1"
@@ -271,7 +270,7 @@ export default function GoldfishPage() {
                   Match
                 </Button>
                 <Button
-                  variant={selectedOutcome === OUTCOME_MISMATCH ? 'default' : 'ghost'}
+                  variant={selectedOutcome === OUTCOME_MISMATCH ? 'primary' : 'secondary'}
                   size="sm"
                   onClick={() => setSelectedOutcome(OUTCOME_MISMATCH)}
                   className="px-3 py-1"
@@ -280,7 +279,7 @@ export default function GoldfishPage() {
                   Mismatch
                 </Button>
                 <Button
-                  variant={selectedOutcome === OUTCOME_ERROR ? 'default' : 'ghost'}
+                  variant={selectedOutcome === OUTCOME_ERROR ? 'primary' : 'secondary'}
                   size="sm"
                   onClick={() => setSelectedOutcome(OUTCOME_ERROR)}
                   className="px-3 py-1"
@@ -304,8 +303,8 @@ export default function GoldfishPage() {
                 <div className="flex items-center space-x-2">
                   <Checkbox
                     id="new-engine"
-                    checked={showNewEngineOnly}
-                    onCheckedChange={(checked) => setShowNewEngineOnly(checked as boolean)}
+                    value={showNewEngineOnly}
+                    onChange={() => setShowNewEngineOnly(!showNewEngineOnly)}
                   />
                   <label
                     htmlFor="new-engine"
@@ -340,7 +339,7 @@ export default function GoldfishPage() {
                         <span className="font-semibold">Trace ID: </span>
                         <code className="bg-destructive/10 px-1 py-0.5 rounded">{traceId}</code>
                         <Button
-                          variant="ghost"
+                          variant="secondary"
                           size="sm"
                           className="ml-2 h-6 px-2 text-xs"
                           onClick={() => {
@@ -379,7 +378,7 @@ export default function GoldfishPage() {
                 {hasMore && (
                   <div className="flex justify-center pt-6">
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       size="lg"
                       onClick={loadMore}
                       disabled={isLoadingMore}
@@ -412,7 +411,7 @@ export default function GoldfishPage() {
                 {hasMore && (
                   <div className="flex justify-center pt-6">
                     <Button
-                      variant="outline"
+                      variant="secondary"
                       size="lg"
                       onClick={loadMore}
                       disabled={isLoadingMore}

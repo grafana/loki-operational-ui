@@ -1,10 +1,14 @@
 import React from 'react';
-import { Button } from '../components/ui/button';
+import { Button, useStyles2 } from '@grafana/ui';
+import { GrafanaTheme2 } from '@grafana/data';
+import { css } from '@emotion/css';
 
 export function GitHubLink() {
+  const styles = useStyles2(getStyles);
+
   return (
-    <Button variant="ghost" size="icon" className="bg-muted hover:bg-muted-hover rounded-lg" asChild>
-      <a href="https://github.com/grafana/loki" target="_blank" rel="noopener noreferrer">
+    <a href="https://github.com/grafana/loki" target="_blank" rel="noopener noreferrer">
+      <Button variant="secondary" fill="text" className={styles.button}>
         <svg viewBox="0 0 438.549 438.549" className="h-[1.2rem] w-[1.2rem]">
           <path
             fill="currentColor"
@@ -12,7 +16,17 @@ export function GitHubLink() {
           />
         </svg>
         <span className="sr-only">View on GitHub</span>
-      </a>
-    </Button>
+      </Button>
+    </a>
   );
 }
+
+const getStyles = (theme: GrafanaTheme2) => ({
+  button: css`
+    background: ${theme.colors.background.secondary};
+    border-radius: ${theme.shape.radius.default};
+    &:hover {
+      background: ${theme.colors.emphasize(theme.colors.background.secondary, 0.03)};
+    }
+  `,
+});

@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Button } from 'components/ui/button';
-import { Popover, PopoverContent, PopoverTrigger } from 'components/ui/popover';
-import { Input } from 'components/ui/input';
+import { Button, Input } from '@grafana/ui';
+import { Popover, PopoverTrigger, PopoverContent } from 'components/ui/popover';
 import { Label } from 'components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from 'components/ui/select';
+import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from 'components/ui/select';
 import { Clock } from 'lucide-react';
 
 interface TimeRangeSelectorProps {
@@ -180,7 +179,7 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
   return (
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
-        <Button variant="outline" className="min-w-[200px] justify-start">
+        <Button variant="secondary" className="min-w-[200px] justify-start">
           <Clock className="h-4 w-4 mr-2" />
           {getDisplayText()}
         </Button>
@@ -189,7 +188,7 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <Label className="text-sm font-medium">Time Range</Label>
-            <Button variant="ghost" size="sm" onClick={handleClear} className="h-8 px-2 text-xs">
+            <Button variant="secondary" size="sm" onClick={handleClear} className="h-8 px-2 text-xs">
               Clear to Default
             </Button>
           </div>
@@ -223,7 +222,7 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
                   id="from"
                   type="datetime-local"
                   value={customFrom}
-                  onChange={(e) => setCustomFrom(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomFrom(e.target.value)}
                   className="w-full"
                 />
               </div>
@@ -235,7 +234,7 @@ export function TimeRangeSelector({ from, to, onChange }: TimeRangeSelectorProps
                   id="to"
                   type="datetime-local"
                   value={customTo}
-                  onChange={(e) => setCustomTo(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setCustomTo(e.target.value)}
                   className="w-full"
                 />
               </div>

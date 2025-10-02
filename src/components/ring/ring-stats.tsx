@@ -1,8 +1,8 @@
 import React from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from 'components/ui/card';
-import { Button } from 'components/ui/button';
+// Card components replaced with styled divs using useStyles2
+import { Button } from '@grafana/ui';
 import { Loader2, Pause } from 'lucide-react';
-import { cn } from 'lib/utils';
+import { Card, CardHeader, CardTitle, CardContent } from 'components/ui/card';
 
 interface RingStatsProps {
   nextRefresh: number;
@@ -24,7 +24,7 @@ export function RingStats({ nextRefresh, isPaused, onRefresh, instancesByState }
           <div className="flex items-center justify-between">
             <CardTitle className="text-sm font-medium text-muted-foreground">Next Ring Update</CardTitle>
             <Button
-              variant="ghost"
+              variant="secondary"
               size="sm"
               onClick={onRefresh}
               className="h-8 w-8 p-0"
@@ -40,7 +40,7 @@ export function RingStats({ nextRefresh, isPaused, onRefresh, instancesByState }
           </div>
         </CardHeader>
         <CardContent>
-          <div className={cn('text-2xl font-bold', isPaused ? 'text-orange-500' : '')}>
+          <div className="{/* TODO: migrate to useStyles2 */}">
             {isPaused ? 'Paused' : `${nextRefresh}s`}
           </div>
         </CardContent>

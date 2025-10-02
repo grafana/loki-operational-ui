@@ -1,5 +1,5 @@
 import React from 'react';
-import { Input } from 'components/ui/input';
+import { Input } from '@grafana/ui';
 import { MultiSelect, Option } from 'components/common/multi-select';
 import { PartitionInstance, PartitionStates } from 'types/ring';
 import { parseZoneFromOwner } from 'lib/ring-utils';
@@ -70,7 +70,7 @@ export function PartitionRingFilters({
         <Input
           placeholder="Filter by owner name..."
           value={ownerFilter}
-          onChange={(e) => onOwnerFilterChange(e.target.value)}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => onOwnerFilterChange(e.target.value)}
           className="max-w-sm"
         />
       </div>

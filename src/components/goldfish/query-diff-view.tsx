@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { SampledQuery, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from 'types/goldfish';
-import { Card, CardContent } from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
-import { Separator } from 'components/ui/separator';
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'components/ui/collapsible';
+// Separator - use hr or styled div
 import {
   CheckCircle2,
   XCircle,
@@ -20,7 +18,6 @@ import {
   Code2,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { cn } from 'lib/utils';
 
 interface MetricComparison {
   label: string;
@@ -128,7 +125,7 @@ function MetricRow({ metric }: { metric: MetricComparison }) {
         {metric.icon}
         <span>{metric.label}</span>
       </div>
-      <div className={cn('col-span-2 text-right font-mono text-sm', comparison.classA)}>
+      <div className={`col-span-2 text-right ${comparison.classA}`}>
         {metric.formatter(metric.valueA)}
       </div>
       <div className="col-span-1 text-center">
@@ -136,7 +133,7 @@ function MetricRow({ metric }: { metric: MetricComparison }) {
         {comparison.winner === 'B' && <div className="text-green-600">▶</div>}
         {comparison.winner === 'tie' && <div className="text-muted-foreground">≈</div>}
       </div>
-      <div className={cn('col-span-2 text-left font-mono text-sm', comparison.classB)}>
+      <div className={`col-span-2 text-left ${comparison.classB}`}>
         {metric.formatter(metric.valueB)}
       </div>
     </div>
@@ -224,69 +221,66 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
   const statusMatch = query.cellAStatusCode === query.cellBStatusCode;
 
   return (
-    <Card>
-      <Collapsible open={isOpen} onOpenChange={setIsOpen}>
-        <CollapsibleTrigger asChild>
-          <div className="cursor-pointer hover:bg-muted/50 transition-colors">
-            <div className="p-4 space-y-2">
-              {/* Query as main header */}
-              <div className="flex items-start gap-2">
-                <ChevronDown
-                  className={cn('h-4 w-4 mt-0.5 transition-transform text-muted-foreground', isOpen && 'rotate-180')}
-                />
-                <code className="flex-1 text-xs font-mono break-all line-clamp-2">{query.query}</code>
-              </div>
+    <div className="border rounded p-4">
+      <div>
+        <button onClick={() => setIsOpen(!isOpen)} className="cursor-pointer hover:bg-muted/50 transition-colors w-full">
+          <div className="p-4 space-y-2">
+            {/* Query as main header */}
+            <div className="flex items-start gap-2">
+              <ChevronDown className={`h-4 w-4 transition-transform ${isOpen ? 'transform rotate-180' : ''}`} />
+              <code className="flex-1 text-xs font-mono break-all line-clamp-2">{query.query}</code>
+            </div>
 
-              {/* Key info bar */}
-              <div className="flex items-center justify-between pl-6">
-                <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                  <span>{formatDistanceToNow(new Date(query.sampledAt), { addSuffix: true })}</span>
-                  <Badge variant="outline" className="text-xs">
-                    {query.tenantId}
-                  </Badge>
+            {/* Key info bar */}
+            <div className="flex items-center justify-between pl-6">
+              <div className="flex items-center gap-3 text-sm text-muted-foreground">
+                <span>{formatDistanceToNow(new Date(query.sampledAt), { addSuffix: true })}</span>
+                <Badge variant="outline" className="text-xs">
+                  {query.tenantId}
+                </Badge>
+                <Badge variant="secondary" className="text-xs">
+                  {query.queryType}
+                </Badge>
+                <Badge variant="outline" className="text-xs">
+                  {query.user}
+                </Badge>
+                {(query.cellAUsedNewEngine || query.cellBUsedNewEngine) && (
                   <Badge variant="secondary" className="text-xs">
-                    {query.queryType}
+                    <Rocket className="h-3 w-3 mr-1" />
+                    New Engine
                   </Badge>
-                  <Badge variant="outline" className="text-xs">
-                    {query.user}
-                  </Badge>
-                  {(query.cellAUsedNewEngine || query.cellBUsedNewEngine) && (
-                    <Badge variant="secondary" className="text-xs">
-                      <Rocket className="h-3 w-3 mr-1" />
-                      New Engine
-                    </Badge>
-                  )}
-                </div>
-                <div className="flex items-center gap-2">
-                  {outcomeStatus === OUTCOME_MATCH ? (
-                    <div className="flex items-center gap-1 text-green-600 text-sm">
-                      <CheckCircle2 className="h-4 w-4" />
-                      <span>Match</span>
-                    </div>
-                  ) : outcomeStatus === OUTCOME_ERROR ? (
-                    <div className="flex items-center gap-1 text-amber-600 text-sm">
-                      <AlertTriangle className="h-4 w-4" />
-                      <span>Error</span>
-                    </div>
-                  ) : outcomeStatus === OUTCOME_MISMATCH ? (
-                    <div className="flex items-center gap-1 text-red-600 text-sm">
-                      <XCircle className="h-4 w-4" />
-                      <span>Mismatch</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center gap-1 text-gray-600 text-sm">
-                      <span>Status: {outcomeStatus}</span>
-                    </div>
-                  )}
-                </div>
+                )}
+              </div>
+              <div className="flex items-center gap-2">
+                {outcomeStatus === OUTCOME_MATCH ? (
+                  <div className="flex items-center gap-1 text-green-600 text-sm">
+                    <CheckCircle2 className="h-4 w-4" />
+                    <span>Match</span>
+                  </div>
+                ) : outcomeStatus === OUTCOME_ERROR ? (
+                  <div className="flex items-center gap-1 text-amber-600 text-sm">
+                    <AlertTriangle className="h-4 w-4" />
+                    <span>Error</span>
+                  </div>
+                ) : outcomeStatus === OUTCOME_MISMATCH ? (
+                  <div className="flex items-center gap-1 text-red-600 text-sm">
+                    <XCircle className="h-4 w-4" />
+                    <span>Mismatch</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center gap-1 text-gray-600 text-sm">
+                    <span>Status: {outcomeStatus}</span>
+                  </div>
+                )}
               </div>
             </div>
           </div>
-        </CollapsibleTrigger>
+        </button>
 
-        <CollapsibleContent>
-          <Separator />
-          <CardContent className="pt-4 space-y-6">
+        {isOpen && (
+          <div>
+            <hr className="my-4" />
+            <div className="pt-4 space-y-6">
             {/* Response Status */}
             <div className="space-y-3">
               <div className="grid grid-cols-7 gap-4">
@@ -339,7 +333,7 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
               </div>
             </div>
 
-            <Separator />
+            <hr className="my-4" />
 
             {/* Trace IDs */}
             <div className="space-y-3">
@@ -432,7 +426,7 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
               )}
             </div>
 
-            <Separator />
+            <hr className="my-4" />
 
             {/* Query Engine */}
             <div className="space-y-3">
@@ -444,10 +438,9 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
                 </div>
                 <div className="col-span-2 text-right">
                   <div
-                    className={cn(
-                      'inline-flex items-center gap-1 text-sm',
+                    className={`inline-flex items-center gap-1 text-sm ${
                       query.cellAUsedNewEngine ? 'text-green-600' : 'text-muted-foreground'
-                    )}
+                    }`}
                   >
                     {query.cellAUsedNewEngine ? (
                       <>
@@ -471,10 +464,9 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
                 </div>
                 <div className="col-span-2 text-left">
                   <div
-                    className={cn(
-                      'inline-flex items-center gap-1 text-sm',
+                    className={`inline-flex items-center gap-1 text-sm ${
                       query.cellBUsedNewEngine ? 'text-green-600' : 'text-muted-foreground'
-                    )}
+                    }`}
                   >
                     {query.cellBUsedNewEngine ? (
                       <>
@@ -492,7 +484,7 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
               </div>
             </div>
 
-            <Separator />
+            <hr className="my-4" />
 
             {/* Performance Metrics */}
             <div className="space-y-1">
@@ -501,9 +493,10 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
                 <MetricRow key={i} metric={metric} />
               ))}
             </div>
-          </CardContent>
-        </CollapsibleContent>
-      </Collapsible>
-    </Card>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
