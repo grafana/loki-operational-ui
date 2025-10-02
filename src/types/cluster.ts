@@ -18,7 +18,6 @@ export const ALL_NODE_STATES: NodeState[] = ['New', 'Starting', 'Running', 'Stop
 
 export interface Member {
   addr: string;
-  state: string;
   isSelf: boolean;
   target: string;
   services: ServiceState[];

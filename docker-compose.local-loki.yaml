@@ -1,0 +1,13 @@
+services:
+  grafana:
+    env_file:
+      - .env
+    extends:
+      file: .config/docker-compose-base.yaml
+      service: grafana
+    logging: &logging
+      driver: loki-compose
+      options:
+        loki-url: "https://${GRAFANA_CLOUD_LOGS_TENANT}:${GRAFANA_CLOUD_LOGS_API_KEY}@${GRAFANA_CLOUD_LOGS_HOST}/loki/api/v1/push"
+        loki-retries: "3"
+        loki-tenant-id: "${GRAFANA_CLOUD_LOGS_TENANT}"
