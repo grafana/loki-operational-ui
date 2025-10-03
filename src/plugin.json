@@ -10,8 +10,8 @@
       "name": "Grafana"
     },
     "logos": {
-      "small": "https://grafana.com/media/docs/loki/logo-grafana-loki.png",
-      "large": "https://grafana.com/media/docs/loki/logo-grafana-loki.png"
+      "small": "img/logo.svg",
+      "large": "img/logo.svg"
     },
     "screenshots": [],
     "version": "%VERSION%",
