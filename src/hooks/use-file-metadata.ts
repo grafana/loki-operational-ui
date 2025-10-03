@@ -3,9 +3,10 @@ import { findNodeName } from 'lib/utils';
 import { useCluster } from 'contexts/use-cluster';
 import { useMemo } from 'react';
 import { FileMetadataResponse } from 'types/explorer';
-import { absolutePath } from '../util';
+import { useAbsolutePath } from './use-absolute-path';
 export function useFileMetadata(path: string | undefined) {
   const { cluster } = useCluster();
+  const absolutePath = useAbsolutePath();
   const nodeName = useMemo(() => {
     return findNodeName(cluster?.members, 'dataobj-explorer');
   }, [cluster?.members]);

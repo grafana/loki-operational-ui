@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from 'components/ui/button';
 import { Tooltip, TooltipContent, TooltipTrigger } from 'components/ui/tooltip';
-import { absolutePath } from '../../util';
+import { useAbsolutePath } from '../../hooks/use-absolute-path';
 
 interface PprofControlsProps {
   nodeName: string;
@@ -66,6 +66,7 @@ const pprofTypes = [
 ];
 
 export function PprofControls({ nodeName }: PprofControlsProps) {
+  const absolutePath = useAbsolutePath();
   const downloadPprof = (type: string) => {
     window.open(absolutePath(`/api/v1/proxy/${nodeName}/debug/pprof/${type}`), '_blank');
   };

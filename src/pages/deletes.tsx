@@ -18,7 +18,7 @@ import { DateHover } from 'components/common/date-hover';
 import { HoverCard, HoverCardContent, HoverCardTrigger } from 'components/ui/hover-card';
 import { Input } from 'components/ui/input';
 import { PageContainer } from 'layout/page-container';
-import { absolutePath } from '../util';
+import { useAbsolutePath } from '../hooks/use-absolute-path';
 
 interface DeleteRequest {
   request_id: string;
@@ -38,6 +38,7 @@ const DeleteRequestStatus = {
 
 const useDeletes = (status: string[]) => {
   const { cluster } = useCluster();
+  const absolutePath = useAbsolutePath();
   const nodeName = useMemo(() => {
     return findNodeName(cluster?.members, ServiceNames.compactor);
   }, [cluster?.members]);

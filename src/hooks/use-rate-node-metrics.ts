@@ -1,5 +1,5 @@
 import { useCallback, useRef } from 'react';
-import { absolutePath } from '../util';
+import { useAbsolutePath } from './use-absolute-path';
 interface MetricSample {
   timestamp: number;
   values: Record<string, number>;
@@ -21,6 +21,7 @@ interface NodeMetrics {
 }
 export const useRateNodeMetrics = () => {
   const previousSamplesRef = useRef<Record<string, MetricSample>>({});
+  const absolutePath = useAbsolutePath();
 
   const fetchMetrics = useCallback(async ({ nodeNames, metrics }: UseRateNodeMetricsOptions): Promise<NodeMetrics> => {
     if (!nodeNames.length) {
@@ -97,7 +98,7 @@ export const useRateNodeMetrics = () => {
 
     previousSamplesRef.current = currentSamples;
     return newRates;
-  }, []);
+  }, [absolutePath]);
 
   return {
     fetchMetrics,

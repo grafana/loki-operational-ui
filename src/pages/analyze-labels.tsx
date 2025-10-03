@@ -12,7 +12,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '.
 import { useCluster } from '../contexts/use-cluster';
 import { useToast } from '../hooks/use-toast';
 import { cn, findNodeName } from '../lib/utils';
-import { absolutePath } from '../util';
+import { useAbsolutePath } from '../hooks/use-absolute-path';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
@@ -77,6 +77,7 @@ function LabelValuesList({ values, totalValues }: LabelValuesListProps) {
 export default function AnalyzeLabels() {
   const { cluster } = useCluster();
   const { toast } = useToast();
+  const absolutePath = useAbsolutePath();
   const [analysisResults, setAnalysisResults] = useState<{
     totalStreams: number;
     uniqueLabels: number;
