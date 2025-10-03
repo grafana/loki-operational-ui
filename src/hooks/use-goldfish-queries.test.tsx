@@ -10,7 +10,7 @@ import { OUTCOME_ALL, OUTCOME_MATCH, OUTCOME_MISMATCH, type GoldfishAPIResponse 
  */
 
 // Mock the API module
-jest.mock('@/lib/goldfish-api', () => ({
+jest.mock('lib/goldfish-api', () => ({
   fetchSampledQueries: jest.fn(),
 }));
 

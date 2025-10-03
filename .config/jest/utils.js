@@ -26,6 +26,7 @@ const grafanaESModules = [
   'mimic-function',
   'ol',
   'react-calendar',
+  'react-code-block',
   'react-colorful',
   'rxjs',
   'uuid',

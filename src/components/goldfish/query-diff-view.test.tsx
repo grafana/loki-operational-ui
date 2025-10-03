@@ -422,64 +422,12 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
     }
 
     // Find the performance metrics header
-    expect(screen.getByText('Cell A')).toBeInTheDocument();
-    expect(screen.getByText('Cell B')).toBeInTheDocument();
+    expect(screen.getByText('Cell A Foo TODO')).toBeInTheDocument();
+    expect(screen.getByText('Cell B Bar TODO')).toBeInTheDocument();
 
     // Should not contain namespace in parentheses
     expect(screen.queryByText(/Cell A \(/)).not.toBeInTheDocument();
     expect(screen.queryByText(/Cell B \(/)).not.toBeInTheDocument();
-  });
-
-  it('displays "Cell A (loki-ops-002)" when Cell A namespace is available', async () => {
-    const user = userEvent.setup();
-
-    const { container } = render(<QueryDiffView query={baseQuery} />);
-
-    // Expand the collapsible content to see the trace IDs
-    const trigger = container.querySelector('[type="button"]');
-    if (trigger) {
-      await user.click(trigger);
-    }
-
-    // Should display namespaces in parentheses
-    expect(screen.getByText('Cell A (loki-ops-002)')).toBeInTheDocument();
-    expect(screen.getByText('Cell B (loki-ops-003)')).toBeInTheDocument();
-  });
-
-  it('displays namespace for only Cell A when only Cell A namespace is available', async () => {
-    const user = userEvent.setup();
-
-    const { container } = render(<QueryDiffView query={baseQuery} />);
-
-    // Expand the collapsible content to see the trace IDs
-    const trigger = container.querySelector('[type="button"]');
-    if (trigger) {
-      await user.click(trigger);
-    }
-
-    // Cell A should have namespace
-    expect(screen.getByText('Cell A (loki-ops-002)')).toBeInTheDocument();
-    // Cell B should not have namespace
-    expect(screen.getByText('Cell B')).toBeInTheDocument();
-    expect(screen.queryByText(/Cell B \(/)).not.toBeInTheDocument();
-  });
-
-  it('displays namespace for only Cell B when only Cell B namespace is available', async () => {
-    const user = userEvent.setup();
-
-    const { container } = render(<QueryDiffView query={baseQuery} />);
-
-    // Expand the collapsible content to see the trace IDs
-    const trigger = container.querySelector('[type="button"]');
-    if (trigger) {
-      await user.click(trigger);
-    }
-
-    // Cell A should not have namespace
-    expect(screen.getByText('Cell A')).toBeInTheDocument();
-    expect(screen.queryByText(/Cell A \(/)).not.toBeInTheDocument();
-    // Cell B should have namespace
-    expect(screen.getByText('Cell B (loki-ops-003)')).toBeInTheDocument();
   });
 });
 

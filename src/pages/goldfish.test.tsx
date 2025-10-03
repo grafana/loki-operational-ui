@@ -18,12 +18,12 @@ jest.mock('react-router-dom', () => ({
 }));
 
 // Mock PageContainer
-jest.mock('@/layout/page-container', () => ({
+jest.mock('layout/page-container', () => ({
   PageContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="page-container">{children}</div>,
 }));
 
 // Mock QueryDiffView
-jest.mock('@/components/goldfish/query-diff-view', () => ({
+jest.mock('components/goldfish/query-diff-view', () => ({
   QueryDiffView: ({ query }: { query: SampledQuery }) => (
     <div data-testid="query-diff-view" data-correlation-id={query.correlationId}>
       Status: {query.comparisonStatus}
@@ -34,7 +34,7 @@ jest.mock('@/components/goldfish/query-diff-view', () => ({
 }));
 
 // Mock TimeRangeSelector
-jest.mock('@/components/goldfish/time-range-selector', () => ({
+jest.mock('components/goldfish/time-range-selector', () => ({
   TimeRangeSelector: ({ onChange }: { onChange: (from: Date | null, to: Date | null) => void }) => (
     <div data-testid="time-range-selector">
       <button onClick={() => onChange(new Date('2024-01-01T10:00:00Z'), new Date('2024-01-01T14:30:00Z'))}>
@@ -55,7 +55,7 @@ jest.mock('@/components/goldfish/time-range-selector', () => ({
 }));
 
 // Mock UserFilterCombobox
-jest.mock('@/components/goldfish/user-filter-combobox', () => ({
+jest.mock('components/goldfish/user-filter-combobox', () => ({
   UserFilterCombobox: ({
     value,
     onChange,
@@ -84,7 +84,7 @@ jest.mock('@/components/goldfish/user-filter-combobox', () => ({
 }));
 
 // Mock TenantFilterSelect
-jest.mock('@/components/goldfish/tenant-filter-select', () => ({
+jest.mock('components/goldfish/tenant-filter-select', () => ({
   TenantFilterSelect: ({
     value,
     onChange,
@@ -106,7 +106,7 @@ jest.mock('@/components/goldfish/tenant-filter-select', () => ({
 }));
 
 // Mock the loadmore hook
-jest.mock('@/hooks/use-goldfish-queries');
+jest.mock('hooks/use-goldfish-queries');
 const mockUseGoldfishQueries = useGoldfishQueries as jest.MockedFunction<typeof useGoldfishQueries>;
 
 const mockQueries = [
