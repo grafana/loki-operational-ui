@@ -11,16 +11,16 @@ datasources:
       httpHeaderName1: 'X-Scope-OrgID'
     secureJsonData:
       httpHeaderValue1: '1'
-  # - name: Loki Dev
-  #   type: loki
-  #   uid: loki
-  #   access: proxy
-  #   url: http://host.docker.internal:3100
-  #   basicAuth: true
-  #   basicAuthUser: '${LOKI_DEV_TENANT}'
-  #   jsonData:
-  #     httpHeaderName1: 'X-Scope-OrgID'
-  #     timeout: 1800
-  #   secureJsonData:
-  #     httpHeaderValue1: '${LOKI_DEV_TENANT}'
-  #     basicAuthPassword: '${LOKI_DEV_BASIC_AUTH_PASSWORD}'
+  - name: Loki Dev
+    type: loki
+    uid: loki-dev
+    access: proxy
+    url: http://host.docker.internal:3100
+    basicAuth: true
+    basicAuthUser: '${LOKI_DEV_TENANT}'
+    jsonData:
+      httpHeaderName1: 'X-Scope-OrgID'
+      timeout: 1800
+    secureJsonData:
+      httpHeaderValue1: '${LOKI_DEV_TENANT}'
+      basicAuthPassword: '${LOKI_DEV_BASIC_AUTH_PASSWORD}'
