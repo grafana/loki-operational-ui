@@ -1,18 +1,24 @@
 import React, { useMemo, useState } from 'react';
+import { Alert, AlertDescription, AlertTitle } from 'components/ui/alert';
+import { Button } from 'components/ui/button';
+import { Card, CardContent, CardHeader } from 'components/ui/card';
+import { ToggleGroup, ToggleGroupItem } from 'components/ui/toggle-group';
 import { useCluster } from 'contexts/use-cluster';
 import { ServiceNames } from 'lib/ring-utils';
 import { findNodeName } from 'lib/utils';
 import { useQuery } from '@tanstack/react-query';
+import { AlertCircle, Loader2, Plus } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { prefixRoute } from 'utils/utils.routing';
 import { fromUnixTime, formatDistance, format } from 'date-fns';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from 'components/ui/table';
 import { DataTableColumnHeader } from 'components/common/data-table-column-header';
+import { Badge } from 'components/ui/badge';
 import { DateHover } from 'components/common/date-hover';
+import { HoverCard, HoverCardContent, HoverCardTrigger } from 'components/ui/hover-card';
+import { Input } from 'components/ui/input';
 import { PageContainer } from 'layout/page-container';
 import { absolutePath } from '../util';
-import { Card, Input, useStyles2, Alert, LoadingPlaceholder, Button, Badge } from '@grafana/ui';
-import { GrafanaTheme2 } from '@grafana/data';
-import { css } from '@emotion/css';
 
 interface DeleteRequest {
   request_id: string;
@@ -29,138 +35,6 @@ const DeleteRequestStatus = {
   Received: 'received',
   Processing: 'processed',
 } as const;
-
-const getStyles = (theme: GrafanaTheme2) => ({
-  pageContainer: css({
-    padding: '24px',
-  }),
-  headerContainer: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-  }),
-  filtersContainer: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 16,
-  }),
-  filterGroup: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-  }),
-  filterLabel: css({
-    fontSize: 14,
-    fontWeight: 500,
-  }),
-  toggleGroup: css({
-    display: 'flex',
-    gap: 4,
-  }),
-  toggleItem: css({
-    padding: '8px 16px',
-    border: `1px solid ${theme.colors.border.weak}`,
-    backgroundColor: theme.colors.background.primary,
-    color: theme.colors.text.primary,
-    cursor: 'pointer',
-    transition: 'all 0.2s',
-    '&:hover': {
-      backgroundColor: theme.colors.background.secondary,
-    },
-    '&[data-state="on"]': {
-      backgroundColor: theme.colors.primary.main,
-      color: theme.colors.primary.contrastText,
-    },
-  }),
-  searchInput: css({
-    width: 300,
-  }),
-  contentContainer: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 16,
-  }),
-  tableContainer: css({
-    borderRadius: theme.shape.radius.default,
-    border: `1px solid ${theme.colors.border.weak}`,
-    backgroundColor: theme.colors.background.primary,
-    overflow: 'hidden',
-  }),
-  table: css({
-    width: '100%',
-    borderCollapse: 'collapse',
-  }),
-  tableHeader: css({
-    borderBottom: `1px solid ${theme.colors.border.weak}`,
-  }),
-  tableHeaderCell: css({
-    textAlign: 'left',
-    padding: 12,
-    fontWeight: 500,
-    fontSize: 12,
-    color: theme.colors.text.secondary,
-    textTransform: 'uppercase',
-    letterSpacing: '0.05em',
-  }),
-  tableRow: css({
-    borderBottom: `1px solid ${theme.colors.border.weak}`,
-    '&:hover': {
-      backgroundColor: theme.colors.background.secondary,
-    },
-  }),
-  tableCell: css({
-    padding: 12,
-    fontSize: 14,
-  }),
-  codeCell: css({
-    fontFamily: theme.typography.fontFamilyMonospace,
-    fontSize: 12,
-    whiteSpace: 'pre-wrap',
-    wordBreak: 'break-all',
-  }),
-  emptyState: css({
-    height: 96,
-    textAlign: 'center',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    color: theme.colors.text.secondary,
-  }),
-  loadingContainer: css({
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 32,
-  }),
-  hoverCard: css({
-    cursor: 'default',
-  }),
-  hoverCardContent: css({
-    width: 'fit-content',
-  }),
-  hoverCardInner: css({
-    display: 'flex',
-    flexDirection: 'column',
-    gap: 8,
-  }),
-  hoverCardRow: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-  }),
-  hoverCardLabel: css({
-    padding: '2px 8px',
-    fontSize: 12,
-    fontWeight: 500,
-    backgroundColor: theme.colors.background.secondary,
-    borderRadius: theme.shape.radius.default,
-    width: 56,
-    textAlign: 'center',
-  }),
-  hoverCardValue: css({
-    fontFamily: theme.typography.fontFamilyMonospace,
-  }),
-});
 
 const useDeletes = (status: string[]) => {
   const { cluster } = useCluster();
@@ -204,39 +78,39 @@ interface FiltersProps {
 }
 
 const Filters: React.FC<FiltersProps> = ({ selectedStatus, onStatusChange, queryFilter, onQueryFilterChange }) => {
-  const styles = useStyles2(getStyles);
-
   return (
-    <div className={styles.filtersContainer}>
-      <div className={styles.filterGroup}>
-        <span className={styles.filterLabel}>Status</span>
-        <div className={styles.toggleGroup}>
+    <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-medium">Status</span>
+        <ToggleGroup
+          type="multiple"
+          value={selectedStatus}
+          onValueChange={(value) => {
+            // Ensure at least one status is always selected
+            if (value.length > 0) {
+              onStatusChange(value);
+            }
+          }}
+          className="justify-start"
+        >
           {Object.entries(DeleteRequestStatus).map(([key, value]) => (
-            <button
+            <ToggleGroupItem
               key={value}
-              className={`${styles.toggleItem} ${selectedStatus.includes(value) ? 'data-state-on' : ''}`}
-              onClick={() => {
-                const newStatus = selectedStatus.includes(value)
-                  ? selectedStatus.filter((s) => s !== value)
-                  : [...selectedStatus, value];
-                // Ensure at least one status is always selected
-                if (newStatus.length > 0) {
-                  onStatusChange(newStatus);
-                }
-              }}
+              value={value}
               aria-label={`Toggle ${key.toLowerCase()} status`}
+              className="capitalize"
             >
               {key}
-            </button>
+            </ToggleGroupItem>
           ))}
-        </div>
+        </ToggleGroup>
       </div>
       <Input
         type="search"
         placeholder="Filter by query..."
         value={queryFilter}
-        onChange={(e) => onQueryFilterChange((e.target as HTMLInputElement).value)}
-        className={styles.searchInput}
+        onChange={(e) => onQueryFilterChange(e.target.value)}
+        className="w-[300px]"
       />
     </div>
   );
@@ -252,13 +126,15 @@ interface DeleteListProps {
 }
 
 const StatusBadge = ({ status }: { status: string }) => {
-  const isReceived = status === DeleteRequestStatus.Received;
-
-  return <Badge text={status} color={isReceived ? 'orange' : 'green'} />;
+  const variant = status === DeleteRequestStatus.Received ? 'secondary' : 'default';
+  return (
+    <Badge variant={variant} className="capitalize">
+      {status}
+    </Badge>
+  );
 };
 
 const RangeHover = ({ start, end }: { start: number; end: number }) => {
-  const styles = useStyles2(getStyles);
   const duration = formatDistance(fromUnixTime(start / 1000), fromUnixTime(end / 1000));
 
   const formatUTC = (timestamp: number) => {
@@ -267,27 +143,33 @@ const RangeHover = ({ start, end }: { start: number; end: number }) => {
   };
 
   return (
-    <div className={styles.hoverCard}>
-      <span className={styles.hoverCard}>{duration}</span>
-      <div className={styles.hoverCardContent}>
-        <div className={styles.hoverCardInner}>
-          <div className={styles.hoverCardRow}>
-            <span className={styles.hoverCardLabel}>From</span>
-            <span className={styles.hoverCardValue}>{formatUTC(start)}</span>
-          </div>
-          <div className={styles.hoverCardRow}>
-            <span className={styles.hoverCardLabel}>To</span>
-            <span className={styles.hoverCardValue}>{formatUTC(end)}</span>
+    <HoverCard>
+      <HoverCardTrigger>
+        <span className="cursor-default">{duration}</span>
+      </HoverCardTrigger>
+      <HoverCardContent className="w-fit">
+        <div className="space-y-2">
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 rounded dark:bg-gray-700 w-14 text-center">
+                From
+              </span>
+              <span className="font-mono">{formatUTC(start)}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-2 py-0.5 text-xs font-medium bg-gray-100 rounded dark:bg-gray-700 w-14 text-center">
+                To
+              </span>
+              <span className="font-mono">{formatUTC(end)}</span>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </HoverCardContent>
+    </HoverCard>
   );
 };
 
 const DeleteList: React.FC<DeleteListProps> = ({ requests, sortField, sortDirection, onSort }) => {
-  const styles = useStyles2(getStyles);
-
   const sortedRequests = [...requests].sort((a, b) => {
     let comparison = 0;
     let durationA: number;
@@ -313,11 +195,11 @@ const DeleteList: React.FC<DeleteListProps> = ({ requests, sortField, sortDirect
   });
 
   return (
-    <div className={styles.tableContainer}>
-      <table className={styles.table}>
-        <thead>
-          <tr className={styles.tableHeader}>
-            <th className={styles.tableHeaderCell} style={{ width: 80 }}>
+    <div className="rounded-md border bg-card">
+      <Table>
+        <TableHeader>
+          <TableRow className="hover:bg-transparent">
+            <TableHead className="w-[80px]">
               <DataTableColumnHeader<DeleteSortField>
                 title="Status"
                 field="status"
@@ -325,8 +207,8 @@ const DeleteList: React.FC<DeleteListProps> = ({ requests, sortField, sortDirect
                 sortDirection={sortDirection}
                 onSort={onSort}
               />
-            </th>
-            <th className={styles.tableHeaderCell} style={{ width: 100 }}>
+            </TableHead>
+            <TableHead className="w-[100px]">
               <DataTableColumnHeader<DeleteSortField>
                 title="User"
                 field="user"
@@ -334,8 +216,8 @@ const DeleteList: React.FC<DeleteListProps> = ({ requests, sortField, sortDirect
                 sortDirection={sortDirection}
                 onSort={onSort}
               />
-            </th>
-            <th className={styles.tableHeaderCell} style={{ width: 200 }}>
+            </TableHead>
+            <TableHead className="w-[200px]">
               <DataTableColumnHeader<DeleteSortField>
                 title="Created At"
                 field="createdAt"
@@ -343,8 +225,8 @@ const DeleteList: React.FC<DeleteListProps> = ({ requests, sortField, sortDirect
                 sortDirection={sortDirection}
                 onSort={onSort}
               />
-            </th>
-            <th className={styles.tableHeaderCell} style={{ width: 150 }}>
+            </TableHead>
+            <TableHead className="w-[150px]">
               <DataTableColumnHeader<DeleteSortField>
                 title="Range"
                 field="duration"
@@ -352,47 +234,44 @@ const DeleteList: React.FC<DeleteListProps> = ({ requests, sortField, sortDirect
                 sortDirection={sortDirection}
                 onSort={onSort}
               />
-            </th>
-            <th className={styles.tableHeaderCell} style={{ width: 100 }}>
-              Deleted Lines
-            </th>
-            <th className={styles.tableHeaderCell}>Query</th>
-          </tr>
-        </thead>
-        <tbody>
+            </TableHead>
+            <TableHead className="w-[100px]">Deleted Lines</TableHead>
+            <TableHead>Query</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {sortedRequests.map((request) => (
-            <tr key={`${request.request_id}-${request.start_time}-${request.end_time}`} className={styles.tableRow}>
-              <td className={styles.tableCell}>
+            <TableRow key={`${request.request_id}-${request.start_time}-${request.end_time}`}>
+              <TableCell className="px-4">
                 <StatusBadge status={request.status} />
-              </td>
-              <td className={styles.tableCell}>{request.user_id}</td>
-              <td className={styles.tableCell}>
+              </TableCell>
+              <TableCell>{request.user_id}</TableCell>
+              <TableCell>
                 <DateHover date={new Date(request.created_at)} />
-              </td>
-              <td className={styles.tableCell}>
+              </TableCell>
+              <TableCell>
                 <RangeHover start={request.start_time} end={request.end_time} />
-              </td>
-              <td className={styles.tableCell}>{request.deleted_lines}</td>
-              <td className={styles.tableCell}>
-                <code className={styles.codeCell}>{request.query}</code>
-              </td>
-            </tr>
+              </TableCell>
+              <TableCell>{request.deleted_lines}</TableCell>
+              <TableCell>
+                <code className="font-mono text-sm whitespace-pre-wrap break-all">{request.query}</code>
+              </TableCell>
+            </TableRow>
           ))}
           {sortedRequests.length === 0 && (
-            <tr>
-              <td colSpan={6} className={styles.emptyState}>
-                <div>No delete requests found</div>
-              </td>
-            </tr>
+            <TableRow>
+              <TableCell colSpan={7} className="h-24 text-center">
+                <div className="text-muted-foreground">No delete requests found</div>
+              </TableCell>
+            </TableRow>
           )}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 };
 
 const DeletesPage = () => {
-  const styles = useStyles2(getStyles);
   const [status, setStatus] = useState<string[]>([DeleteRequestStatus.Received, DeleteRequestStatus.Processing]);
   const [queryFilter, setQueryFilter] = useState('');
   const [sortField, setSortField] = useState<DeleteSortField>('createdAt');
@@ -417,50 +296,56 @@ const DeletesPage = () => {
 
   return (
     <PageContainer>
-      <div className={styles.pageContainer}>
-        <Card>
-          <Card.Heading>Delete Requests</Card.Heading>
-          <Card.Meta>View and manage delete requests in your cluster</Card.Meta>
-          <Card.Tags>
-            <Link to={prefixRoute('tenants/deletes/new')}>
-              <Button icon="plus">New Delete Request</Button>
-            </Link>
-          </Card.Tags>
-          <Card.Description>
-            <div className={styles.headerContainer}>
-              <Filters
-                selectedStatus={status}
-                onStatusChange={setStatus}
-                queryFilter={queryFilter}
-                onQueryFilterChange={setQueryFilter}
-              />
+      <Card className="shadow-sm">
+        <CardHeader>
+          <div className="flex flex-col gap-6">
+            <div className="flex items-start justify-between">
+              <div>
+                <h2 className="text-3xl font-semibold tracking-tight">Delete Requests</h2>
+                <p className="text-sm text-muted-foreground mt-1">View and manage delete requests in your cluster</p>
+              </div>
+              <Button variant="default" asChild>
+                <Link to={prefixRoute('tenants/deletes/new')}>
+                  <Plus className="mr-2 h-4 w-4" />
+                  New Delete Request
+                </Link>
+              </Button>
             </div>
-          </Card.Description>
-        </Card>
-
-        <div className={styles.contentContainer}>
-          {error && (
-            <Alert severity="error" title="Error">
-              {error.message}
-            </Alert>
-          )}
-
-          {isLoading && (
-            <div className={styles.loadingContainer}>
-              <LoadingPlaceholder text="Loading delete requests..." />
-            </div>
-          )}
-
-          {!isLoading && !error && filteredData && (
-            <DeleteList
-              requests={filteredData}
-              sortField={sortField}
-              sortDirection={sortDirection}
-              onSort={handleSort}
+            <Filters
+              selectedStatus={status}
+              onStatusChange={setStatus}
+              queryFilter={queryFilter}
+              onQueryFilterChange={setQueryFilter}
             />
-          )}
-        </div>
-      </div>
+          </div>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-4">
+            {error && (
+              <Alert variant="destructive">
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error.message}</AlertDescription>
+              </Alert>
+            )}
+
+            {isLoading && (
+              <div className="flex items-center justify-center p-8">
+                <Loader2 className="h-16 w-16 animate-spin" />
+              </div>
+            )}
+
+            {!isLoading && !error && filteredData && (
+              <DeleteList
+                requests={filteredData}
+                sortField={sortField}
+                sortDirection={sortDirection}
+                onSort={handleSort}
+              />
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </PageContainer>
   );
 };

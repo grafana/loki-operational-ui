@@ -3,6 +3,7 @@ export const getGrafanaTheme = (): 'light' | 'dark' => {
     // Check if we're running in Grafana context
     if (typeof window !== 'undefined' && (window as any).grafanaBootData?.user?.theme) {
       const userTheme = (window as any).grafanaBootData.user.theme;
+      console.log('userTheme', userTheme);
 
       if (userTheme === 'dark') {
         return 'dark';

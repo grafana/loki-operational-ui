@@ -34,7 +34,10 @@ const NodesPage = () => {
     }
   };
 
+  console.log('cluster', cluster);
+
   const filterNodes = () => {
+    console.log('filterNodes', cluster);
     if (!cluster) {
       return {};
     }

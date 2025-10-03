@@ -1,8 +1,17 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { DataTableColumnHeader } from '../components/common/data-table-column-header';
+import { Badge } from '../components/ui/badge';
+import { Button } from '../components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../components/ui/card';
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from '../components/ui/chart';
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '../components/ui/collapsible';
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '../components/ui/form';
+import { Input } from '../components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
 import { useCluster } from '../contexts/use-cluster';
 import { useToast } from '../hooks/use-toast';
-import { findNodeName } from '../lib/utils';
+import { cn, findNodeName } from '../lib/utils';
 import { absolutePath } from '../util';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
@@ -10,9 +19,6 @@ import { ChevronDown } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import * as z from 'zod';
-import { Button, Card, Input, Combobox, Badge, Field, useStyles2 } from '@grafana/ui';
-import { GrafanaTheme2 } from '@grafana/data';
-import { css } from '@emotion/css';
 
 const formSchema = z.object({
   tenant: z.string().min(1, 'Tenant ID is required'),
@@ -48,129 +54,20 @@ interface LabelValuesListProps {
   totalValues: number;
 }
 
-const getStyles = (theme: GrafanaTheme2) => ({
-  labelValueItem: css({
-    display: 'grid',
-    gridTemplateColumns: '200px 1fr 80px',
-    alignItems: 'center',
-    gap: 16,
-    padding: '8px 0',
-  }),
-  progressBar: css({
-    height: 8,
-    backgroundColor: theme.colors.background.secondary,
-    borderRadius: theme.shape.radius.default,
-    overflow: 'hidden',
-  }),
-  progressFill: css({
-    height: '100%',
-    backgroundColor: theme.colors.primary.main,
-    transition: 'width 0.3s ease',
-  }),
-  percentage: css({
-    fontSize: 12,
-    color: theme.colors.text.secondary,
-    textAlign: 'right',
-    fontVariantNumeric: 'tabular-nums',
-  }),
-  formGrid: css({
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
-    gap: 16,
-    marginBottom: 16,
-  }),
-  buttonContainer: css({
-    display: 'flex',
-    alignItems: 'flex-start',
-    paddingTop: 18,
-  }),
-  errorMessage: css({
-    color: theme.colors.error.text,
-    fontSize: 12,
-    marginTop: 4,
-  }),
-  statsContainer: css({
-    display: 'flex',
-    justifyContent: 'space-between',
-    marginBottom: 16,
-  }),
-  statItem: css({
-    display: 'flex',
-    flexDirection: 'column',
-  }),
-  statLabel: css({
-    fontSize: 12,
-    color: theme.colors.text.secondary,
-  }),
-  statValue: css({
-    fontSize: 24,
-    fontWeight: 'bold',
-  }),
-  chartContainer: css({
-    height: 500,
-    width: '100%',
-  }),
-  tableContainer: css({
-    overflow: 'auto',
-  }),
-  table: css({
-    width: '100%',
-    borderCollapse: 'collapse',
-  }),
-  tableHeader: css({
-    borderBottom: `1px solid ${theme.colors.border.weak}`,
-  }),
-  tableHeaderCell: css({
-    textAlign: 'left',
-    padding: 12,
-    fontWeight: 500,
-  }),
-  tableRow: css({
-    borderBottom: `1px solid ${theme.colors.border.weak}`,
-  }),
-  tableCell: css({
-    padding: 12,
-  }),
-  tableCellBold: css({
-    padding: 12,
-    fontWeight: 500,
-  }),
-  expandableRow: css({
-    display: 'flex',
-    alignItems: 'center',
-    gap: 8,
-  }),
-  chevronIcon: css({
-    height: 16,
-    width: 16,
-    transition: 'transform 0.2s',
-    cursor: 'pointer',
-  }),
-  expandedDetails: css({
-    marginTop: 16,
-    padding: 16,
-    backgroundColor: theme.colors.background.secondary,
-    borderRadius: theme.shape.radius.default,
-  }),
-  expandedTitle: css({
-    marginBottom: 12,
-    fontSize: 14,
-    fontWeight: 500,
-  }),
-});
-
 function LabelValuesList({ values, totalValues }: LabelValuesListProps) {
-  const styles = useStyles2(getStyles);
-
   return (
-    <div>
+    <div className="space-y-2 py-2">
       {values.map(({ value, count }) => (
-        <div key={value} className={styles.labelValueItem}>
-          <Badge text={value} color="blue" />
-          <div className={styles.progressBar}>
-            <div className={styles.progressFill} style={{ width: `${(count / totalValues) * 100}%` }} />
+        <div key={value} className="grid grid-cols-[200px_1fr_80px] items-center gap-4">
+          <Badge variant="outline" className="font-mono text-xs justify-self-start overflow-hidden">
+            {value}
+          </Badge>
+          <div className="h-2 bg-muted rounded-full overflow-hidden">
+            <div className="h-full bg-primary" style={{ width: `${(count / totalValues) * 100}%` }} />
           </div>
-          <span className={styles.percentage}>{((count / totalValues) * 100).toFixed(1)}%</span>
+          <span className="text-xs text-muted-foreground tabular-nums justify-self-end">
+            {((count / totalValues) * 100).toFixed(1)}%
+          </span>
         </div>
       ))}
     </div>
@@ -180,7 +77,6 @@ function LabelValuesList({ values, totalValues }: LabelValuesListProps) {
 export default function AnalyzeLabels() {
   const { cluster } = useCluster();
   const { toast } = useToast();
-  const styles = useStyles2(getStyles);
   const [analysisResults, setAnalysisResults] = useState<{
     totalStreams: number;
     uniqueLabels: number;
@@ -310,12 +206,16 @@ export default function AnalyzeLabels() {
     return colorStyles;
   }, [colorStyles]);
 
-  // Chart configuration for colors
-  const chartColors =
-    analysisResults?.labels.slice(0, 10).map((_, index) => {
-      const hue = (index * 137.5) % 360;
-      return `hsl(${hue}, 70%, 50%)`;
-    }) || [];
+  // Update chart configuration
+  const chartConfig = {
+    value: {
+      label: selectedMetric === 'uniqueValues' ? 'Unique Values' : 'Found In Streams',
+      theme: {
+        light: 'var(--chart-color-0)',
+        dark: 'var(--chart-color-0)',
+      },
+    },
+  } satisfies ChartConfig;
 
   const sortedLabels = useMemo(() => {
     if (!analysisResults) {
@@ -343,85 +243,117 @@ export default function AnalyzeLabels() {
   }, [analysisResults, sortField, sortDirection]);
 
   return (
-    <div style={{ padding: '24px' }}>
+    <div className="container mx-auto p-4 space-y-6">
       <Card>
-        <Card.Heading>Analyze Labels</Card.Heading>
-        <Card.Meta>Analyze label distribution across your log streams</Card.Meta>
-        <Card.Description>
-          <form onSubmit={form.handleSubmit(onSubmit)}>
-            <div className={styles.formGrid}>
-              <Field label="Tenant ID" required>
-                <div>
-                  <Input
-                    placeholder="Enter tenant ID..."
-                    {...form.register('tenant')}
-                    invalid={!!form.formState.errors.tenant}
-                  />
-                  {form.formState.errors.tenant && (
-                    <div className={styles.errorMessage}>{form.formState.errors.tenant.message}</div>
-                  )}
-                </div>
-              </Field>
+        <CardHeader>
+          <CardTitle>Analyze Labels</CardTitle>
+          <CardDescription>Analyze label distribution across your log streams</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <FormField
+                control={form.control}
+                name="tenant"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col space-y-1.5">
+                    <FormLabel>Tenant ID</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter tenant ID..." {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
 
-              <Field label="Time Range">
-                <Combobox
-                  value={form.watch('since') || '1h'}
-                  onChange={(option) => form.setValue('since', option.value || '1h')}
-                  options={durationOptions}
-                  placeholder="Select time range"
-                />
-              </Field>
+              <FormField
+                control={form.control}
+                name="since"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col space-y-1.5">
+                    <FormLabel>Time Range</FormLabel>
+                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select time range" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {durationOptions.map((option) => (
+                          <SelectItem key={option.value} value={option.value}>
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
 
-              <Field label="Matcher">
-                <Input placeholder="Enter matcher... (default: {})" {...form.register('matcher')} />
-              </Field>
+              <FormField
+                control={form.control}
+                name="matcher"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col space-y-1.5">
+                    <FormLabel>Matcher</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter matcher... (default: {})" {...field} />
+                    </FormControl>
+                    <FormMessage className="text-xs" />
+                  </FormItem>
+                )}
+              />
 
-              <div className={styles.buttonContainer}>
-                <Button type="submit" disabled={isLoading}>
-                  {isLoading ? 'Analyzing...' : 'Analyze'}
-                </Button>
-              </div>
-            </div>
-          </form>
-        </Card.Description>
+              <Button type="submit" disabled={isLoading} className="self-end h-10">
+                {isLoading ? 'Analyzing...' : 'Analyze'}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
       </Card>
 
       {analysisResults && (
         <>
           <Card>
-            <Card.Heading>Label Distribution</Card.Heading>
-            <Card.Description>Top 20 labels by unique values</Card.Description>
-            <div>
-              <div className={styles.statsContainer}>
-                <div className={styles.statItem}>
-                  <div className={styles.statLabel}>Total Streams</div>
-                  <div className={styles.statValue}>{analysisResults.totalStreams.toLocaleString()}</div>
+            <CardHeader className="flex flex-col items-stretch space-y-0 border-b p-0 sm:flex-row">
+              <div className="flex flex-1 flex-col justify-center gap-1 px-6 py-5 sm:py-6">
+                <CardTitle>Label Distribution</CardTitle>
+                <CardDescription>Top 20 labels by unique values</CardDescription>
+              </div>
+              <div className="flex">
+                <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 px-6 py-4 text-left sm:px-8 sm:py-6">
+                  <span className="text-xs text-muted-foreground">Total Streams</span>
+                  <span className="text-lg font-bold leading-none sm:text-3xl">
+                    {analysisResults.totalStreams.toLocaleString()}
+                  </span>
                 </div>
-                <div className={styles.statItem}>
-                  <div className={styles.statLabel}>Unique Labels</div>
-                  <div className={styles.statValue}>{analysisResults.uniqueLabels.toLocaleString()}</div>
+                <div className="relative z-30 flex flex-1 flex-col justify-center gap-1 border-l px-6 py-4 text-left sm:px-8 sm:py-6">
+                  <span className="text-xs text-muted-foreground">Unique Labels</span>
+                  <span className="text-lg font-bold leading-none sm:text-3xl">
+                    {analysisResults.uniqueLabels.toLocaleString()}
+                  </span>
                 </div>
               </div>
-
-              <div style={{ marginBottom: '16px' }}>
-                <Combobox
-                  value={selectedMetric}
-                  onChange={(option) => setSelectedMetric(option.value as MetricType)}
-                  options={[
-                    { label: 'Unique Values', value: 'uniqueValues' },
-                    { label: 'Found In Streams', value: 'inStreams' },
-                  ]}
-                  placeholder="Select metric"
-                  width={200}
-                />
+            </CardHeader>
+            <CardContent className="px-2 sm:p-6">
+              <div className="mb-4">
+                <Select value={selectedMetric} onValueChange={(value: MetricType) => setSelectedMetric(value)}>
+                  <SelectTrigger className="w-[200px]">
+                    <SelectValue placeholder="Select metric" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="uniqueValues">Unique Values</SelectItem>
+                    <SelectItem value="inStreams">Found In Streams</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-
-              <div className={styles.chartContainer}>
+              <ChartContainer config={chartConfig} className="aspect-auto h-[500px] w-full">
                 <BarChart
                   data={analysisResults.labels.slice(0, 20).map((label, index) => ({
                     name: label.name,
                     value: selectedMetric === 'uniqueValues' ? label.uniqueValues : label.inStreams,
-                    fill: chartColors[index] || `hsl(${(index * 137.5) % 360}, 70%, 50%)`,
+                    fill: `var(--chart-color-${index})`,
                   }))}
                   layout="vertical"
                   margin={{
@@ -441,129 +373,132 @@ export default function AnalyzeLabels() {
                     interval={0}
                   />
                   <XAxis type="number" tickLine={false} axisLine={false} tickMargin={8} />
+                  <ChartTooltip content={<ChartTooltipContent className="w-[200px]" />} />
                   <Bar dataKey="value" fillOpacity={0.8} radius={[4, 4, 0, 0]} />
                 </BarChart>
-              </div>
-            </div>
+              </ChartContainer>
+            </CardContent>
           </Card>
 
           <Card>
-            <Card.Heading>Label Details</Card.Heading>
-            <div>
-              <div className={styles.tableContainer}>
-                <table className={styles.table}>
-                  <thead>
-                    <tr className={styles.tableHeader}>
-                      <th className={styles.tableHeaderCell}>
-                        <DataTableColumnHeader
-                          title="Label Name"
-                          field="name"
-                          sortField={sortField}
-                          sortDirection={sortDirection}
-                          onSort={(field) => {
-                            if (field === sortField) {
-                              setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-                            } else {
-                              setSortField(field as SortField);
-                              setSortDirection('desc');
-                            }
-                          }}
-                        />
-                      </th>
-                      <th className={styles.tableHeaderCell}>
-                        <DataTableColumnHeader
-                          title="Unique Values"
-                          field="uniqueValues"
-                          sortField={sortField}
-                          sortDirection={sortDirection}
-                          onSort={(field) => {
-                            if (field === sortField) {
-                              setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-                            } else {
-                              setSortField(field as SortField);
-                              setSortDirection('desc');
-                            }
-                          }}
-                        />
-                      </th>
-                      <th className={styles.tableHeaderCell}>
-                        <DataTableColumnHeader
-                          title="Found In Streams"
-                          field="inStreams"
-                          sortField={sortField}
-                          sortDirection={sortDirection}
-                          onSort={(field) => {
-                            if (field === sortField) {
-                              setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-                            } else {
-                              setSortField(field as SortField);
-                              setSortDirection('desc');
-                            }
-                          }}
-                        />
-                      </th>
-                      <th className={styles.tableHeaderCell}>
-                        <DataTableColumnHeader
-                          title="Cardinality %"
-                          field="cardinality"
-                          sortField={sortField}
-                          sortDirection={sortDirection}
-                          onSort={(field) => {
-                            if (field === sortField) {
-                              setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
-                            } else {
-                              setSortField(field as SortField);
-                              setSortDirection('desc');
-                            }
-                          }}
-                        />
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {sortedLabels.map((label) => (
-                      <tr key={label.name} className={styles.tableRow}>
-                        <td className={styles.tableCellBold}>
-                          <div className={styles.expandableRow}>
-                            <ChevronDown
-                              className={styles.chevronIcon}
-                              style={{
-                                transform: openRows.has(label.name) ? 'rotate(180deg)' : 'rotate(0deg)',
-                              }}
-                              onClick={() => {
-                                const newOpenRows = new Set(openRows);
-                                if (openRows.has(label.name)) {
-                                  newOpenRows.delete(label.name);
-                                } else {
-                                  newOpenRows.add(label.name);
-                                }
-                                setOpenRows(newOpenRows);
-                              }}
-                            />
-                            {label.name}
-                          </div>
-                        </td>
-                        <td className={styles.tableCell}>{label.uniqueValues.toLocaleString()}</td>
-                        <td className={styles.tableCell}>{label.inStreams.toLocaleString()}</td>
-                        <td className={styles.tableCell}>
-                          {((label.uniqueValues / label.inStreams) * 100).toFixed(2)}%
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Show sample values for expanded rows */}
-              {sortedLabels
-                .filter((label) => openRows.has(label.name))
-                .map((label) => (
-                  <div key={`${label.name}-details`} className={styles.expandedDetails}>
-                    <h4 className={styles.expandedTitle}>Sample values for {label.name}</h4>
-                    <LabelValuesList values={label.sampleValues} totalValues={label.inStreams} />
-                  </div>
-                ))}
-            </div>
+            <CardHeader>
+              <CardTitle>Label Details</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>
+                      <DataTableColumnHeader
+                        title="Label Name"
+                        field="name"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                        onSort={(field) => {
+                          if (field === sortField) {
+                            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                          } else {
+                            setSortField(field as SortField);
+                            setSortDirection('desc');
+                          }
+                        }}
+                      />
+                    </TableHead>
+                    <TableHead>
+                      <DataTableColumnHeader
+                        title="Unique Values"
+                        field="uniqueValues"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                        onSort={(field) => {
+                          if (field === sortField) {
+                            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                          } else {
+                            setSortField(field as SortField);
+                            setSortDirection('desc');
+                          }
+                        }}
+                      />
+                    </TableHead>
+                    <TableHead>
+                      <DataTableColumnHeader
+                        title="Found In Streams"
+                        field="inStreams"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                        onSort={(field) => {
+                          if (field === sortField) {
+                            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                          } else {
+                            setSortField(field as SortField);
+                            setSortDirection('desc');
+                          }
+                        }}
+                      />
+                    </TableHead>
+                    <TableHead>
+                      <DataTableColumnHeader
+                        title="Cardinality %"
+                        field="cardinality"
+                        sortField={sortField}
+                        sortDirection={sortDirection}
+                        onSort={(field) => {
+                          if (field === sortField) {
+                            setSortDirection(sortDirection === 'asc' ? 'desc' : 'asc');
+                          } else {
+                            setSortField(field as SortField);
+                            setSortDirection('desc');
+                          }
+                        }}
+                      />
+                    </TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {sortedLabels.map((label) => (
+                    <Collapsible
+                      key={label.name}
+                      asChild
+                      open={openRows.has(label.name)}
+                      onOpenChange={(isOpen) => {
+                        const newOpenRows = new Set(openRows);
+                        if (isOpen) {
+                          newOpenRows.add(label.name);
+                        } else {
+                          newOpenRows.delete(label.name);
+                        }
+                        setOpenRows(newOpenRows);
+                      }}
+                    >
+                      <>
+                        <TableRow>
+                          <TableCell className="font-medium">
+                            <CollapsibleTrigger className="flex items-center gap-2 hover:text-primary">
+                              <ChevronDown
+                                className={cn('h-4 w-4 transition-transform', openRows.has(label.name) && 'rotate-180')}
+                              />
+                              {label.name}
+                            </CollapsibleTrigger>
+                          </TableCell>
+                          <TableCell>{label.uniqueValues.toLocaleString()}</TableCell>
+                          <TableCell>{label.inStreams.toLocaleString()}</TableCell>
+                          <TableCell>{((label.uniqueValues / label.inStreams) * 100).toFixed(2)}%</TableCell>
+                        </TableRow>
+                        <CollapsibleContent asChild>
+                          <TableRow>
+                            <TableCell colSpan={4} className="border-t-0 bg-muted/5">
+                              <div className="px-4">
+                                <LabelValuesList values={label.sampleValues} totalValues={label.inStreams} />
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        </CollapsibleContent>
+                      </>
+                    </Collapsible>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
           </Card>
         </>
       )}
