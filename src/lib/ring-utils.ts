@@ -201,7 +201,11 @@ export const getAvailableRings = (members: Record<string, Member>): Array<{ titl
 };
 
 // Utility function to get ring proxy path
-export function getRingProxyPath(members: Record<string, Member> | undefined, ringName: RingType, datasourceUid: string): string {
+export function getRingProxyPath(
+  members: Record<string, Member> | undefined,
+  ringName: RingType,
+  datasourceUid: string
+): string {
   if (!members) {
     return '';
   }

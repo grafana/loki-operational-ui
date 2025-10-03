@@ -23,82 +23,85 @@ export const useRateNodeMetrics = () => {
   const previousSamplesRef = useRef<Record<string, MetricSample>>({});
   const absolutePath = useAbsolutePath();
 
-  const fetchMetrics = useCallback(async ({ nodeNames, metrics }: UseRateNodeMetricsOptions): Promise<NodeMetrics> => {
-    if (!nodeNames.length) {
-      return {};
-    }
+  const fetchMetrics = useCallback(
+    async ({ nodeNames, metrics }: UseRateNodeMetricsOptions): Promise<NodeMetrics> => {
+      if (!nodeNames.length) {
+        return {};
+      }
 
-    const currentSamples: Record<string, MetricSample> = {
-      ...previousSamplesRef.current,
-    };
-    const newRates: NodeMetrics = {};
+      const currentSamples: Record<string, MetricSample> = {
+        ...previousSamplesRef.current,
+      };
+      const newRates: NodeMetrics = {};
 
-    // Fetch metrics for all nodes in parallel
-    await Promise.all(
-      nodeNames.map(async (nodeName) => {
-        try {
-          const response = await fetch(absolutePath(`/api/v1/proxy/${nodeName}/metrics`));
+      // Fetch metrics for all nodes in parallel
+      await Promise.all(
+        nodeNames.map(async (nodeName) => {
+          try {
+            const response = await fetch(absolutePath(`/api/v1/proxy/${nodeName}/metrics`));
 
-          if (!response.ok) {
-            throw new Error(`Failed to fetch metrics: ${response.statusText}`);
-          }
-
-          const text = await response.text();
-          const currentSample: MetricSample = {
-            timestamp: Date.now(),
-            values: {},
-          };
-
-          // Parse the metrics text and extract values
-          metrics.forEach((metricName) => {
-            const regex = new RegExp(`${metricName}\\{[^}]*\\}\\s+([\\d.e+]+)`);
-            const match = text.match(regex);
-            if (match) {
-              currentSample.values[metricName] = parseFloat(match[1]);
+            if (!response.ok) {
+              throw new Error(`Failed to fetch metrics: ${response.statusText}`);
             }
-          });
 
-          const previousSample = previousSamplesRef.current[nodeName];
-          currentSamples[nodeName] = currentSample;
+            const text = await response.text();
+            const currentSample: MetricSample = {
+              timestamp: Date.now(),
+              values: {},
+            };
 
-          // Calculate rates if we have a previous sample
-          if (previousSample) {
-            const timeDiffSeconds = (currentSample.timestamp - previousSample.timestamp) / 1000;
+            // Parse the metrics text and extract values
+            metrics.forEach((metricName) => {
+              const regex = new RegExp(`${metricName}\\{[^}]*\\}\\s+([\\d.e+]+)`);
+              const match = text.match(regex);
+              if (match) {
+                currentSample.values[metricName] = parseFloat(match[1]);
+              }
+            });
 
-            // Only calculate rates if we have a meaningful time difference
-            if (timeDiffSeconds > 0) {
-              const nodeRates = metrics.map((metricName) => {
-                const currentValue = currentSample.values[metricName];
-                const previousValue = previousSample.values[metricName];
+            const previousSample = previousSamplesRef.current[nodeName];
+            currentSamples[nodeName] = currentSample;
 
-                if (currentValue !== undefined && previousValue !== undefined) {
-                  const rate = (currentValue - previousValue) / timeDiffSeconds;
+            // Calculate rates if we have a previous sample
+            if (previousSample) {
+              const timeDiffSeconds = (currentSample.timestamp - previousSample.timestamp) / 1000;
+
+              // Only calculate rates if we have a meaningful time difference
+              if (timeDiffSeconds > 0) {
+                const nodeRates = metrics.map((metricName) => {
+                  const currentValue = currentSample.values[metricName];
+                  const previousValue = previousSample.values[metricName];
+
+                  if (currentValue !== undefined && previousValue !== undefined) {
+                    const rate = (currentValue - previousValue) / timeDiffSeconds;
+                    return {
+                      name: metricName,
+                      rate,
+                      currentValue,
+                    };
+                  }
+
                   return {
                     name: metricName,
-                    rate,
-                    currentValue,
+                    rate: 0,
+                    currentValue: currentValue ?? 0,
                   };
-                }
+                });
 
-                return {
-                  name: metricName,
-                  rate: 0,
-                  currentValue: currentValue ?? 0,
-                };
-              });
-
-              newRates[nodeName] = nodeRates;
+                newRates[nodeName] = nodeRates;
+              }
             }
+          } catch (err) {
+            console.error(`Error fetching metrics for node ${nodeName}:`, err);
           }
-        } catch (err) {
-          console.error(`Error fetching metrics for node ${nodeName}:`, err);
-        }
-      })
-    );
+        })
+      );
 
-    previousSamplesRef.current = currentSamples;
-    return newRates;
-  }, [absolutePath]);
+      previousSamplesRef.current = currentSamples;
+      return newRates;
+    },
+    [absolutePath]
+  );
 
   return {
     fetchMetrics,

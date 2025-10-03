@@ -1,3 +1,11 @@
 {
-  "extends": "./.config/.eslintrc"
+  "extends": "./.config/.eslintrc",
+  "overrides": [
+    {
+      "files": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts", "**/*.spec.tsx"],
+      "rules": {
+        "@typescript-eslint/no-deprecated": "off"
+      }
+    }
+  ]
 }

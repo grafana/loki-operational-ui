@@ -45,4 +45,5 @@ ci/
 
 .eslintcache
 .direnv
+.direnv/**
 .env
