@@ -73,9 +73,10 @@ describe('TimeRangeSelector', () => {
         fireEvent.click(selectTrigger);
       });
 
-      // Select the preset
+      // Wait for the select options to appear and then select the preset
       await waitFor(() => {
         const option = screen.getByText('Last 15 minutes');
+        expect(option).toBeInTheDocument();
         fireEvent.click(option);
       });
 
@@ -100,9 +101,10 @@ describe('TimeRangeSelector', () => {
         fireEvent.click(selectTrigger);
       });
 
-      // Select the preset - note component has 'Last 3 hours' not 'Last 4 hours'
+      // Wait for the select options to appear and then select the preset
       await waitFor(() => {
         const option = screen.getByText('Last 3 hours');
+        expect(option).toBeInTheDocument();
         fireEvent.click(option);
       });
 
@@ -127,9 +129,10 @@ describe('TimeRangeSelector', () => {
         fireEvent.click(selectTrigger);
       });
 
-      // Select the preset
+      // Wait for the select options to appear and then select the preset
       await waitFor(() => {
         const option = screen.getByText('Last 7 days');
+        expect(option).toBeInTheDocument();
         fireEvent.click(option);
       });
 

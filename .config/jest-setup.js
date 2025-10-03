@@ -26,3 +26,6 @@ Object.defineProperty(global, 'matchMedia', {
 });
 
 HTMLCanvasElement.prototype.getContext = () => {};
+
+// Mock scrollIntoView for Radix UI components
+Element.prototype.scrollIntoView = jest.fn();
