@@ -34,4 +34,3 @@ jobs:
       environment: ${{ github.event.inputs.environment }}
       docs-only: ${{ fromJSON(github.event.inputs.docs-only) }}
       run-playwright: false
-      publish-to-catalog-as-pending: true # Plugin will be hidden from catalog but available for provisioning
