@@ -47,7 +47,7 @@ export function useNodeDetails(nodeName: string | undefined): UseNodeDetailsResu
     setIsLoading(true);
     setError(null);
 
-    fetch(absolutePath(`/api/v1/proxy/${nodeName}/ui/api/v1/cluster/nodes/self/details`))
+    fetch(absolutePath(`/api/v1/cluster/nodes/${nodeName}/details`))
       .then((response) => {
         if (!response.ok) {
           throw new Error(`Failed to fetch node details: ${response.statusText}`);
