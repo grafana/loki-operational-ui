@@ -65,10 +65,10 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Call the API function
-      await fetchSampledQueries(1, 20);
+      await fetchSampledQueries('test-uid', 1, 20);
 
-      // Assert: Verify absolutePath was called with correct relative path
-      expect(mockAbsolutePath).toHaveBeenCalledWith('/api/v1/goldfish/queries');
+      // Assert: Verify absolutePath was called with correct relative path and datasource uid
+      expect(mockAbsolutePath).toHaveBeenCalledWith('/api/v1/goldfish/queries', 'test-uid');
 
       // Assert: Verify fetch was called with the constructed URL and tracing headers
       expect(mockFetch).toHaveBeenCalledWith('/ui/api/v1/goldfish/queries?page=1&pageSize=20', expectedHeaders);
@@ -89,7 +89,7 @@ describe('goldfish-api', () => {
       );
 
       // Act: Call with specific parameters
-      await fetchSampledQueries(2, 15);
+      await fetchSampledQueries('test-uid', 2, 15);
 
       // Assert: Verify the complete URL with all query parameters and tracing headers
       expect(mockFetch).toHaveBeenCalledWith('/base/api/v1/goldfish/queries?page=2&pageSize=15', expectedHeaders);
@@ -110,13 +110,13 @@ describe('goldfish-api', () => {
       });
 
       // Act & Assert: Verify function returns error instead of throwing
-      const result = await fetchSampledQueries(1, 20);
+      const result = await fetchSampledQueries('test-uid', 1, 20);
       expect(result.error).toBeDefined();
       expect(result.error?.message).toContain('Failed to fetch sampled queries: Internal Server Error');
       expect(result.traceId).toBe('test-trace-id-123');
 
       // Assert: Verify absolutePath was still called
-      expect(mockAbsolutePath).toHaveBeenCalledWith('/api/v1/goldfish/queries');
+      expect(mockAbsolutePath).toHaveBeenCalledWith('/api/v1/goldfish/queries', 'test-uid');
     });
   });
 
@@ -129,7 +129,7 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Call with tenant filter
-      await fetchSampledQueries(1, 20, 'tenant-123');
+      await fetchSampledQueries('test-uid', 1, 20, 'tenant-123');
 
       // Assert: Verify URL includes tenant parameter and tracing headers
       expect(mockFetch).toHaveBeenCalledWith(
@@ -146,7 +146,7 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Call with user filter
-      await fetchSampledQueries(1, 20, undefined, 'alice');
+      await fetchSampledQueries('test-uid', 1, 20, undefined, 'alice');
 
       // Assert: Verify URL includes user parameter and tracing headers
       expect(mockFetch).toHaveBeenCalledWith(
@@ -163,7 +163,7 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Call with newEngine filter set to true
-      await fetchSampledQueries(1, 20, undefined, undefined, true);
+      await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, true);
 
       // Assert: Verify URL includes newEngine=true parameter and tracing headers
       expect(mockFetch).toHaveBeenCalledWith(
@@ -180,7 +180,7 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Call with newEngine filter set to false
-      await fetchSampledQueries(1, 20, undefined, undefined, false);
+      await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, false);
 
       // Assert: Verify URL includes newEngine=false parameter and tracing headers
       expect(mockFetch).toHaveBeenCalledWith(
@@ -197,7 +197,7 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Call with all filters
-      await fetchSampledQueries(2, 50, 'tenant-b', 'bob', true);
+      await fetchSampledQueries('test-uid', 2, 50, 'tenant-b', 'bob', true);
 
       // Assert: Verify URL includes all parameters and tracing headers
       expect(mockFetch).toHaveBeenCalledWith(
@@ -214,7 +214,7 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Call with tenant set to "all"
-      await fetchSampledQueries(1, 20, 'all');
+      await fetchSampledQueries('test-uid', 1, 20, 'all');
 
       // Assert: Verify URL doesn't include tenant parameter but includes tracing headers
       expect(mockFetch).toHaveBeenCalledWith('/ui/api/v1/goldfish/queries?page=1&pageSize=20', expectedHeaders);
@@ -228,7 +228,7 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Call with user set to "all"
-      await fetchSampledQueries(1, 20, undefined, 'all');
+      await fetchSampledQueries('test-uid', 1, 20, undefined, 'all');
 
       // Assert: Verify URL doesn't include user parameter but includes tracing headers
       expect(mockFetch).toHaveBeenCalledWith('/ui/api/v1/goldfish/queries?page=1&pageSize=20', expectedHeaders);
@@ -245,7 +245,7 @@ describe('goldfish-api', () => {
       const to = new Date('2023-01-01T11:00:00Z');
 
       // Act: Call with time range filters
-      await fetchSampledQueries(1, 20, undefined, undefined, undefined, from, to);
+      await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, from, to);
 
       // Assert: Verify URL includes time parameters and tracing headers
       expect(mockFetch).toHaveBeenCalledWith(
@@ -265,7 +265,7 @@ describe('goldfish-api', () => {
       mockFetch.mockResolvedValueOnce(mockResponse());
 
       // Act: Make API call
-      await fetchSampledQueries();
+      await fetchSampledQueries('test-uid');
 
       // Assert: Verify correct nginx-prefixed URL is used with tracing headers
       expect(mockFetch).toHaveBeenCalledWith(

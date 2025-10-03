@@ -14,6 +14,16 @@ jest.mock('lib/goldfish-api', () => ({
   fetchSampledQueries: jest.fn(),
 }));
 
+// Mock the store provider
+jest.mock('../contexts/store-provider', () => ({
+  useStore: () => ({
+    selectedDatasource: { uid: 'loki' },
+    setSelectedDatasource: jest.fn(),
+    error: null,
+    isLoading: false,
+  }),
+}));
+
 const mockFetchSampledQueries = fetchSampledQueries as jest.MockedFunction<typeof fetchSampledQueries>;
 
 // Create a wrapper with QueryClient
@@ -320,10 +330,11 @@ describe('useGoldfishQueries', () => {
       await waitFor(() => {
         expect(mockFetchSampledQueries.mock.calls.length).toBeGreaterThanOrEqual(3);
         const lastCall = mockFetchSampledQueries.mock.calls[mockFetchSampledQueries.mock.calls.length - 1];
-        expect(lastCall[2]).toBe('tenant-a'); // Check tenant filter was applied
+        expect(lastCall[3]).toBe('tenant-a'); // Check tenant filter was applied (index 3 after datasourceUid, page, pageSize)
       });
 
       expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(
+        'loki', // datasourceUid
         1, // Page 1
         20,
         'tenant-a',
@@ -381,7 +392,16 @@ describe('useGoldfishQueries', () => {
         expect(mockFetchSampledQueries).toHaveBeenCalledTimes(2);
       });
 
-      expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(1, 20, undefined, undefined, undefined, from, to);
+      expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(
+        'loki',
+        1,
+        20,
+        undefined,
+        undefined,
+        undefined,
+        from,
+        to
+      );
     });
   });
 
@@ -507,6 +527,7 @@ describe('useGoldfishQueries', () => {
 
       // Should reset to page 1
       expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(
+        'loki',
         1,
         20,
         undefined,

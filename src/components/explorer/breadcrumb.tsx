@@ -9,7 +9,7 @@ import {
   Breadcrumb,
   BreadcrumbSeparator,
 } from 'components/ui/breadcrumb';
-import { absolutePath } from '../../util';
+import { useAbsolutePath } from '../../hooks/use-absolute-path';
 import { prefixRoute } from 'utils/utils.routing';
 
 const getProviderStyles = (provider: string): { bg: string; text: string; darkBg: string; darkText: string } => {
@@ -98,6 +98,7 @@ export function ExplorerBreadcrumb() {
   const [provider, setProvider] = React.useState<string>('');
   // const basename = useBasename(); // TODO: use basename
   const { cluster } = useCluster();
+  const absolutePath = useAbsolutePath();
 
   const nodeName = useMemo(() => {
     return findNodeName(cluster?.members, 'dataobj-explorer');
@@ -109,7 +110,7 @@ export function ExplorerBreadcrumb() {
         .then((data) => setProvider(data.provider))
         .catch(console.error);
     }
-  }, [nodeName]);
+  }, [nodeName, absolutePath]);
 
   const [searchParams] = useSearchParams();
   const path = searchParams.get('path') || '';

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RingResponse, RingType, RingTypes } from 'types/ring';
 import { useCluster } from 'contexts/use-cluster';
 import { getRingProxyPath, needsTokens } from 'lib/ring-utils';
+import { useStore } from '../contexts/store-provider';
 
 export const AVAILABLE_RINGS: Array<{ id: RingType; title: string }> = [
   { id: RingTypes.INGESTER, title: 'Ingester' },
@@ -64,6 +65,8 @@ export interface UseRingResult {
 
 export function useRing({ ringName, isPaused = false }: UseRingOptions): UseRingResult {
   const { cluster } = useCluster();
+  const { selectedDatasource } = useStore();
+  const datasourceUid = selectedDatasource?.uid || 'loki';
   const [ring, setRing] = useState<RingResponse | null>(null);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -72,8 +75,8 @@ export function useRing({ ringName, isPaused = false }: UseRingOptions): UseRing
   const isTokenBased = useMemo(() => needsTokens(ringName), [ringName]);
 
   const ringProxyPath = useCallback(() => {
-    return getRingProxyPath(cluster?.members, ringName ?? '');
-  }, [cluster, ringName]);
+    return getRingProxyPath(cluster?.members, ringName ?? '', datasourceUid);
+  }, [cluster, ringName, datasourceUid]);
 
   const fetchRing = useCallback(async () => {
     if (!ringName) {

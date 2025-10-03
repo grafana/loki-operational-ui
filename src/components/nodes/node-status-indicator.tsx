@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { cn } from 'lib/utils';
-import { absolutePath } from '../../util';
+import { useAbsolutePath } from '../../hooks/use-absolute-path';
 
 interface NodeStatusIndicatorProps {
   nodeName: string;
@@ -18,6 +18,7 @@ export function NodeStatusIndicator({ nodeName, className }: NodeStatusIndicator
     message: 'Checking status...',
   });
   const [isVisible, setIsVisible] = useState(true);
+  const absolutePath = useAbsolutePath();
 
   useEffect(() => {
     const checkStatus = async () => {
@@ -52,7 +53,7 @@ export function NodeStatusIndicator({ nodeName, className }: NodeStatusIndicator
       clearInterval(statusInterval);
       clearInterval(blinkInterval);
     };
-  }, [nodeName]);
+  }, [nodeName, absolutePath]);
 
   return (
     <div className={cn('flex items-center gap-2', className)}>

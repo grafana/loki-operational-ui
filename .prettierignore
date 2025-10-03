@@ -1,0 +1,11 @@
+# Directories
+.direnv
+.direnv/**
+node_modules
+dist
+coverage
+.yarn
+
+# Files
+*.log
+.eslintcache
