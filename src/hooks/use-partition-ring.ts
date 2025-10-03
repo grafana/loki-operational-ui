@@ -3,6 +3,7 @@ import { PartitionInstance, PartitionRingResponse, RingTypes } from 'types/ring'
 import { useCluster } from 'contexts/use-cluster';
 import { useRateNodeMetrics } from './use-rate-node-metrics';
 import { getRingProxyPath, parseZoneFromOwner } from 'lib/ring-utils';
+import { useStore } from '../contexts/store-provider';
 
 interface PartitionState {
   partitions: PartitionInstance[];
@@ -36,6 +37,8 @@ export interface UsePartitionRingOptions {
 
 export function usePartitionRing({ isPaused = false }: UsePartitionRingOptions = {}): UsePartitionRingResult {
   const { cluster, isLoading: isClusterLoading } = useCluster();
+  const { selectedDatasource } = useStore();
+  const datasourceUid = selectedDatasource?.uid || 'loki';
   const [state, setState] = useState<PartitionState>({
     partitions: [],
     error: '',
@@ -44,8 +47,8 @@ export function usePartitionRing({ isPaused = false }: UsePartitionRingOptions =
   const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   const ringProxyPath = useCallback(() => {
-    return getRingProxyPath(cluster?.members, RingTypes.PARTITION_INGESTER);
-  }, [cluster]);
+    return getRingProxyPath(cluster?.members, RingTypes.PARTITION_INGESTER, datasourceUid);
+  }, [cluster, datasourceUid]);
 
   const { fetchMetrics } = useRateNodeMetrics();
   const fetchPartitions = useCallback(async () => {

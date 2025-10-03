@@ -19,7 +19,7 @@ import * as z from 'zod';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { PageContainer } from 'layout/page-container';
-import { absolutePath } from '../util';
+import { useAbsolutePath } from '../hooks/use-absolute-path';
 import { prefixRoute } from 'utils/utils.routing';
 
 const formSchema = z.object({
@@ -42,6 +42,7 @@ const NewDeleteRequest = () => {
   const [error, setError] = useState<string | null>(null);
   const [queryValidating, setQueryValidating] = useState(false);
   const { cluster } = useCluster();
+  const absolutePath = useAbsolutePath();
   const nodeName = useMemo(() => {
     return findNodeName(cluster?.members, ServiceNames.compactor);
   }, [cluster?.members]);
@@ -91,7 +92,7 @@ const NewDeleteRequest = () => {
         setQueryValidating(false);
       }
     },
-    [form, nodeName]
+    [form, nodeName, absolutePath]
   );
 
   const debouncedValidate = useMemo(

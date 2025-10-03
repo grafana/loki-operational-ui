@@ -1,4 +1,4 @@
-import { absolutePath } from '../util';
+import { useAbsolutePath } from './use-absolute-path';
 import { useState, useEffect } from 'react';
 
 interface UseNodeMetricsResult {
@@ -11,6 +11,7 @@ export function useNodeMetrics(nodeName: string | undefined, isMetricsTabActive:
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [metrics, setMetrics] = useState<string>('');
+  const absolutePath = useAbsolutePath();
 
   useEffect(() => {
     // Reset state when tab becomes inactive
@@ -58,7 +59,7 @@ export function useNodeMetrics(nodeName: string | undefined, isMetricsTabActive:
     return () => {
       abortController.abort();
     };
-  }, [nodeName, isMetricsTabActive]); // Only re-run if nodeName or tab active state changes
+  }, [nodeName, isMetricsTabActive, absolutePath]); // Only re-run if nodeName or tab active state changes
 
   return {
     isLoading,

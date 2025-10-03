@@ -3,7 +3,7 @@ import { ExplorerData, ExplorerFile } from 'types/explorer';
 import { useCluster } from 'contexts/use-cluster';
 import { useMemo } from 'react';
 import { findNodeName } from 'lib/utils';
-import { absolutePath } from '../util';
+import { useAbsolutePath } from './use-absolute-path';
 
 // mux.HandleFunc("/api/v1/dataobj/list", s.handleList)
 // mux.HandleFunc("/api/v1/dataobj/inspect", s.handleInspect)
@@ -12,6 +12,7 @@ import { absolutePath } from '../util';
 
 export function useExplorerData(path: string) {
   const { cluster } = useCluster();
+  const absolutePath = useAbsolutePath();
 
   const nodeName = useMemo(() => {
     return findNodeName(cluster?.members, 'dataobj-explorer');

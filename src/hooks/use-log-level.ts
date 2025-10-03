@@ -1,4 +1,4 @@
-import { absolutePath } from '../util';
+import { useAbsolutePath } from './use-absolute-path';
 import { useState, useEffect } from 'react';
 
 interface LogLevelResponse {
@@ -19,6 +19,7 @@ export function useLogLevel(nodeName: string | undefined): UseLogLevelResult {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
+  const absolutePath = useAbsolutePath();
 
   const parseLogLevel = (response: LogLevelResponse): string => {
     const match = response.message.match(/Current log level is (\w+)/);
@@ -49,7 +50,7 @@ export function useLogLevel(nodeName: string | undefined): UseLogLevelResult {
     }
 
     fetchLogLevel();
-  }, [nodeName]);
+  }, [nodeName, absolutePath]);
 
   const setLogLevel = async (level: string) => {
     if (!nodeName) {

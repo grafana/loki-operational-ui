@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef, useMemo } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { fetchSampledQueries } from 'lib/goldfish-api';
 import { OutcomeFilter, SampledQuery } from 'types/goldfish';
+import { useStore } from '../contexts/store-provider';
 
 const QUERY_OPTIONS = {
   staleTime: 1000, // 1 second - very short to ensure fresh data on filter changes
@@ -19,6 +20,8 @@ export function useGoldfishQueries(
   to?: Date | null
 ) {
   const queryClient = useQueryClient();
+  const { selectedDatasource } = useStore();
+  const datasourceUid = selectedDatasource?.uid || 'loki';
   const [currentTraceId, setCurrentTraceId] = useState<string | null>(null);
   const [allQueries, setAllQueries] = useState<SampledQuery[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -42,6 +45,7 @@ export function useGoldfishQueries(
     queryKey: ['goldfish-queries', currentPage, pageSize, tenant, user, newEngine, from, to],
     queryFn: async () => {
       const result = await fetchSampledQueries(
+        datasourceUid,
         currentPage,
         pageSize,
         tenant,

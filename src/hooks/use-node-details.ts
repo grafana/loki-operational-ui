@@ -1,4 +1,4 @@
-import { absolutePath } from '../util';
+import { useAbsolutePath } from './use-absolute-path';
 import { useState, useEffect } from 'react';
 
 interface NodeMetrics {
@@ -37,6 +37,7 @@ export function useNodeDetails(nodeName: string | undefined): UseNodeDetailsResu
   const [nodeDetails, setNodeDetails] = useState<NodeDetails | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const absolutePath = useAbsolutePath();
 
   useEffect(() => {
     if (!nodeName) {
@@ -63,7 +64,7 @@ export function useNodeDetails(nodeName: string | undefined): UseNodeDetailsResu
         setError(error instanceof Error ? error.message : 'An error occurred');
         setIsLoading(false);
       });
-  }, [nodeName]);
+  }, [nodeName, absolutePath]);
 
   return {
     nodeDetails,

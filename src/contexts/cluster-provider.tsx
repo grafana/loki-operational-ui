@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useRef, useEffect, ReactNode } from 'react';
 import { Cluster } from 'types/cluster';
 import { ClusterContext } from './cluster-context';
-import { absolutePath } from '../util';
+import { useAbsolutePath } from '../hooks/use-absolute-path';
 
 interface ClusterProviderProps {
   children: ReactNode;
@@ -12,6 +12,7 @@ export function ClusterProvider({ children }: ClusterProviderProps) {
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const isFetchingRef = useRef(false);
+  const absolutePath = useAbsolutePath();
 
   const fetchCluster = useCallback(async () => {
     if (isFetchingRef.current) {
@@ -35,7 +36,7 @@ export function ClusterProvider({ children }: ClusterProviderProps) {
       setIsLoading(false);
       isFetchingRef.current = false;
     }
-  }, []);
+  }, [absolutePath]);
 
   const refresh = useCallback(async () => {
     await fetchCluster();

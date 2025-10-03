@@ -9,6 +9,7 @@ export interface FetchResult<T> {
 }
 
 export async function fetchSampledQueries(
+  datasourceUid: string,
   page = 1,
   pageSize = 20,
   tenant?: string,
@@ -47,7 +48,7 @@ export async function fetchSampledQueries(
   const traceHeaders = createTraceHeaders(traceContext.traceId, traceContext.spanId, traceContext.parentSpanId);
 
   try {
-    const response = await fetch(`${absolutePath('/api/v1/goldfish/queries')}?${params}`, {
+    const response = await fetch(`${absolutePath('/api/v1/goldfish/queries', datasourceUid)}?${params}`, {
       headers: traceHeaders,
     });
 
