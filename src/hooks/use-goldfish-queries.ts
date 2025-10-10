@@ -42,7 +42,7 @@ export function useGoldfishQueries(
 
   // Single query - always sends ALL filters to backend
   const query = useQuery({
-    queryKey: ['goldfish-queries', currentPage, pageSize, tenant, user, newEngine, from, to],
+    queryKey: ['goldfish-queries', currentPage, pageSize, tenant, user, newEngine, from, to, datasourceUid],
     queryFn: async () => {
       const result = await fetchSampledQueries(
         datasourceUid,

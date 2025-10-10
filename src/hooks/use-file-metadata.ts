@@ -4,9 +4,11 @@ import { useCluster } from 'contexts/use-cluster';
 import { useMemo } from 'react';
 import { FileMetadataResponse } from 'types/explorer';
 import { useAbsolutePath } from './use-absolute-path';
+import { useStore } from 'contexts/store-provider';
 export function useFileMetadata(path: string | undefined) {
   const { cluster } = useCluster();
   const absolutePath = useAbsolutePath();
+  const { selectedDatasource } = useStore();
   const nodeName = useMemo(() => {
     return findNodeName(cluster?.members, 'dataobj-explorer');
   }, [cluster?.members]);
@@ -14,7 +16,7 @@ export function useFileMetadata(path: string | undefined) {
     return `/api/v1/proxy/${nodeName}/dataobj/api/v1/download?file=${encodeURIComponent(path || '')}`;
   }, [path, nodeName]);
   const query = useQuery<FileMetadataResponse>({
-    queryKey: ['file-metadata', path, nodeName],
+    queryKey: ['file-metadata', path, nodeName, selectedDatasource?.uid],
     queryFn: async () => {
       if (!path) {
         throw new Error('No file path provided');

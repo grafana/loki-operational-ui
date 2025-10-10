@@ -1,6 +1,6 @@
 import { GoldfishAPIResponse } from 'types/goldfish';
-import { absolutePath } from '../util';
 import { createTraceContext, createTraceHeaders, extractTraceId } from './tracing';
+import { absolutePath } from '../hooks/use-absolute-path';
 
 export interface FetchResult<T> {
   data?: T;

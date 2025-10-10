@@ -10,19 +10,21 @@ import { ClusterProvider } from '../../contexts/cluster-provider';
 import { StoreProvider } from '../../contexts/store-provider';
 import { VersionDisplay } from 'components/version-display';
 import { DatasourcePickerComponent } from 'components/datasource-picker';
-import { PluginPage } from '@grafana/runtime';
+import { config, PluginPage } from '@grafana/runtime';
 import { HeaderActions } from '../../layout/header-actions';
 import { TooltipProvider } from 'components/ui/tooltip';
 import { getGrafanaTheme } from '../../utils/theme';
+import { Card } from '@grafana/ui';
 
 function App(_: AppRootProps) {
   const grafanaTheme = getGrafanaTheme();
+  const isAdmin = config.bootData.user.orgRole === 'Admin' ? true : false;
 
-  return (
+  return isAdmin ? (
     <QueryProvider>
       <ThemeProvider defaultTheme={grafanaTheme}>
-        <ClusterProvider>
-          <StoreProvider>
+        <StoreProvider>
+          <ClusterProvider>
             <TooltipProvider>
               <PluginPage
                 renderTitle={() => (
@@ -47,11 +49,20 @@ function App(_: AppRootProps) {
                 </AppLayout>
               </PluginPage>
             </TooltipProvider>
-          </StoreProvider>
-        </ClusterProvider>
+          </ClusterProvider>
+        </StoreProvider>
       </ThemeProvider>
     </QueryProvider>
-  );
+  ) : (<ThemeProvider defaultTheme={grafanaTheme}>
+    <Card noMargin>
+      <Card.Heading>
+        Loki Operational UI
+      </Card.Heading>
+      <Card.Description>
+        You don&apos;t have sufficient privileges to access this page. You must be an admin.
+      </Card.Description>
+    </Card>
+  </ThemeProvider>)
 }
 
 export default App;

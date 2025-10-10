@@ -19,6 +19,7 @@ import { HoverCard, HoverCardContent, HoverCardTrigger } from 'components/ui/hov
 import { Input } from 'components/ui/input';
 import { PageContainer } from 'layout/page-container';
 import { useAbsolutePath } from '../hooks/use-absolute-path';
+import { useStore } from '../contexts/store-provider';
 
 interface DeleteRequest {
   request_id: string;
@@ -39,12 +40,13 @@ const DeleteRequestStatus = {
 const useDeletes = (status: string[]) => {
   const { cluster } = useCluster();
   const absolutePath = useAbsolutePath();
+  const { selectedDatasource } = useStore();
   const nodeName = useMemo(() => {
     return findNodeName(cluster?.members, ServiceNames.compactor);
   }, [cluster?.members]);
 
   const { data, isLoading, error } = useQuery<DeleteRequest[]>({
-    queryKey: ['deletes', status, nodeName],
+    queryKey: ['deletes', status, nodeName, selectedDatasource?.uid],
     queryFn: async () => {
       try {
         const requests = await Promise.all(

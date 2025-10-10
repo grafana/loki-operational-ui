@@ -1,7 +1,6 @@
 import { RingType, RingTypes } from 'types/ring';
 import { formatDistanceToNowStrict, formatISO } from 'date-fns';
 import { findNodeName, hasService } from './utils';
-import { absolutePath } from '../util';
 
 export function formatRelativeTime(timestamp: string) {
   const date = new Date(timestamp);
@@ -200,31 +199,27 @@ export const getAvailableRings = (members: Record<string, Member>): Array<{ titl
   return rings;
 };
 
-// Utility function to get ring proxy path
-export function getRingProxyPath(
+// Utility function to build ring path components
+export function buildRingPathComponents(
   members: Record<string, Member> | undefined,
-  ringName: RingType,
-  datasourceUid: string
-): string {
-  if (!members) {
-    return '';
-  }
-  if (!ringName) {
-    return '';
+  ringName: RingType
+): { nodeName: string; ringPath: string; tokensParam: string } | null {
+  if (!members || !ringName) {
+    return null;
   }
 
   const serviceName = findServiceName(ringName);
   if (!serviceName) {
-    return '';
-  }
-  // Find the first member that has the serviceName
-  const nodeName = findNodeName(members, serviceName);
-  if (!nodeName) {
-    return '';
+    return null;
   }
 
-  const proxyPath = absolutePath(`/api/v1/proxy/${nodeName}`, datasourceUid);
+  const nodeName = findNodeName(members, serviceName);
+  if (!nodeName) {
+    return null;
+  }
+
   const ringPath = RingServices[serviceName].ringPath;
   const tokensParam = RingServices[serviceName].needsTokens ? '?tokens=true' : '';
-  return `${proxyPath}${ringPath}${tokensParam}`;
+
+  return { nodeName, ringPath, tokensParam };
 }
