@@ -14,7 +14,7 @@ import { config, PluginPage } from '@grafana/runtime';
 import { HeaderActions } from '../../layout/header-actions';
 import { TooltipProvider } from 'components/ui/tooltip';
 import { getGrafanaTheme } from '../../utils/theme';
-import { Card } from '@grafana/ui';
+import { Alert } from '@grafana/ui';
 
 function App(_: AppRootProps) {
   const grafanaTheme = getGrafanaTheme();
@@ -54,14 +54,9 @@ function App(_: AppRootProps) {
       </ThemeProvider>
     </QueryProvider>
   ) : (<ThemeProvider defaultTheme={grafanaTheme}>
-    <Card noMargin>
-      <Card.Heading>
-        Loki Operational UI
-      </Card.Heading>
-      <Card.Description>
-        You don&apos;t have sufficient privileges to access this page. You must be an admin.
-      </Card.Description>
-    </Card>
+      <Alert title={'Unauthorized'} severity={'error'}>
+        You are not authorized to access this page. You must be an admin to access this page.
+      </Alert>
   </ThemeProvider>)
 }
 
