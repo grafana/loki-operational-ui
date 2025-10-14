@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.3
+
+##### Chores
+
+*  use an alert instead of card (845c94b6)
+
+##### Bug Fixes
+
+*  mock runtime config to fix test (d1e47294)
+*  datasource uid refreshes the page (d67993ca)
+
+
 ## 1.0.2
 
 ##### Chores
