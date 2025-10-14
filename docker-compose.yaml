@@ -14,7 +14,7 @@ services:
   loki:
     logging:
       <<: *logging
-    image: grafana/loki:k272-e15c650
+    image: grafana/loki:main-02dad9d
     environment:
       LOG_CLUSTER_DEPTH: '8'
       LOG_SIM_TH: '0.3'
@@ -28,5 +28,5 @@ services:
     command:
       - -config.file=/etc/loki/local-config.yaml
       - -runtime-config.file=/etc/loki/overrides.yaml
-      - -target=all,dataobj-explorer
+      - -target=all,dataobj-explorer,ui
     restart: on-failure

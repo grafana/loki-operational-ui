@@ -15,7 +15,7 @@ datasources:
     type: loki
     uid: loki-dev
     access: proxy
-    url: http://host.docker.internal:3100
+    url: ${LOKI_DEV_HOST}
     basicAuth: true
     basicAuthUser: '${LOKI_DEV_TENANT}'
     jsonData:

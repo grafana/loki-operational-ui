@@ -4,6 +4,7 @@ import { useCluster } from 'contexts/use-cluster';
 import { useMemo } from 'react';
 import { findNodeName } from 'lib/utils';
 import { useAbsolutePath } from './use-absolute-path';
+import { useStore } from 'contexts/store-provider';
 
 // mux.HandleFunc("/api/v1/dataobj/list", s.handleList)
 // mux.HandleFunc("/api/v1/dataobj/inspect", s.handleInspect)
@@ -13,13 +14,14 @@ import { useAbsolutePath } from './use-absolute-path';
 export function useExplorerData(path: string) {
   const { cluster } = useCluster();
   const absolutePath = useAbsolutePath();
+  const { selectedDatasource } = useStore();
 
   const nodeName = useMemo(() => {
     return findNodeName(cluster?.members, 'dataobj-explorer');
   }, [cluster?.members]);
 
   return useQuery<ExplorerData>({
-    queryKey: ['explorer', path, nodeName],
+    queryKey: ['explorer', path, nodeName, selectedDatasource?.uid],
     queryFn: async () => {
       if (!nodeName) {
         throw new Error('Node name not found');

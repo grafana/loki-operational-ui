@@ -13,6 +13,7 @@ import { useCluster } from '../contexts/use-cluster';
 import { useToast } from '../hooks/use-toast';
 import { cn, findNodeName } from '../lib/utils';
 import { useAbsolutePath } from '../hooks/use-absolute-path';
+import { useStore } from '../contexts/store-provider';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
@@ -78,6 +79,7 @@ export default function AnalyzeLabels() {
   const { cluster } = useCluster();
   const { toast } = useToast();
   const absolutePath = useAbsolutePath();
+  const { selectedDatasource } = useStore();
   const [analysisResults, setAnalysisResults] = useState<{
     totalStreams: number;
     uniqueLabels: number;
@@ -99,7 +101,7 @@ export default function AnalyzeLabels() {
   const nodeName = findNodeName(cluster?.members, 'query-frontend');
 
   const { isLoading, refetch } = useQuery({
-    queryKey: ['analyze-labels'],
+    queryKey: ['analyze-labels', selectedDatasource?.uid],
     queryFn: async () => {
       try {
         const values = form.getValues();

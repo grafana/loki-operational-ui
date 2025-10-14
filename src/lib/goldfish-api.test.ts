@@ -1,12 +1,12 @@
 import { fetchSampledQueries } from './goldfish-api';
-import { absolutePath } from '../util';
 
-const mockAbsolutePath = absolutePath as jest.MockedFunction<typeof absolutePath>;
-
-// Mock the util module to spy on absolutePath calls
-jest.mock('../util', () => ({
+// Mock the use-absolute-path module
+jest.mock('../hooks/use-absolute-path', () => ({
   absolutePath: jest.fn(),
 }));
+
+import { absolutePath } from '../hooks/use-absolute-path';
+const mockAbsolutePath = absolutePath as jest.MockedFunction<typeof absolutePath>;
 
 // Mock tracing module to avoid random trace IDs in tests
 jest.mock('./tracing', () => ({
@@ -121,10 +121,11 @@ describe('goldfish-api', () => {
   });
 
   describe('filter parameters', () => {
-    it('includes tenant filter in query parameters', async () => {
-      // Setup: Mock absolutePath
+    beforeEach(() => {
       mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/queries');
+    });
 
+    it('includes tenant filter in query parameters', async () => {
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
@@ -139,9 +140,6 @@ describe('goldfish-api', () => {
     });
 
     it('includes user filter in query parameters', async () => {
-      // Setup: Mock absolutePath
-      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/queries');
-
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
@@ -156,9 +154,6 @@ describe('goldfish-api', () => {
     });
 
     it('includes newEngine filter when true', async () => {
-      // Setup: Mock absolutePath
-      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/queries');
-
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
@@ -173,9 +168,6 @@ describe('goldfish-api', () => {
     });
 
     it('includes newEngine filter when false', async () => {
-      // Setup: Mock absolutePath
-      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/queries');
-
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
@@ -190,9 +182,6 @@ describe('goldfish-api', () => {
     });
 
     it('combines multiple filters correctly', async () => {
-      // Setup: Mock absolutePath
-      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/queries');
-
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
@@ -207,9 +196,6 @@ describe('goldfish-api', () => {
     });
 
     it('omits tenant parameter when value is "all"', async () => {
-      // Setup: Mock absolutePath
-      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/queries');
-
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
@@ -221,9 +207,6 @@ describe('goldfish-api', () => {
     });
 
     it('omits user parameter when value is "all"', async () => {
-      // Setup: Mock absolutePath
-      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/queries');
-
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
@@ -235,9 +218,6 @@ describe('goldfish-api', () => {
     });
 
     it('includes from and to time range parameters', async () => {
-      // Setup: Mock absolutePath
-      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/queries');
-
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 

@@ -2,8 +2,8 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { PartitionInstance, PartitionRingResponse, RingTypes } from 'types/ring';
 import { useCluster } from 'contexts/use-cluster';
 import { useRateNodeMetrics } from './use-rate-node-metrics';
-import { getRingProxyPath, parseZoneFromOwner } from 'lib/ring-utils';
-import { useStore } from '../contexts/store-provider';
+import { buildRingPathComponents, parseZoneFromOwner } from 'lib/ring-utils';
+import { useAbsolutePath } from './use-absolute-path';
 
 interface PartitionState {
   partitions: PartitionInstance[];
@@ -37,8 +37,7 @@ export interface UsePartitionRingOptions {
 
 export function usePartitionRing({ isPaused = false }: UsePartitionRingOptions = {}): UsePartitionRingResult {
   const { cluster, isLoading: isClusterLoading } = useCluster();
-  const { selectedDatasource } = useStore();
-  const datasourceUid = selectedDatasource?.uid || 'loki';
+  const absolutePath = useAbsolutePath();
   const [state, setState] = useState<PartitionState>({
     partitions: [],
     error: '',
@@ -47,8 +46,13 @@ export function usePartitionRing({ isPaused = false }: UsePartitionRingOptions =
   const abortControllerRef = useRef<AbortController | undefined>(undefined);
 
   const ringProxyPath = useCallback(() => {
-    return getRingProxyPath(cluster?.members, RingTypes.PARTITION_INGESTER, datasourceUid);
-  }, [cluster, datasourceUid]);
+    const components = buildRingPathComponents(cluster?.members, RingTypes.PARTITION_INGESTER);
+    if (!components) {
+      return '';
+    }
+    const { nodeName, ringPath, tokensParam } = components;
+    return `${absolutePath(`/api/v1/proxy/${nodeName}`)}${ringPath}${tokensParam}`;
+  }, [cluster?.members, absolutePath]);
 
   const { fetchMetrics } = useRateNodeMetrics();
   const fetchPartitions = useCallback(async () => {

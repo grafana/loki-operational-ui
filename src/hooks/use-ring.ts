@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { RingResponse, RingType, RingTypes } from 'types/ring';
 import { useCluster } from 'contexts/use-cluster';
-import { getRingProxyPath, needsTokens } from 'lib/ring-utils';
-import { useStore } from '../contexts/store-provider';
+import { buildRingPathComponents, needsTokens } from 'lib/ring-utils';
+import { useAbsolutePath } from './use-absolute-path';
 
 export const AVAILABLE_RINGS: Array<{ id: RingType; title: string }> = [
   { id: RingTypes.INGESTER, title: 'Ingester' },
@@ -65,8 +65,7 @@ export interface UseRingResult {
 
 export function useRing({ ringName, isPaused = false }: UseRingOptions): UseRingResult {
   const { cluster } = useCluster();
-  const { selectedDatasource } = useStore();
-  const datasourceUid = selectedDatasource?.uid || 'loki';
+  const absolutePath = useAbsolutePath();
   const [ring, setRing] = useState<RingResponse | null>(null);
   const [error, setError] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
@@ -75,8 +74,13 @@ export function useRing({ ringName, isPaused = false }: UseRingOptions): UseRing
   const isTokenBased = useMemo(() => needsTokens(ringName), [ringName]);
 
   const ringProxyPath = useCallback(() => {
-    return getRingProxyPath(cluster?.members, ringName ?? '', datasourceUid);
-  }, [cluster, ringName, datasourceUid]);
+    const components = buildRingPathComponents(cluster?.members, ringName ?? '');
+    if (!components) {
+      return '';
+    }
+    const { nodeName, ringPath, tokensParam } = components;
+    return `${absolutePath(`/api/v1/proxy/${nodeName}`)}${ringPath}${tokensParam}`;
+  }, [cluster?.members, ringName, absolutePath]);
 
   const fetchRing = useCallback(async () => {
     if (!ringName) {

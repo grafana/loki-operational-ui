@@ -8,11 +8,3 @@ export function getBasename(): string {
   return match?.[1] || '/ui/';
 }
 
-export function absolutePath(path: string, datasourceUid: string): string {
-  const basename = getBasename();
-  const apiPath = `${basename}${path.startsWith('/') ? path.slice(1) : path}`;
-
-  // Remove leading slash from apiPath to avoid double slashes in final URL
-  const cleanApiPath = apiPath.startsWith('/') ? apiPath.slice(1) : apiPath;
-  return `/api/datasources/proxy/uid/${datasourceUid}/${cleanApiPath}`;
-}
