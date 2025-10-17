@@ -21,9 +21,9 @@ describe('use-absolute-path', () => {
     });
 
     it('handles path without leading slash', () => {
-      mockLocation('/grafana/a/grafana-lokioperational-app');
+      mockLocation('/a/grafana-lokioperational-app');
       expect(absolutePath('api/v1/goldfish/queries', 'test-uid')).toBe(
-        '/grafana/api/datasources/proxy/uid/test-uid/ui/api/v1/goldfish/queries'
+        '/api/datasources/proxy/uid/test-uid/ui/api/v1/goldfish/queries'
       );
     });
 
