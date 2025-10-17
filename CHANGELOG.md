@@ -1,5 +1,21 @@
 # Changelog
 
+## 1.0.4
+
+##### Chores
+
+*  add TODO (16a31ba6)
+*  add more test cases (d2a0b03f)
+
+##### Bug Fixes
+
+*  url handling should be relative to grafana base url (7cf00593)
+
+##### Tests
+
+*  fix basename tests (6ba8cc48)
+
+
 ## 1.0.3
 
 ##### Chores
