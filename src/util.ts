@@ -4,7 +4,8 @@
  */
 export function getBasename(): string {
   const pathname = window.location.pathname;
-  const match = pathname.match(/(.*\/ui\/)/);
-  return match?.[1] || '/ui/';
+  //TODO: can we get the pluing path/name from the Grafana context?
+  const match = pathname.match(/(.*\/)a\/grafana-lokioperational-app/);
+  return match?.[1] || '/';
 }
 

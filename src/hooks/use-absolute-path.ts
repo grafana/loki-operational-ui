@@ -4,11 +4,11 @@ import { getBasename } from '../util';
 
 export function absolutePath(path: string, datasourceUid: string): string {
   const basename = getBasename();
-  const apiPath = `${basename}${path.startsWith('/') ? path.slice(1) : path}`;
 
   // Remove leading slash from apiPath to avoid double slashes in final URL
-  const cleanApiPath = apiPath.startsWith('/') ? apiPath.slice(1) : apiPath;
-  return `/api/datasources/proxy/uid/${datasourceUid}/${cleanApiPath}`;
+  const cleanBaseName = basename.startsWith('/') ? basename.slice(1) : basename;
+  const cleanPath = path.startsWith('/') ? path.slice(1) : path;
+  return `/${cleanBaseName}api/datasources/proxy/uid/${datasourceUid}/ui/${cleanPath}`;
 }
 
 export function useAbsolutePath() {

@@ -13,29 +13,24 @@ describe('util functions', () => {
   });
 
   describe('getBasename', () => {
-    it('extracts basename from standard /ui/ path', () => {
-      mockLocation('/ui/');
-      expect(getBasename()).toBe('/ui/');
+    it('extracts basename from standard plugin path', () => {
+      mockLocation('/a/grafana-lokioperational-app');
+      expect(getBasename()).toBe('/');
     });
 
-    it('extracts basename from nginx subpath with /ui/', () => {
-      mockLocation('/loki-dev-005/ops/ui/some/path');
-      expect(getBasename()).toBe('/loki-dev-005/ops/ui/');
+    it('extracts basename from nested plugin path', () => {
+      mockLocation('/grafana/a/grafana-lokioperational-app');
+      expect(getBasename()).toBe('/grafana/');
     });
 
-    it('returns default /ui/ when no match is found', () => {
+    it('handles trailing slash', () => {
+      mockLocation('/grafana/a/grafana-lokioperational-app/');
+      expect(getBasename()).toBe('/grafana/');
+    });
+
+    it('returns default / when no match is found', () => {
       mockLocation('/some/random/path');
-      expect(getBasename()).toBe('/ui/');
-    });
-
-    it('handles path ending with /ui/', () => {
-      mockLocation('/loki-dev-ssd/ui/');
-      expect(getBasename()).toBe('/loki-dev-ssd/ui/');
-    });
-
-    it('handles complex nginx paths', () => {
-      mockLocation('/loki-live/ops/ui/features/goldfish');
-      expect(getBasename()).toBe('/loki-live/ops/ui/');
+      expect(getBasename()).toBe('/');
     });
   });
 });
