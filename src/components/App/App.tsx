@@ -13,16 +13,21 @@ import { DatasourcePickerComponent } from 'components/datasource-picker';
 import { config, PluginPage } from '@grafana/runtime';
 import { HeaderActions } from '../../layout/header-actions';
 import { TooltipProvider } from 'components/ui/tooltip';
-import { getGrafanaTheme } from '../../utils/theme';
-import { Alert } from '@grafana/ui';
+import { Alert, useTheme2 } from '@grafana/ui';
+import { loader } from '@monaco-editor/react';
+import * as monaco from 'monaco-editor';
+
+// Configure Monaco to use local webpack bundle
+loader.config({ monaco });
 
 function App(_: AppRootProps) {
-  const grafanaTheme = getGrafanaTheme();
+  const grafanaTheme = useTheme2();
+  const theme = grafanaTheme.isDark ? 'dark' : 'light';
   const isAdmin = config.bootData.user.orgRole === 'Admin' ? true : false;
 
   return isAdmin ? (
     <QueryProvider>
-      <ThemeProvider defaultTheme={grafanaTheme}>
+      <ThemeProvider defaultTheme={theme}>
         <StoreProvider>
           <ClusterProvider>
             <TooltipProvider>
@@ -53,7 +58,7 @@ function App(_: AppRootProps) {
         </StoreProvider>
       </ThemeProvider>
     </QueryProvider>
-  ) : (<ThemeProvider defaultTheme={grafanaTheme}>
+  ) : (<ThemeProvider defaultTheme={theme}>
       <Alert title={'Unauthorized'} severity={'error'}>
         You are not authorized to access this page. You must be an admin to access this page.
       </Alert>
