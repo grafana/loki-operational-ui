@@ -26,7 +26,8 @@ import {
   GitCompare,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { cn } from 'lib/utils';
+import { cn, formatBytes } from 'lib/utils';
+import { useToast } from 'hooks/use-toast';
 
 interface MetricComparison {
   label: string;
@@ -36,21 +37,6 @@ interface MetricComparison {
   formatter: (value: number | null) => string;
   lowerIsBetter: boolean;
   unit?: string;
-}
-
-function formatBytes(bytes: number | null): string {
-  if (bytes === null) {
-    return 'N/A';
-  }
-  if (bytes === 0) {
-    return '0 B';
-  }
-
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
 function formatNumber(num: number | null): string {
@@ -151,20 +137,28 @@ function MetricRow({ metric }: { metric: MetricComparison }) {
 
 export function QueryDiffView({ query }: { query: SampledQuery }) {
   const { selectedDatasource } = useStore();
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
   const [showDiffDialog, setShowDiffDialog] = useState(false);
 
   const handleDownloadResult = async (cell: 'a' | 'b') => {
     if (!selectedDatasource?.uid) {
-      alert('No datasource selected');
+      toast({
+        title: 'No datasource selected',
+        description: 'Please select a datasource before downloading results.',
+        variant: 'destructive',
+      });
       return;
     }
 
     const result = await fetchStoredResult(selectedDatasource.uid, query.correlationId, cell);
 
     if (result.error) {
-      console.error('Error fetching stored result:', result.error);
-      alert(`Failed to fetch result: ${result.error.message}`);
+      toast({
+        title: 'Failed to fetch result',
+        description: result.error.message,
+        variant: 'destructive',
+      });
       return;
     }
 

@@ -7,6 +7,7 @@ import { fetchStoredResult } from 'lib/goldfish-api';
 import { useStore } from 'contexts/store-provider';
 import { useTheme } from 'features/theme';
 import { DiffEditor } from '@monaco-editor/react';
+import { formatBytes } from 'lib/utils';
 
 interface StoredResultsDiffProps {
   open: boolean;
@@ -39,6 +40,8 @@ export function StoredResultsDiff({
       return;
     }
 
+    const abortController = new AbortController();
+
     const fetchAndFormatResults = async () => {
       setIsLoading(true);
       setError(null);
@@ -51,6 +54,11 @@ export function StoredResultsDiff({
           fetchStoredResult(selectedDatasource.uid, correlationId, 'a'),
           fetchStoredResult(selectedDatasource.uid, correlationId, 'b'),
         ]);
+
+        // If aborted, stop processing
+        if (abortController.signal.aborted) {
+          return;
+        }
 
         // Check for errors
         if (resultA.error) {
@@ -82,18 +90,29 @@ export function StoredResultsDiff({
           jsonB = resultB.data;
         }
 
-        console.log('Fetched data - Cell A length:', jsonA.length, 'Cell B length:', jsonB.length);
+        if (abortController.signal.aborted) {
+          return;
+        }
+
         setCellAData(jsonA);
         setCellBData(jsonB);
       } catch (err) {
-        console.error('Error fetching stored results:', err);
+        if (abortController.signal.aborted) {
+          return;
+        }
         setError(err instanceof Error ? err.message : String(err));
       } finally {
-        setIsLoading(false);
+        if (!abortController.signal.aborted) {
+          setIsLoading(false);
+        }
       }
     };
 
     fetchAndFormatResults();
+
+    return () => {
+      abortController.abort();
+    };
   }, [open, correlationId, selectedDatasource?.uid]);
 
   return (
@@ -105,10 +124,10 @@ export function StoredResultsDiff({
             Correlation ID: {correlationId}
             {(cellASize || cellBSize) && (
               <span className="ml-4 text-xs">
-                Cell A: {cellASize ? `${(cellASize / 1024).toFixed(1)} KB` : 'N/A'}
+                Cell A: {formatBytes(cellASize ?? null)}
                 {cellACompression && ` (${cellACompression})`}
                 {' | '}
-                Cell B: {cellBSize ? `${(cellBSize / 1024).toFixed(1)} KB` : 'N/A'}
+                Cell B: {formatBytes(cellBSize ?? null)}
                 {cellBCompression && ` (${cellBCompression})`}
               </span>
             )}
