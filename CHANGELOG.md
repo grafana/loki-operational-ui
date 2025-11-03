@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.5
+
+##### Chores
+
+*  PR feedback, add abort controller (6a228c8f)
+
+##### New Features
+
+* **goldfish:**  implement diff view for stored results (c943843a)
+
+##### Tests
+
+*  add more coverage and mock monaco (a7862c70)
+
+
 ## 1.0.4
 
 ##### Chores
