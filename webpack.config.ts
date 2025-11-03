@@ -1,5 +1,6 @@
 import type { Configuration } from 'webpack';
 import { merge } from 'webpack-merge';
+import MonacoWebpackPlugin from 'monaco-editor-webpack-plugin';
 
 import grafanaConfig from './.config/webpack/webpack.config';
 
@@ -24,6 +25,11 @@ const config = async (env: any): Promise<Configuration> => {
         },
       ],
     },
+    plugins: [
+      new MonacoWebpackPlugin({
+        languages: ['json', 'typescript', 'javascript'],
+      }),
+    ],
   });
 };
 

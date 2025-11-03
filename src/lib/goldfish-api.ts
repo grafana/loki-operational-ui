@@ -8,6 +8,61 @@ export interface FetchResult<T> {
   error?: Error;
 }
 
+export async function fetchStoredResult(
+  datasourceUid: string,
+  correlationId: string,
+  cell: 'a' | 'b'
+): Promise<FetchResult<string>> {
+  // Create trace context for this request
+  const traceContext = createTraceContext();
+  const traceHeaders = createTraceHeaders(traceContext.traceId, traceContext.spanId, traceContext.parentSpanId);
+
+  try {
+    const response = await fetch(
+      `${absolutePath(`/api/v1/goldfish/results/${correlationId}/cell-${cell}`, datasourceUid)}`,
+      {
+        headers: traceHeaders,
+      }
+    );
+
+    // Extract trace ID from response (might be different if backend generates its own)
+    const responseTraceId = extractTraceId(response, null) || traceContext.traceId;
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      let errorMessage = `Failed to fetch stored result for cell-${cell}: ${response.statusText}`;
+
+      try {
+        const errorJson = JSON.parse(errorText);
+        errorMessage = errorJson.error || errorMessage;
+      } catch {
+        // If not JSON, use the text as-is
+        if (errorText) {
+          errorMessage = errorText;
+        }
+      }
+
+      return {
+        traceId: responseTraceId,
+        error: new Error(errorMessage),
+      };
+    }
+
+    // Return the raw text response (JSON string)
+    const data = await response.text();
+    return {
+      data,
+      traceId: responseTraceId,
+    };
+  } catch (error) {
+    // For network errors, timeouts, etc., we still have the trace ID
+    return {
+      traceId: traceContext.traceId,
+      error: error instanceof Error ? error : new Error(String(error)),
+    };
+  }
+}
+
 export async function fetchSampledQueries(
   datasourceUid: string,
   page = 1,

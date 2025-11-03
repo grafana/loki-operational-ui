@@ -56,6 +56,14 @@ export interface SampledQuery {
   cellAUsedNewEngine: boolean;
   cellBUsedNewEngine: boolean;
 
+  // Result storage metadata - nullable when persistence is disabled
+  cellAResultURI?: string | null;
+  cellBResultURI?: string | null;
+  cellAResultSizeBytes?: number | null;
+  cellBResultSizeBytes?: number | null;
+  cellAResultCompression?: string | null;
+  cellBResultCompression?: string | null;
+
   sampledAt: string;
   createdAt: string;
   comparisonStatus: string;

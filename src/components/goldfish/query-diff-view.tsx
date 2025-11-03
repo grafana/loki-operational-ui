@@ -2,8 +2,12 @@ import React, { useState } from 'react';
 import { SampledQuery, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from 'types/goldfish';
 import { Card, CardContent } from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
+import { Button } from 'components/ui/button';
 import { Separator } from 'components/ui/separator';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from 'components/ui/collapsible';
+import { StoredResultsDiff } from './stored-results-diff';
+import { fetchStoredResult } from 'lib/goldfish-api';
+import { useStore } from 'contexts/store-provider';
 import {
   CheckCircle2,
   XCircle,
@@ -18,9 +22,12 @@ import {
   Activity,
   Rocket,
   Code2,
+  HardDrive,
+  GitCompare,
 } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
-import { cn } from 'lib/utils';
+import { cn, formatBytes } from 'lib/utils';
+import { useToast } from 'hooks/use-toast';
 
 interface MetricComparison {
   label: string;
@@ -30,21 +37,6 @@ interface MetricComparison {
   formatter: (value: number | null) => string;
   lowerIsBetter: boolean;
   unit?: string;
-}
-
-function formatBytes(bytes: number | null): string {
-  if (bytes === null) {
-    return 'N/A';
-  }
-  if (bytes === 0) {
-    return '0 B';
-  }
-
-  const k = 1024;
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
-  const i = Math.floor(Math.log(bytes) / Math.log(k));
-
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
 }
 
 function formatNumber(num: number | null): string {
@@ -144,7 +136,41 @@ function MetricRow({ metric }: { metric: MetricComparison }) {
 }
 
 export function QueryDiffView({ query }: { query: SampledQuery }) {
+  const { selectedDatasource } = useStore();
+  const { toast } = useToast();
   const [isOpen, setIsOpen] = useState(false);
+  const [showDiffDialog, setShowDiffDialog] = useState(false);
+
+  const handleDownloadResult = async (cell: 'a' | 'b') => {
+    if (!selectedDatasource?.uid) {
+      toast({
+        title: 'No datasource selected',
+        description: 'Please select a datasource before downloading results.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    const result = await fetchStoredResult(selectedDatasource.uid, query.correlationId, cell);
+
+    if (result.error) {
+      toast({
+        title: 'Failed to fetch result',
+        description: result.error.message,
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    if (result.data) {
+      // Create a data URI and trigger download
+      const dataStr = 'data:application/json;charset=utf-8,' + encodeURIComponent(result.data);
+      const a = document.createElement('a');
+      a.download = `cell-${cell}-${query.correlationId}.json`;
+      a.href = dataStr;
+      a.click();
+    }
+  };
 
   const performanceMetrics: MetricComparison[] = [
     {
@@ -434,6 +460,80 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
 
             <Separator />
 
+            {/* Stored Results - only show if at least one cell has stored results */}
+            {(query.cellAResultURI || query.cellBResultURI) && (
+              <>
+                <div className="space-y-3">
+                  <h4 className="text-sm font-medium">Stored Results</h4>
+                  <div className="grid grid-cols-7 gap-4">
+                    <div className="col-span-2 text-sm text-muted-foreground flex items-center gap-2">
+                      <HardDrive className="h-4 w-4" />
+                      <span>Raw Results in Object Storage</span>
+                    </div>
+                    <div className="col-span-2 text-right">
+                      {query.cellAResultURI ? (
+                        <div className="flex flex-col items-end gap-1">
+                          <button
+                            onClick={() => handleDownloadResult('a')}
+                            className="flex items-center gap-2 text-xs text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                          >
+                            <CheckCircle2 className="h-3 w-3 text-green-600" />
+                            <span>Stored</span>
+                          </button>
+                          {query.cellAResultSizeBytes && (
+                            <div className="text-xs text-muted-foreground">
+                              {formatBytes(query.cellAResultSizeBytes)}
+                              {query.cellAResultCompression && ` (${query.cellAResultCompression})`}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-muted-foreground">Not stored</div>
+                      )}
+                    </div>
+                    <div className="col-span-1">
+                      {query.cellAResultURI && query.cellBResultURI && (
+                        <div className="flex items-center justify-center pt-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setShowDiffDialog(true)}
+                            className="gap-2 dark:bg-sky-600 dark:hover:bg-sky-800 bg-sky-400 hover:bg-sky-600"
+                          >
+                            <GitCompare className="h-4 w-4" />
+                            Compare
+                          </Button>
+                        </div>
+                      )}
+                    </div>
+                    <div className="col-span-2 text-left">
+                      {query.cellBResultURI ? (
+                        <div className="flex flex-col items-start gap-1">
+                          <button
+                            onClick={() => handleDownloadResult('b')}
+                            className="flex items-center gap-2 text-xs text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                          >
+                            <CheckCircle2 className="h-3 w-3 text-green-600" />
+                            <span>Stored</span>
+                          </button>
+                          {query.cellBResultSizeBytes && (
+                            <div className="text-xs text-muted-foreground">
+                              {formatBytes(query.cellBResultSizeBytes)}
+                              {query.cellBResultCompression && ` (${query.cellBResultCompression})`}
+                            </div>
+                          )}
+                        </div>
+                      ) : (
+                        <div className="text-xs text-muted-foreground">Not stored</div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+
+                <Separator />
+              </>
+            )}
+
             {/* Query Engine */}
             <div className="space-y-3">
               <h4 className="text-sm font-medium">Query Engine</h4>
@@ -504,6 +604,17 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
           </CardContent>
         </CollapsibleContent>
       </Collapsible>
+
+      {/* Diff Dialog */}
+      <StoredResultsDiff
+        open={showDiffDialog}
+        onOpenChange={setShowDiffDialog}
+        correlationId={query.correlationId}
+        cellASize={query.cellAResultSizeBytes}
+        cellBSize={query.cellBResultSizeBytes}
+        cellACompression={query.cellAResultCompression}
+        cellBCompression={query.cellBResultCompression}
+      />
     </Card>
   );
 }

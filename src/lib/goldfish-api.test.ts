@@ -1,4 +1,4 @@
-import { fetchSampledQueries } from './goldfish-api';
+import { fetchSampledQueries, fetchStoredResult } from './goldfish-api';
 
 // Mock the use-absolute-path module
 jest.mock('../hooks/use-absolute-path', () => ({
@@ -252,6 +252,105 @@ describe('goldfish-api', () => {
         '/namespace/ops/ui/api/v1/goldfish/queries?page=1&pageSize=20',
         expectedHeaders
       );
+    });
+  });
+
+  describe('fetchStoredResult', () => {
+    beforeEach(() => {
+      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/results');
+    });
+
+    describe('successful fetches', () => {
+      it('fetches stored result for cell a', async () => {
+        // Setup: Mock successful response with JSON data
+        const testData = '{"streams": [{"labels": "test"}]}';
+        mockFetch.mockResolvedValueOnce({
+          ok: true,
+          text: async () => testData,
+          headers: {
+            get: jest.fn(() => null),
+          },
+        });
+
+        // Act: Fetch cell a data
+        const result = await fetchStoredResult('test-uid', 'correlation-123', 'a');
+
+        // Assert: Verify successful response
+        expect(result.data).toBe(testData);
+        expect(result.error).toBeUndefined();
+        expect(result.traceId).toBe('test-trace-id-123');
+      });
+    });
+
+    describe('URL construction', () => {
+      it('constructs correct API URL for cell a', async () => {
+        // Setup: Mock absolutePath to return expected path
+        mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/results/corr-123/cell-a');
+
+        // Setup: Mock successful response
+        mockFetch.mockResolvedValueOnce({
+          ok: true,
+          text: async () => '{}',
+          headers: {
+            get: jest.fn(() => null),
+          },
+        });
+
+        // Act: Call fetchStoredResult
+        await fetchStoredResult('test-uid', 'corr-123', 'a');
+
+        // Assert: Verify absolutePath was called with correct parameters
+        expect(mockAbsolutePath).toHaveBeenCalledWith('/api/v1/goldfish/results/corr-123/cell-a', 'test-uid');
+
+        // Assert: Verify fetch was called with constructed URL and tracing headers
+        expect(mockFetch).toHaveBeenCalledWith('/ui/api/v1/goldfish/results/corr-123/cell-a', expectedHeaders);
+      });
+
+      it('constructs correct API URL for cell b', async () => {
+        // Setup: Mock absolutePath to return expected path
+        mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/results/corr-456/cell-b');
+
+        // Setup: Mock successful response
+        mockFetch.mockResolvedValueOnce({
+          ok: true,
+          text: async () => '{}',
+          headers: {
+            get: jest.fn(() => null),
+          },
+        });
+
+        // Act: Call fetchStoredResult
+        await fetchStoredResult('test-uid', 'corr-456', 'b');
+
+        // Assert: Verify absolutePath was called with correct parameters
+        expect(mockAbsolutePath).toHaveBeenCalledWith('/api/v1/goldfish/results/corr-456/cell-b', 'test-uid');
+
+        // Assert: Verify fetch was called with constructed URL and tracing headers
+        expect(mockFetch).toHaveBeenCalledWith('/ui/api/v1/goldfish/results/corr-456/cell-b', expectedHeaders);
+      });
+    });
+
+    describe('error handling', () => {
+      it('handles API errors', async () => {
+        // Setup: Mock API error response with JSON
+        mockFetch.mockResolvedValueOnce({
+          ok: false,
+          statusText: 'Not Found',
+          text: async () => '{"error": "Stored result not found for correlation ID"}',
+          headers: {
+            get: jest.fn(() => null),
+          },
+        });
+
+        // Act: Call fetchStoredResult
+        const result = await fetchStoredResult('test-uid', 'missing-id', 'a');
+
+        // Assert: Verify error is returned with parsed JSON message
+        expect(result.error).toBeDefined();
+        expect(result.error?.message).toBe('Stored result not found for correlation ID');
+        expect(result.data).toBeUndefined();
+        expect(result.traceId).toBe('test-trace-id-123');
+      });
     });
   });
 });
