@@ -92,3 +92,10 @@ export interface GoldfishAPIResponse {
   page: number;
   pageSize: number;
 }
+
+export interface GoldfishStatistics {
+  queriesExecuted: number;
+  engineCoverage: number;
+  matchingQueries: number;
+  performanceDifference: number;
+}
