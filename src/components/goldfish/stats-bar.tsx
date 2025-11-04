@@ -159,7 +159,7 @@ export function StatsBar({ datasourceUid, tenant, user, from, to }: StatsBarProp
       />
       <StatCard
         label="Performance difference (geomean)"
-        value={`${(Math.abs(stats.performanceDifference) * 100).toFixed(0)}%`}
+        value={`${(stats.performanceDifference * 100).toFixed(0)}%`}
         bgColor={getPerformanceDifferenceColor(stats.performanceDifference)}
         tooltip="Geometric mean of the performance difference between new and old engines. Positive values indicate the new engine is slower, negative values indicate it's faster."
       />
