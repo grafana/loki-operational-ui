@@ -69,35 +69,47 @@ export function StatsBar({ datasourceUid, tenant, user, from, to }: StatsBarProp
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    let cancelled = false;
+    if (!datasourceUid) { return; }
+
+    const abortController = new AbortController();
 
     async function loadStats() {
-      if (!datasourceUid) { return; }
-
       setIsLoading(true);
       setError(null);
 
-      const result = await fetchGoldfishStats(datasourceUid, tenant, user, from, to);
+      try {
+        const result = await fetchGoldfishStats(
+          datasourceUid,
+          tenant,
+          user,
+          from,
+          to,
+          abortController.signal
+        );
 
-      if (cancelled) { return; }
+        if (result.error) {
+          setError(result.error.message);
+          setIsLoading(false);
+          return;
+        }
 
-      if (result.error) {
-        setError(result.error.message);
+        if (result.data) {
+          setStats(result.data);
+        }
+
         setIsLoading(false);
-        return;
+      } catch (err) {
+        // This shouldn't happen since fetchGoldfishStats catches all errors,
+        // but handle it just in case
+        setError(err instanceof Error ? err.message : 'An unknown error occurred');
+        setIsLoading(false);
       }
-
-      if (result.data) {
-        setStats(result.data);
-      }
-
-      setIsLoading(false);
     }
 
     loadStats();
 
     return () => {
-      cancelled = true;
+      abortController.abort();
     };
   }, [datasourceUid, tenant, user, from, to]);
 

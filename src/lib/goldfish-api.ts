@@ -154,7 +154,8 @@ export async function fetchGoldfishStats(
   tenant?: string,
   user?: string,
   from?: Date,
-  to?: Date
+  to?: Date,
+  signal?: AbortSignal
 ): Promise<FetchResult<GoldfishStatistics>> {
   const params = new URLSearchParams();
 
@@ -182,6 +183,7 @@ export async function fetchGoldfishStats(
     const url = `${absolutePath('/api/v1/goldfish/stats', datasourceUid)}${params.toString() ? '?' + params : ''}`;
     const response = await fetch(url, {
       headers: traceHeaders,
+      signal,
     });
 
     // Extract trace ID from response (might be different if backend generates its own)
