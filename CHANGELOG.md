@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.0.6
+
+##### New Features
+
+*  add stats bar and backend outcome filtering (9ebe9cd6)
+
+##### Bug Fixes
+
+*  a few more small fixes (4180719a)
+*  remove unused properties (f51dc983)
+
+##### Refactors
+
+*  add abort controller pattern (cf68efa2)
+
+##### Tests
+
+*  fix tests and improve coverage (76e4f030)
+
+
 ## 1.0.5
 
 ##### Chores
