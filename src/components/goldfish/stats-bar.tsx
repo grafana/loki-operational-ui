@@ -9,8 +9,6 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from 'compon
 
 interface StatsBarProps {
   datasourceUid: string;
-  tenant?: string;
-  user?: string;
   from?: Date;
   to?: Date;
 }
@@ -57,13 +55,13 @@ function getMatchingQueriesColor(value: number): string {
 
 function getPerformanceDifferenceColor(value: number): string {
   if (value >= 10) { return 'bg-red-500'; }
-  if (value >= 1) { return 'bg-yellow-500'; }
+  if (value >= 1) { return 'bg-orange-500'; }
   if (value >= 0.5) { return 'bg-yellow-500'; }
   if (value >= 0) { return 'bg-blue-500'; }
   return 'bg-green-500';
 }
 
-export function StatsBar({ datasourceUid, tenant, user, from, to }: StatsBarProps) {
+export function StatsBar({ datasourceUid, from, to }: StatsBarProps) {
   const [stats, setStats] = useState<GoldfishStatistics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -80,8 +78,6 @@ export function StatsBar({ datasourceUid, tenant, user, from, to }: StatsBarProp
       try {
         const result = await fetchGoldfishStats(
           datasourceUid,
-          tenant,
-          user,
           from,
           to,
           abortController.signal
@@ -111,7 +107,7 @@ export function StatsBar({ datasourceUid, tenant, user, from, to }: StatsBarProp
     return () => {
       abortController.abort();
     };
-  }, [datasourceUid, tenant, user, from, to]);
+  }, [datasourceUid, from, to]);
 
   if (isLoading) {
     return (

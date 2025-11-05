@@ -71,8 +71,7 @@ export async function fetchSampledQueries(
   user?: string,
   newEngine?: boolean,
   from?: Date,
-  to?: Date,
-  outcome?: string
+  to?: Date
 ): Promise<FetchResult<GoldfishAPIResponse>> {
   const params = new URLSearchParams({
     page: page.toString(),
@@ -97,10 +96,6 @@ export async function fetchSampledQueries(
 
   if (to) {
     params.append('to', to.toISOString());
-  }
-
-  if (outcome && outcome !== 'all') {
-    params.append('comparisonStatus', outcome);
   }
 
   // Create trace context for this request
@@ -151,21 +146,11 @@ export async function fetchSampledQueries(
 
 export async function fetchGoldfishStats(
   datasourceUid: string,
-  tenant?: string,
-  user?: string,
   from?: Date,
   to?: Date,
   signal?: AbortSignal
 ): Promise<FetchResult<GoldfishStatistics>> {
   const params = new URLSearchParams();
-
-  if (tenant && tenant !== 'all') {
-    params.append('tenant', tenant);
-  }
-
-  if (user && user !== 'all') {
-    params.append('user', user);
-  }
 
   if (from) {
     params.append('from', from.toISOString());

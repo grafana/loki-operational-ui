@@ -30,7 +30,7 @@ export function useGoldfishQueries(
   const [currentPage, setCurrentPage] = useState(1);
 
   // Create a stable filter key for tracking changes
-  const filterKey = `${tenant ?? ''}-${user ?? ''}-${newEngine ?? ''}-${from?.getTime() ?? ''}-${to?.getTime() ?? ''}-${selectedOutcome ?? ''}`;
+  const filterKey = `${tenant ?? ''}-${user ?? ''}-${newEngine ?? ''}-${from?.getTime() ?? ''}-${to?.getTime() ?? ''}`;
   const prevFilterKeyRef = useRef<string | undefined>(undefined);
 
   useEffect(() => {
@@ -40,9 +40,9 @@ export function useGoldfishQueries(
     prevFilterKeyRef.current = filterKey;
   }, [filterKey]);
 
-  // Single query - always sends ALL filters to backend
+  // Single query - sends filters to backend
   const query = useQuery({
-    queryKey: ['goldfish-queries', currentPage, pageSize, tenant, user, newEngine, from, to, selectedOutcome, datasourceUid],
+    queryKey: ['goldfish-queries', currentPage, pageSize, tenant, user, newEngine, from, to, datasourceUid],
     queryFn: async () => {
       const result = await fetchSampledQueries(
         datasourceUid,
@@ -52,8 +52,7 @@ export function useGoldfishQueries(
         user,
         newEngine,
         from ?? undefined,
-        to ?? undefined,
-        selectedOutcome
+        to ?? undefined
       );
 
       setCurrentTraceId(result.traceId);
@@ -85,8 +84,13 @@ export function useGoldfishQueries(
   }, [query.data, currentPage]);
 
   const displayQueries = useMemo(() => {
-    return allQueries.sort((a, b) => new Date(b.sampledAt).getTime() - new Date(a.sampledAt).getTime());
-  }, [allQueries]);
+    let filtered = allQueries;
+    if (selectedOutcome && selectedOutcome !== 'all') {
+      filtered = allQueries.filter((q) => q.comparisonStatus === selectedOutcome);
+    }
+
+    return [...filtered].sort((a, b) => new Date(b.sampledAt).getTime() - new Date(a.sampledAt).getTime());
+  }, [allQueries, selectedOutcome]);
 
   // Load more function - increments page counter
   const loadMore = useCallback(() => {
