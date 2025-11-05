@@ -40,7 +40,7 @@ export function useGoldfishQueries(
     prevFilterKeyRef.current = filterKey;
   }, [filterKey]);
 
-  // Single query - always sends ALL filters to backend
+  // Single query - sends filters to backend
   const query = useQuery({
     queryKey: ['goldfish-queries', currentPage, pageSize, tenant, user, newEngine, from, to, datasourceUid],
     queryFn: async () => {
@@ -83,16 +83,13 @@ export function useGoldfishQueries(
     }
   }, [query.data, currentPage]);
 
-  // Apply outcome filter on frontend for immediate response and sort
   const displayQueries = useMemo(() => {
-    return allQueries
-      .filter((q) => {
-        if (selectedOutcome && selectedOutcome !== 'all') {
-          return q.comparisonStatus === selectedOutcome;
-        }
-        return true;
-      })
-      .sort((a, b) => new Date(b.sampledAt).getTime() - new Date(a.sampledAt).getTime());
+    let filtered = allQueries;
+    if (selectedOutcome && selectedOutcome !== 'all') {
+      filtered = allQueries.filter((q) => q.comparisonStatus === selectedOutcome);
+    }
+
+    return [...filtered].sort((a, b) => new Date(b.sampledAt).getTime() - new Date(a.sampledAt).getTime());
   }, [allQueries, selectedOutcome]);
 
   // Load more function - increments page counter

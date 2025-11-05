@@ -1,4 +1,4 @@
-import { fetchSampledQueries, fetchStoredResult } from './goldfish-api';
+import { fetchSampledQueries, fetchStoredResult, fetchGoldfishStats } from './goldfish-api';
 
 // Mock the use-absolute-path module
 jest.mock('../hooks/use-absolute-path', () => ({
@@ -349,6 +349,181 @@ describe('goldfish-api', () => {
         expect(result.error).toBeDefined();
         expect(result.error?.message).toBe('Stored result not found for correlation ID');
         expect(result.data).toBeUndefined();
+        expect(result.traceId).toBe('test-trace-id-123');
+      });
+    });
+  });
+
+  describe('fetchGoldfishStats', () => {
+    beforeEach(() => {
+      mockAbsolutePath.mockReturnValue('/ui/api/v1/goldfish/stats');
+    });
+
+    describe('successful fetches', () => {
+      it('fetches statistics successfully', async () => {
+        // Setup: Mock successful response with statistics data
+        const statsData = {
+          queriesExecuted: 100,
+          engineCoverage: 0.75,
+          matchingQueries: 0.95,
+          performanceDifference: -0.05,
+        };
+        mockFetch.mockResolvedValueOnce(mockResponse(statsData));
+
+        // Act: Fetch statistics
+        const result = await fetchGoldfishStats('test-uid');
+
+        // Assert: Verify successful response
+        expect(result.data).toEqual(statsData);
+        expect(result.error).toBeUndefined();
+        expect(result.traceId).toBe('test-trace-id-123');
+      });
+
+      it('constructs correct API URL', async () => {
+        // Setup: Mock successful response
+        mockFetch.mockResolvedValueOnce(
+          mockResponse({
+            queriesExecuted: 50,
+            engineCoverage: 0.5,
+            matchingQueries: 0.9,
+            performanceDifference: 0.1,
+          })
+        );
+
+        // Act: Call fetchGoldfishStats
+        await fetchGoldfishStats('test-uid');
+
+        // Assert: Verify absolutePath was called with correct parameters
+        expect(mockAbsolutePath).toHaveBeenCalledWith('/api/v1/goldfish/stats', 'test-uid');
+
+        // Assert: Verify fetch was called with constructed URL and tracing headers
+        expect(mockFetch).toHaveBeenCalledWith('/ui/api/v1/goldfish/stats', expectedHeaders);
+      });
+    });
+
+    describe('filter parameters', () => {
+      it('includes from and to time range parameters', async () => {
+        // Setup: Mock successful API response
+        mockFetch.mockResolvedValueOnce(
+          mockResponse({
+            queriesExecuted: 30,
+            engineCoverage: 0.7,
+            matchingQueries: 0.92,
+            performanceDifference: -0.1,
+          })
+        );
+
+        const from = new Date('2023-01-01T10:00:00Z');
+        const to = new Date('2023-01-01T11:00:00Z');
+
+        // Act: Call with time range filters
+        await fetchGoldfishStats('test-uid', from, to);
+
+        // Assert: Verify URL includes time parameters and tracing headers
+        expect(mockFetch).toHaveBeenCalledWith(
+          '/ui/api/v1/goldfish/stats?from=2023-01-01T10%3A00%3A00.000Z&to=2023-01-01T11%3A00%3A00.000Z',
+          expectedHeaders
+        );
+      });
+    });
+
+    describe('error handling', () => {
+      it('handles API errors with JSON response', async () => {
+        // Setup: Mock API error response with JSON
+        mockFetch.mockResolvedValueOnce({
+          ok: false,
+          statusText: 'Internal Server Error',
+          text: async () => '{"error": "Failed to compute statistics"}',
+          headers: {
+            get: jest.fn(() => null),
+          },
+        });
+
+        // Act: Call fetchGoldfishStats
+        const result = await fetchGoldfishStats('test-uid');
+
+        // Assert: Verify error is returned with parsed JSON message
+        expect(result.error).toBeDefined();
+        expect(result.error?.message).toBe('Failed to compute statistics');
+        expect(result.data).toBeUndefined();
+        expect(result.traceId).toBe('test-trace-id-123');
+      });
+
+      it('handles API errors with plain text response', async () => {
+        // Setup: Mock API error response with plain text
+        mockFetch.mockResolvedValueOnce({
+          ok: false,
+          statusText: 'Bad Gateway',
+          text: async () => 'Service temporarily unavailable',
+          headers: {
+            get: jest.fn(() => null),
+          },
+        });
+
+        // Act: Call fetchGoldfishStats
+        const result = await fetchGoldfishStats('test-uid');
+
+        // Assert: Verify error is returned with plain text message
+        expect(result.error).toBeDefined();
+        expect(result.error?.message).toBe('Service temporarily unavailable');
+        expect(result.data).toBeUndefined();
+        expect(result.traceId).toBe('test-trace-id-123');
+      });
+
+      it('handles network errors', async () => {
+        // Setup: Mock network error
+        const networkError = new Error('Network request failed');
+        mockFetch.mockRejectedValueOnce(networkError);
+
+        // Act: Call fetchGoldfishStats
+        const result = await fetchGoldfishStats('test-uid');
+
+        // Assert: Verify error is returned with network error message
+        expect(result.error).toBeDefined();
+        expect(result.error?.message).toBe('Network request failed');
+        expect(result.data).toBeUndefined();
+        expect(result.traceId).toBe('test-trace-id-123');
+      });
+    });
+
+    describe('AbortController support', () => {
+      it('passes abort signal to fetch', async () => {
+        // Setup: Mock successful response
+        mockFetch.mockResolvedValueOnce(
+          mockResponse({
+            queriesExecuted: 100,
+            engineCoverage: 0.75,
+            matchingQueries: 0.95,
+            performanceDifference: -0.05,
+          })
+        );
+
+        // Act: Call with AbortSignal
+        const abortController = new AbortController();
+        await fetchGoldfishStats('test-uid', undefined, undefined, abortController.signal);
+
+        // Assert: Verify fetch was called with signal in options
+        expect(mockFetch).toHaveBeenCalledWith(
+          '/ui/api/v1/goldfish/stats',
+          expect.objectContaining({
+            signal: abortController.signal,
+          })
+        );
+      });
+
+      it('handles aborted requests', async () => {
+        // Setup: Mock abort error
+        const abortError = new Error('The operation was aborted');
+        abortError.name = 'AbortError';
+        mockFetch.mockRejectedValueOnce(abortError);
+
+        // Act: Call with AbortSignal that will be aborted
+        const abortController = new AbortController();
+        const result = await fetchGoldfishStats('test-uid', undefined, undefined, abortController.signal);
+
+        // Assert: Verify error is returned (AbortError is treated like any other error)
+        expect(result.error).toBeDefined();
+        expect(result.error?.message).toContain('aborted');
         expect(result.traceId).toBe('test-trace-id-123');
       });
     });

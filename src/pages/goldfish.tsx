@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { useGoldfishQueries } from '../hooks/use-goldfish-queries';
 import { QueryDiffView } from '../components/goldfish/query-diff-view';
+import { StatsBar } from '../components/goldfish/stats-bar';
 import { TimeRangeSelector } from '../components/goldfish/time-range-selector';
 import { UserFilterCombobox } from '../components/goldfish/user-filter-combobox';
 import { TenantFilterSelect } from '../components/goldfish/tenant-filter-select';
@@ -10,9 +11,11 @@ import { Skeleton } from '../components/ui/skeleton';
 import { Alert, AlertDescription } from '../components/ui/alert';
 import { Card, CardHeader, CardContent } from '../components/ui/card';
 import { Checkbox } from '../components/ui/checkbox';
+import { Separator } from '../components/ui/separator';
 import { RefreshCw, AlertCircle, CheckCircle2, XCircle, Rocket, ChevronDown } from 'lucide-react';
 import { OutcomeFilter, OUTCOME_ALL, OUTCOME_MATCH, OUTCOME_MISMATCH, OUTCOME_ERROR } from '../types/goldfish';
 import { PageContainer } from '../layout/page-container';
+import { useStore } from '../contexts/store-provider';
 
 // Define preset ranges (matching TimeRangeSelector)
 const PRESET_RANGES = [
@@ -29,6 +32,7 @@ const PRESET_RANGES = [
 
 export default function GoldfishPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const { selectedDatasource } = useStore();
 
   const [selectedTenant, setSelectedTenant] = useState<string | undefined>(() => {
     const tenant = searchParams.get('tenant');
@@ -247,6 +251,18 @@ export default function GoldfishPage() {
                 to={timeRange.to}
                 onChange={(from, to) => setTimeRange({ from, to })}
               />
+            </div>
+            <div className="space-y-3 mb-6">
+              {selectedDatasource?.uid && (
+                <>
+                  <StatsBar
+                    datasourceUid={selectedDatasource.uid}
+                    from={timeRange.from ?? undefined}
+                    to={timeRange.to ?? undefined}
+                  />
+                  <Separator className="mb-4" />
+                </>
+              )}
             </div>
 
             {/* Second Line: Outcome Filter and Other Filters */}
