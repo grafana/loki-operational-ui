@@ -257,8 +257,6 @@ export default function GoldfishPage() {
                 <>
                   <StatsBar
                     datasourceUid={selectedDatasource.uid}
-                    tenant={selectedTenant}
-                    user={selectedUser}
                     from={timeRange.from ?? undefined}
                     to={timeRange.to ?? undefined}
                   />
