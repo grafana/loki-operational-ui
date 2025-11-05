@@ -66,7 +66,7 @@ describe('StatsBar', () => {
         expect(screen.getByText('1,000 queries')).toBeInTheDocument();
         expect(screen.getByText('75.0%')).toBeInTheDocument();
         expect(screen.getByText('95.0%')).toBeInTheDocument();
-        expect(screen.getByText('5%')).toBeInTheDocument(); // performanceDifference as absolute value
+        expect(screen.getByText('-5%')).toBeInTheDocument(); // performanceDifference with sign (negative = faster)
       });
 
       // Assert: Labels should be present

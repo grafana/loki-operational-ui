@@ -165,7 +165,8 @@ export async function fetchGoldfishStats(
   const traceHeaders = createTraceHeaders(traceContext.traceId, traceContext.spanId, traceContext.parentSpanId);
 
   try {
-    const url = `${absolutePath('/api/v1/goldfish/stats', datasourceUid)}?${params.toString()}`;
+    const paramsString = params.toString();
+    const url = `${absolutePath('/api/v1/goldfish/stats', datasourceUid)}${paramsString ? `?${paramsString}` : ''}`;
     const response = await fetch(url, {
       headers: traceHeaders,
       signal,
