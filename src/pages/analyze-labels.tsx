@@ -9,9 +9,8 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '../components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../components/ui/table';
-import { useCluster } from '../contexts/use-cluster';
 import { useToast } from '../hooks/use-toast';
-import { cn, findNodeName } from '../lib/utils';
+import { cn } from '../lib/utils';
 import { useAbsolutePath } from '../hooks/use-absolute-path';
 import { useStore } from '../contexts/store-provider';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -76,7 +75,6 @@ function LabelValuesList({ values, totalValues }: LabelValuesListProps) {
 }
 
 export default function AnalyzeLabels() {
-  const { cluster } = useCluster();
   const { toast } = useToast();
   const absolutePath = useAbsolutePath();
   const { selectedDatasource } = useStore();
@@ -98,8 +96,6 @@ export default function AnalyzeLabels() {
     },
   });
 
-  const nodeName = findNodeName(cluster?.members, 'query-frontend');
-
   const { isLoading, refetch } = useQuery({
     queryKey: ['analyze-labels', selectedDatasource?.uid],
     queryFn: async () => {
@@ -110,15 +106,9 @@ export default function AnalyzeLabels() {
 
         const response = await fetch(
           absolutePath(
-            `/api/v1/proxy/${nodeName}/loki/api/v1/series?match[]=${encodeURIComponent(values.matcher || '')}&start=${
-              start.getTime() * 1e6
+            `/api/v1/tenants/${values.tenant}/analyze-labels?match[]=${encodeURIComponent(values.matcher || '')}&start=${start.getTime() * 1e6
             }&end=${end.getTime() * 1e6}`
-          ),
-          {
-            headers: {
-              'X-Scope-OrgID': values.tenant,
-            },
-          }
+          )
         );
 
         if (!response.ok) {
