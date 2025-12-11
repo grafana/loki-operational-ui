@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.0.7
+
+##### Bug Fixes
+
+*  use new analyze-labels endpoint (baef0231)
+
+
 ## 1.0.6
 
 ##### New Features
