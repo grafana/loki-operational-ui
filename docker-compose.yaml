@@ -16,7 +16,7 @@ services:
   loki:
     logging:
       <<: *logging
-    image: grafana/loki:main-02dad9d
+    image: grafana/loki:main-02dad9d@sha256:f6531d10533f568057e073102fa629d6f152cfa840b8a6800fc83239b2b64e8c
     environment:
       LOG_CLUSTER_DEPTH: '8'
       LOG_SIM_TH: '0.3'
