@@ -238,9 +238,6 @@ describe('goldfish-api', () => {
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
-      const from = new Date('2023-01-01T10:00:00Z');
-      const to = new Date('2023-01-01T11:00:00Z');
-
       // Act: Call with time range filters
       await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, 'all');
 
@@ -251,9 +248,6 @@ describe('goldfish-api', () => {
     it('includes comparisonStatus parameter when not all', async () => {
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
-
-      const from = new Date('2023-01-01T10:00:00Z');
-      const to = new Date('2023-01-01T11:00:00Z');
 
       // Act: Call with time range filters
       await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, 'match');
