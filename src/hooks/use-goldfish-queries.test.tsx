@@ -340,6 +340,7 @@ describe('useGoldfishQueries', () => {
         'tenant-a',
         undefined,
         undefined,
+        'all',
         undefined,
         undefined
       );
@@ -399,6 +400,7 @@ describe('useGoldfishQueries', () => {
         undefined,
         undefined,
         undefined,
+        'all',
         from,
         to
       );
@@ -533,6 +535,7 @@ describe('useGoldfishQueries', () => {
         undefined,
         undefined,
         undefined,
+        'all',
         undefined,
         undefined
       );

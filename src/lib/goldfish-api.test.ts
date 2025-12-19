@@ -225,11 +225,42 @@ describe('goldfish-api', () => {
       const to = new Date('2023-01-01T11:00:00Z');
 
       // Act: Call with time range filters
-      await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, from, to);
+      await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, undefined, from, to);
 
       // Assert: Verify URL includes time parameters and tracing headers
       expect(mockFetch).toHaveBeenCalledWith(
         '/ui/api/v1/goldfish/queries?page=1&pageSize=20&from=2023-01-01T10%3A00%3A00.000Z&to=2023-01-01T11%3A00%3A00.000Z',
+        expectedHeaders
+      );
+    });
+
+    it('does not include comparisonStatus parameter when all', async () => {
+      // Setup: Mock successful API response
+      mockFetch.mockResolvedValueOnce(mockResponse());
+
+      const from = new Date('2023-01-01T10:00:00Z');
+      const to = new Date('2023-01-01T11:00:00Z');
+
+      // Act: Call with time range filters
+      await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, 'all');
+
+      // Assert: Verify URL includes time parameters and tracing headers
+      expect(mockFetch).toHaveBeenCalledWith('/ui/api/v1/goldfish/queries?page=1&pageSize=20', expectedHeaders);
+    });
+
+    it('includes comparisonStatus parameter when not all', async () => {
+      // Setup: Mock successful API response
+      mockFetch.mockResolvedValueOnce(mockResponse());
+
+      const from = new Date('2023-01-01T10:00:00Z');
+      const to = new Date('2023-01-01T11:00:00Z');
+
+      // Act: Call with time range filters
+      await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, 'match');
+
+      // Assert: Verify URL includes time parameters and tracing headers
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/ui/api/v1/goldfish/queries?page=1&pageSize=20&comparisonStatus=match',
         expectedHeaders
       );
     });

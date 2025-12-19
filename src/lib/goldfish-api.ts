@@ -1,4 +1,4 @@
-import { GoldfishAPIResponse, GoldfishStatistics } from 'types/goldfish';
+import { GoldfishAPIResponse, GoldfishStatistics, OutcomeFilter, OUTCOME_ALL } from 'types/goldfish';
 import { createTraceContext, createTraceHeaders, extractTraceId } from './tracing';
 import { absolutePath } from '../hooks/use-absolute-path';
 
@@ -70,6 +70,7 @@ export async function fetchSampledQueries(
   tenant?: string,
   user?: string,
   newEngine?: boolean,
+  outcome?: OutcomeFilter,
   from?: Date,
   to?: Date
 ): Promise<FetchResult<GoldfishAPIResponse>> {
@@ -96,6 +97,10 @@ export async function fetchSampledQueries(
 
   if (to) {
     params.append('to', to.toISOString());
+  }
+
+  if (outcome && outcome !== OUTCOME_ALL) {
+    params.append('comparisonStatus', outcome);
   }
 
   // Create trace context for this request

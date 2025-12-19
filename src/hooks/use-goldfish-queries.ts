@@ -51,6 +51,7 @@ export function useGoldfishQueries(
         tenant,
         user,
         newEngine,
+        selectedOutcome,
         from ?? undefined,
         to ?? undefined
       );
