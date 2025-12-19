@@ -238,7 +238,7 @@ describe('goldfish-api', () => {
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
-      // Act: Call with time range filters
+      // Act: Call with comparisonStatus parameter of 'all'
       await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, 'all');
 
       // Assert: Verify URL includes time parameters and tracing headers
@@ -249,7 +249,7 @@ describe('goldfish-api', () => {
       // Setup: Mock successful API response
       mockFetch.mockResolvedValueOnce(mockResponse());
 
-      // Act: Call with time range filters
+      // Act: Call with comparisonStatus parameter of 'match'
       await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, 'match');
 
       // Assert: Verify URL includes time parameters and tracing headers

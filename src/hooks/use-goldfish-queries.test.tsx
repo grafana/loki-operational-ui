@@ -44,98 +44,98 @@ const createWrapper = () => {
 };
 
 // Mock data
-const mockQueries = [
-  {
-    correlationId: 'test-1',
-    tenantId: 'tenant-a',
-    user: 'user1@example.com',
-    comparisonStatus: 'match' as const,
-    query: 'test query 1',
-    queryType: 'instant' as const,
-    startTime: '2024-01-01T00:00:00Z',
-    endTime: '2024-01-01T01:00:00Z',
-    stepDuration: null,
-    cellAExecTimeMs: 100,
-    cellBExecTimeMs: 110,
-    cellAQueueTimeMs: 5,
-    cellBQueueTimeMs: 6,
-    cellABytesProcessed: 1000,
-    cellBBytesProcessed: 1100,
-    cellALinesProcessed: 50,
-    cellBLinesProcessed: 55,
-    cellABytesPerSecond: 1000,
-    cellBBytesPerSecond: 1100,
-    cellALinesPerSecond: 50,
-    cellBLinesPerSecond: 55,
-    cellAEntriesReturned: 10,
-    cellBEntriesReturned: 12,
-    cellASplits: 1,
-    cellBSplits: 1,
-    cellAShards: 2,
-    cellBShards: 2,
-    cellAResponseHash: 'hash-a',
-    cellBResponseHash: 'hash-b',
-    cellAResponseSize: 500,
-    cellBResponseSize: 550,
-    cellAStatusCode: 200,
-    cellBStatusCode: 200,
-    cellATraceID: 'trace-a',
-    cellBTraceID: 'trace-b',
-    cellASpanID: 'span-a',
-    cellBSpanID: 'span-b',
-    cellAUsedNewEngine: false,
-    cellBUsedNewEngine: false,
-    sampledAt: '2024-01-01T00:00:00Z',
-    createdAt: '2024-01-01T00:00:00Z',
-  },
-  {
-    correlationId: 'test-2',
-    tenantId: 'tenant-b',
-    user: 'user2@example.com',
-    comparisonStatus: 'mismatch' as const,
-    query: 'test query 2',
-    queryType: 'instant' as const,
-    startTime: '2024-01-01T00:00:00Z',
-    endTime: '2024-01-01T01:00:00Z',
-    stepDuration: null,
-    cellAExecTimeMs: 200,
-    cellBExecTimeMs: 250,
-    cellAQueueTimeMs: 10,
-    cellBQueueTimeMs: 12,
-    cellABytesProcessed: 2000,
-    cellBBytesProcessed: 2200,
-    cellALinesProcessed: 100,
-    cellBLinesProcessed: 110,
-    cellABytesPerSecond: 2000,
-    cellBBytesPerSecond: 2200,
-    cellALinesPerSecond: 100,
-    cellBLinesPerSecond: 110,
-    cellAEntriesReturned: 20,
-    cellBEntriesReturned: 22,
-    cellASplits: 2,
-    cellBSplits: 2,
-    cellAShards: 4,
-    cellBShards: 4,
-    cellAResponseHash: 'hash-a2',
-    cellBResponseHash: 'hash-b2',
-    cellAResponseSize: 1000,
-    cellBResponseSize: 1100,
-    cellAStatusCode: 200,
-    cellBStatusCode: 200,
-    cellATraceID: 'trace-a2',
-    cellBTraceID: 'trace-b2',
-    cellASpanID: 'span-a2',
-    cellBSpanID: 'span-b2',
-    cellAUsedNewEngine: false,
-    cellBUsedNewEngine: true,
-    sampledAt: '2024-01-01T01:00:00Z',
-    createdAt: '2024-01-01T01:00:00Z',
-  },
-];
+const matchQuery = {
+  correlationId: 'test-1',
+  tenantId: 'tenant-a',
+  user: 'user1@example.com',
+  comparisonStatus: 'match' as const,
+  query: 'test query 1',
+  queryType: 'instant' as const,
+  startTime: '2024-01-01T00:00:00Z',
+  endTime: '2024-01-01T01:00:00Z',
+  stepDuration: null,
+  cellAExecTimeMs: 100,
+  cellBExecTimeMs: 110,
+  cellAQueueTimeMs: 5,
+  cellBQueueTimeMs: 6,
+  cellABytesProcessed: 1000,
+  cellBBytesProcessed: 1100,
+  cellALinesProcessed: 50,
+  cellBLinesProcessed: 55,
+  cellABytesPerSecond: 1000,
+  cellBBytesPerSecond: 1100,
+  cellALinesPerSecond: 50,
+  cellBLinesPerSecond: 55,
+  cellAEntriesReturned: 10,
+  cellBEntriesReturned: 12,
+  cellASplits: 1,
+  cellBSplits: 1,
+  cellAShards: 2,
+  cellBShards: 2,
+  cellAResponseHash: 'hash-a',
+  cellBResponseHash: 'hash-b',
+  cellAResponseSize: 500,
+  cellBResponseSize: 550,
+  cellAStatusCode: 200,
+  cellBStatusCode: 200,
+  cellATraceID: 'trace-a',
+  cellBTraceID: 'trace-b',
+  cellASpanID: 'span-a',
+  cellBSpanID: 'span-b',
+  cellAUsedNewEngine: false,
+  cellBUsedNewEngine: false,
+  sampledAt: '2024-01-01T00:00:00Z',
+  createdAt: '2024-01-01T00:00:00Z',
+};
+const mismatchQuery = {
+  correlationId: 'test-2',
+  tenantId: 'tenant-b',
+  user: 'user2@example.com',
+  comparisonStatus: 'mismatch' as const,
+  query: 'test query 2',
+  queryType: 'instant' as const,
+  startTime: '2024-01-01T00:00:00Z',
+  endTime: '2024-01-01T01:00:00Z',
+  stepDuration: null,
+  cellAExecTimeMs: 200,
+  cellBExecTimeMs: 250,
+  cellAQueueTimeMs: 10,
+  cellBQueueTimeMs: 12,
+  cellABytesProcessed: 2000,
+  cellBBytesProcessed: 2200,
+  cellALinesProcessed: 100,
+  cellBLinesProcessed: 110,
+  cellABytesPerSecond: 2000,
+  cellBBytesPerSecond: 2200,
+  cellALinesPerSecond: 100,
+  cellBLinesPerSecond: 110,
+  cellAEntriesReturned: 20,
+  cellBEntriesReturned: 22,
+  cellASplits: 2,
+  cellBSplits: 2,
+  cellAShards: 4,
+  cellBShards: 4,
+  cellAResponseHash: 'hash-a2',
+  cellBResponseHash: 'hash-b2',
+  cellAResponseSize: 1000,
+  cellBResponseSize: 1100,
+  cellAStatusCode: 200,
+  cellBStatusCode: 200,
+  cellATraceID: 'trace-a2',
+  cellBTraceID: 'trace-b2',
+  cellASpanID: 'span-a2',
+  cellBSpanID: 'span-b2',
+  cellAUsedNewEngine: false,
+  cellBUsedNewEngine: true,
+  sampledAt: '2024-01-01T01:00:00Z',
+  createdAt: '2024-01-01T01:00:00Z',
+};
+const mockQueries = [matchQuery, mismatchQuery];
 
 describe('useGoldfishQueries', () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    mockFetchSampledQueries.mockReset();
   });
 
   describe('initial loading', () => {
@@ -340,7 +340,7 @@ describe('useGoldfishQueries', () => {
         'tenant-a',
         undefined,
         undefined,
-        'all',
+        OUTCOME_ALL,
         undefined,
         undefined
       );
@@ -400,22 +400,38 @@ describe('useGoldfishQueries', () => {
         undefined,
         undefined,
         undefined,
-        'all',
+        OUTCOME_ALL,
         from,
         to
       );
     });
   });
 
-  describe('frontend filtering', () => {
-    it('filters by outcome on frontend', async () => {
-      const mockData = {
+  describe('backend filtering', () => {
+    it('sends outcome filter to backend and refetches on change', async () => {
+      const matchData = {
+        queries: [matchQuery],
+        hasMore: false,
+        page: 1,
+        pageSize: 20,
+      };
+      const mismatchData = {
+        queries: [mismatchQuery],
+        hasMore: false,
+        page: 1,
+        pageSize: 20,
+      };
+      const allData = {
         queries: mockQueries,
         hasMore: false,
         page: 1,
         pageSize: 20,
       };
-      mockFetchSampledQueries.mockResolvedValueOnce({ data: mockData, traceId: 'test-trace' });
+
+      mockFetchSampledQueries
+        .mockResolvedValueOnce({ data: matchData, traceId: 'test-trace-1' })
+        .mockResolvedValueOnce({ data: mismatchData, traceId: 'test-trace-2' })
+        .mockResolvedValueOnce({ data: allData, traceId: 'test-trace-3' });
 
       // Test with MATCH filter
       const { result, rerender } = renderHook(({ outcome }) => useGoldfishQueries(20, outcome), {
@@ -427,36 +443,70 @@ describe('useGoldfishQueries', () => {
         expect(result.current.isLoading).toBe(false);
       });
 
-      // Should only show match queries
-      expect(result.current.queries).toEqual([mockQueries[0]]);
+      // Called
+      expect(mockFetchSampledQueries).toHaveBeenCalledWith(
+        'loki',
+        1,
+        20,
+        undefined,
+        undefined,
+        undefined,
+        OUTCOME_MATCH,
+        undefined,
+        undefined
+      );
 
-      // Change to MISMATCH
+      // Change to MISMATCH - should trigger new API call
       rerender({ outcome: OUTCOME_MISMATCH });
 
-      // Should immediately filter to mismatch queries (no new API call for outcome filter)
-      expect(result.current.queries).toEqual([mockQueries[1]]);
-      expect(mockFetchSampledQueries).toHaveBeenCalledTimes(1); // No additional API call
+      await waitFor(
+        () => {
+          expect(mockFetchSampledQueries).toHaveBeenCalledTimes(2);
+        },
+        { timeout: 5000 }
+      );
 
-      // Change to ALL
+      expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(
+        'loki',
+        1,
+        20,
+        undefined,
+        undefined,
+        undefined,
+        OUTCOME_MISMATCH,
+        undefined,
+        undefined
+      );
+
+      // Change to ALL - should trigger new API call
       rerender({ outcome: OUTCOME_ALL });
 
-      // Should show all queries sorted
-      expect(result.current.queries).toEqual([mockQueries[1], mockQueries[0]]);
-      expect(mockFetchSampledQueries).toHaveBeenCalledTimes(1); // Still no additional API call
+      await waitFor(() => {
+        expect(mockFetchSampledQueries).toHaveBeenCalledTimes(3);
+      });
+
+      expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(
+        'loki',
+        1,
+        20,
+        undefined,
+        undefined,
+        undefined,
+        OUTCOME_ALL,
+        undefined,
+        undefined
+      );
     });
 
-    it('maintains outcome filter when loading more', async () => {
+    it('sends outcome filter to backend when loading more', async () => {
       const page1Data = {
-        queries: mockQueries,
+        queries: [matchQuery],
         hasMore: true,
         page: 1,
         pageSize: 20,
       };
       const page2Data = {
-        queries: [
-          { ...mockQueries[0], correlationId: 'test-3' },
-          { ...mockQueries[1], correlationId: 'test-4' },
-        ],
+        queries: [{ ...matchQuery, correlationId: 'test-3' }], // More match queries from backend
         hasMore: false,
         page: 2,
         pageSize: 20,
@@ -472,9 +522,17 @@ describe('useGoldfishQueries', () => {
         expect(result.current.isLoading).toBe(false);
       });
 
-      // Should only show match from page 1
-      expect(result.current.queries).toHaveLength(1);
-      expect(result.current.queries[0].comparisonStatus).toBe('match');
+      expect(mockFetchSampledQueries).toHaveBeenCalledWith(
+        'loki',
+        1,
+        20,
+        undefined,
+        undefined,
+        undefined,
+        OUTCOME_MATCH,
+        undefined,
+        undefined
+      );
 
       // Load more
       act(() => {
@@ -485,9 +543,18 @@ describe('useGoldfishQueries', () => {
         expect(result.current.isLoadingMore).toBe(false);
       });
 
-      // Should only show match queries from both pages
-      expect(result.current.queries).toHaveLength(2);
-      expect(result.current.queries.every((q) => q.comparisonStatus === 'match')).toBe(true);
+      // Verify outcome filter was sent with page 2 request
+      expect(mockFetchSampledQueries).toHaveBeenLastCalledWith(
+        'loki',
+        2,
+        20,
+        undefined,
+        undefined,
+        undefined,
+        OUTCOME_MATCH,
+        undefined,
+        undefined
+      );
     });
   });
 
@@ -535,7 +602,7 @@ describe('useGoldfishQueries', () => {
         undefined,
         undefined,
         undefined,
-        'all',
+        OUTCOME_ALL,
         undefined,
         undefined
       );
