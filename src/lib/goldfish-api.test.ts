@@ -241,7 +241,7 @@ describe('goldfish-api', () => {
       // Act: Call with comparisonStatus parameter of 'all'
       await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, 'all');
 
-      // Assert: Verify URL includes time parameters and tracing headers
+      // Assert: Verify URL does not include comparison status
       expect(mockFetch).toHaveBeenCalledWith('/ui/api/v1/goldfish/queries?page=1&pageSize=20', expectedHeaders);
     });
 
@@ -252,7 +252,7 @@ describe('goldfish-api', () => {
       // Act: Call with comparisonStatus parameter of 'match'
       await fetchSampledQueries('test-uid', 1, 20, undefined, undefined, undefined, 'match');
 
-      // Assert: Verify URL includes time parameters and tracing headers
+      // Assert: Verify URL includes comparison status
       expect(mockFetch).toHaveBeenCalledWith(
         '/ui/api/v1/goldfish/queries?page=1&pageSize=20&comparisonStatus=match',
         expectedHeaders
