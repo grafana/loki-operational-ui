@@ -1,50 +1,62 @@
-<!-- This README file is going to be the one displayed on the Grafana.com website for your plugin. Uncomment and replace the content here before publishing.
+# Loki Operational UI
 
-Remove any remaining comments before publishing as these may be displayed on Grafana.com -->
+![Grafana](https://img.shields.io/badge/Grafana-App%20plugin-F47A20?logo=grafana&logoColor=white)
+![Grafana dependency](https://img.shields.io/badge/Grafana-%E2%89%A510.4.0-F47A20?logo=grafana&logoColor=white)
+![License](https://img.shields.io/badge/License-Apache--2.0-blue)
 
-# Loki-Operational
+Loki Operational UI is a Grafana **app plugin** that provides an **admin-only** operational console for Grafana Loki clusters: cluster/node status, ring inspection and actions, storage exploration, tenant tooling, and a “Goldfish” query comparison workflow.
 
-<!-- To help maximize the impact of your README and improve usability for users, we propose the following loose structure:
+## Overview
 
-**BEFORE YOU BEGIN**
-- Ensure all links are absolute URLs so that they will work when the README is displayed within Grafana and Grafana.com
-- Be inspired ✨
-  - [grafana-polystat-panel](https://github.com/grafana/grafana-polystat-panel)
-  - [volkovlabs-variable-panel](https://github.com/volkovlabs/volkovlabs-variable-panel)
+This plugin is intended for Loki operators who want a single place inside Grafana to:
 
-**ADD SOME BADGES**
-
-Badges convey useful information at a glance for users whether in the Catalog or viewing the source code. You can use the generator on [Shields.io](https://shields.io/badges/dynamic-json-badge) together with the Grafana.com API
-to create dynamic badges that update automatically when you publish a new version to the marketplace.
-
-- For the URL parameter use `https://grafana.com/api/plugins/your-plugin-id`.
-- Example queries:
-  - Downloads: `$.downloads`
-  - Catalog Version: `$.version`
-  - Grafana Dependency: `$.grafanaDependency`
-  - Signature Type: `$.versionSignatureType`
-- Optionally, for the logo parameter use `grafana`.
-
-Full example: ![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?logo=grafana&query=$.version&url=https://grafana.com/api/plugins/grafana-polystat-panel&label=Marketplace&prefix=v&color=F47A20)
-
-Consider other [badges](https://shields.io/badges) as you feel appropriate for your project.
-
-## Overview / Introduction
-Provide one or more paragraphs as an introduction to your plugin to help users understand why they should use it.
-
-Consider including screenshots:
-- in [plugin.json](https://grafana.com/developers/plugin-tools/reference/plugin-json#info) include them as relative links.
-- in the README ensure they are absolute URLs.
+- Inspect **cluster members** and their services/health
+- Browse and act on **rings** (including “forget instance” and partition ring state changes)
+- Explore **data objects** and view file metadata via a built-in explorer
+- Manage and review **delete requests**
+- Analyze tenant label distribution (cardinality / stream coverage)
+- Compare “Goldfish” sampled query results side-by-side
 
 ## Requirements
-List any requirements or dependencies they may need to run the plugin.
 
-## Getting Started
-Provide a quick start on how to configure and use the plugin.
+- **Grafana**: \(>= 10.4.0\)
+- **Permissions**: the plugin UI is restricted to **Org Admins** (non-admin users see an Unauthorized error)
+- **Datasource**: at least one **Loki datasource** configured with **proxy** access (the plugin lets you pick the datasource in the UI)
+- **Loki / operational endpoints**: the plugin calls operational APIs via Grafana’s datasource proxy under a `/ui/` prefix (for example: `/ui/api/v1/cluster/nodes`, `/ui/api/v1/goldfish/queries`, `/ui/api/v1/tenants/<tenant>/analyze-labels`)
+
+## Getting started
+
+1. Install the plugin in Grafana and enable it.
+2. Configure (or provision) at least one Loki datasource.
+3. Navigate to the app: **More apps → Loki Operational UI**.
+4. Select the Loki datasource you want to operate against (top right datasource picker).
+
+## What it does (by area)
+
+- **Cluster → Nodes**
+  - Lists cluster members and their services, status, version/build metadata, and quick filtering/sorting.
+- **Rings**
+  - Discovers available rings from the cluster’s advertised services and shows the relevant ring UI.
+  - Supports ring inspection plus operational actions (for example, forgetting selected instances where supported).
+- **Storage → Data Objects**
+  - File-style explorer for data objects, including download links and metadata inspection.
+- **Tenants → Deletes**
+  - Lists delete requests and provides a “new delete request” workflow.
+- **Tenants → Analyze Labels**
+  - Runs label distribution analysis for a tenant over a selectable time range.
+- **Goldfish**
+  - Browses sampled queries with filters (tenant/user/outcome/time range) and compares results between Cell A and Cell B.
 
 ## Documentation
-If your project has dedicated documentation available for users, provide links here. For help in following Grafana's style recommendations for technical documentation, refer to our [Writer's Toolkit](https://grafana.com/docs/writers-toolkit/).
+
+- Grafana Loki documentation: `https://grafana.com/docs/loki/latest/`
+- Grafana plugin development docs: `https://grafana.com/developers/plugin-tools/`
 
 ## Contributing
-Do you want folks to contribute to the plugin or provide feedback through specific means? If so, tell them how!
--->
+
+- File bugs and feature requests with clear reproduction steps, expected behavior, and screenshots where possible.
+- PRs are welcome; keep changes focused and include tests where practical.
+
+## License
+
+Apache-2.0
