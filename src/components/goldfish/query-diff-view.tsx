@@ -313,13 +313,30 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
         <CollapsibleContent>
           <Separator />
           <CardContent className="pt-4 space-y-6">
+            {/* Query Time Range */}
+            <div className="space-y-3">
+              <h4 className="text-sm font-medium">Query Time Range</h4>
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="space-y-1">
+                  <div className="text-muted-foreground">Start Time</div>
+                  <div className="font-mono text-xs">{new Date(query.startTime).toLocaleString()}</div>
+                </div>
+                <div className="space-y-1">
+                  <div className="text-muted-foreground">End Time</div>
+                  <div className="font-mono text-xs">{new Date(query.endTime).toLocaleString()}</div>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
             {/* Response Status */}
             <div className="space-y-3">
               <div className="grid grid-cols-7 gap-4">
                 <h4 className="col-span-2 text-sm font-medium">Response Status</h4>
-                <div className="col-span-2 text-right text-sm font-medium">Cell A Foo TODO</div>
+                <div className="col-span-2 text-right text-sm font-medium">Cell A</div>
                 <div className="col-span-1"></div>
-                <div className="col-span-2 text-left text-sm font-medium">Cell B Bar TODO</div>
+                <div className="col-span-2 text-left text-sm font-medium">Cell B</div>
               </div>
               <div className="grid grid-cols-7 gap-4">
                 <div className="col-span-2 text-sm text-muted-foreground">HTTP Status</div>
