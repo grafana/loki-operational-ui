@@ -422,8 +422,8 @@ describe('QueryDiffView - Namespace Display in Cell Labels', () => {
     }
 
     // Find the performance metrics header
-    expect(screen.getByText('Cell A Foo TODO')).toBeInTheDocument();
-    expect(screen.getByText('Cell B Bar TODO')).toBeInTheDocument();
+    expect(screen.getByText('Cell A')).toBeInTheDocument();
+    expect(screen.getByText('Cell B')).toBeInTheDocument();
 
     // Should not contain namespace in parentheses
     expect(screen.queryByText(/Cell A \(/)).not.toBeInTheDocument();
