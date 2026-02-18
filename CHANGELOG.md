@@ -1,5 +1,37 @@
 # Changelog
 
+## 1.0.8
+
+##### Chores
+
+* **deps:**
+  *  update dependency webpack to v5.104.1 [security] (#40) (7a2f6584)
+  *  update dependency @types/node to v20.19.30 (#20) (90fd3a38)
+  *  update dependency semver to v7.7.3 (#26) (f1603b46)
+  *  update dependency @grafana/tsconfig to v2.0.1 (#19) (caa6ead2)
+  *  update dependency @types/react to v18.3.27 (#21) (43f1fba2)
+  *  update dependency @types/testing-library__jest-dom to v5.14.9 (#22) (b6aa2aa5)
+  *  update dependency autoprefixer to v10.4.23 (#23) (f8e87ea3)
+  *  update dependency eslint-plugin-react-refresh to v0.4.26 (#24) (232497e3)
+  *  update dependency sass-loader to v13.3.3 (#25) (2f84b0b7)
+  *  update dependency style-loader to v3.3.4 (#27) (c4975dd2)
+  *  pin dependency glob to 10.5.0 (#18) (34bc5675)
+  *  update dependency lodash to v4.17.23 [security] (#28) (d5dee7df)
+  *  update dependency @radix-ui/react-slot to v1.2.4 (089574d5)
+  *  update dependency glob to v10.5.0 [security] (356d9fdc)
+  *  pin dependencies (ebee101e)
+* **docs:**  add plugin catalogue docs (#39) (05961133)
+* **dep:**  update grafana deps (861cf26c)
+
+##### New Features
+
+*  pass comparison status in query (#16) (fb6a4e2c)
+
+##### Bug Fixes
+
+* **deps:**  pin dependencies (101b4237)
+
+
 ## 1.0.7
 
 ##### Bug Fixes
