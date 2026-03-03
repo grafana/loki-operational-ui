@@ -30,6 +30,8 @@ const PRESET_RANGES = [
   { label: 'Last 7 days', value: '7d', duration: 7 * 24 * 60 * 60 * 1000 },
 ];
 
+const DEFAULT_RANGE_MS = 60 * 60 * 1000; // 1 hour
+
 export default function GoldfishPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { selectedDatasource } = useStore();
@@ -103,14 +105,24 @@ export default function GoldfishPage() {
 
   const pageSize = 20; // Increased since we're using load more pattern
 
+  // When the time range is "default" (null/null), materialize a concrete 1h
+  // window so the stats and query endpoints receive the same explicit range.
+  const { effectiveFrom, effectiveTo } = useMemo(() => {
+    if (timeRange.from && timeRange.to) {
+      return { effectiveFrom: timeRange.from, effectiveTo: timeRange.to };
+    }
+    const now = new Date();
+    return { effectiveFrom: new Date(now.getTime() - DEFAULT_RANGE_MS), effectiveTo: now };
+  }, [timeRange.from, timeRange.to]);
+
   const { queries, isLoading, isLoadingMore, error, hasMore, loadMore, refresh, traceId } = useGoldfishQueries(
     pageSize,
     selectedOutcome,
     selectedTenant,
     selectedUser,
     showNewEngineOnly ? true : undefined,
-    timeRange.from,
-    timeRange.to
+    effectiveFrom,
+    effectiveTo
   );
 
   // Store all seen tenants and users to maintain filters even when results are empty
@@ -257,8 +269,8 @@ export default function GoldfishPage() {
                 <>
                   <StatsBar
                     datasourceUid={selectedDatasource.uid}
-                    from={timeRange.from ?? undefined}
-                    to={timeRange.to ?? undefined}
+                    from={effectiveFrom}
+                    to={effectiveTo}
                   />
                   <Separator className="mb-4" />
                 </>

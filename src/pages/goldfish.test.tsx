@@ -306,8 +306,8 @@ describe('GoldfishPage', () => {
         undefined, // tenant
         undefined, // user
         undefined, // newEngine
-        null, // from
-        null // to
+        expect.any(Date), // from - effective default (1h ago)
+        expect.any(Date) // to - effective default (now)
       );
 
       // Also check the visual state - buttons should reflect the selected outcome
@@ -376,8 +376,8 @@ describe('GoldfishPage', () => {
         'tenant-123', // selectedTenant - this should be 'tenant-123' from URL
         undefined, // user
         undefined, // newEngine
-        null, // from
-        null // to
+        expect.any(Date), // from - effective default (1h ago)
+        expect.any(Date) // to - effective default (now)
       );
 
       // Verify the tenant filter is rendered (since we have tenants in the data)
@@ -404,8 +404,8 @@ describe('GoldfishPage', () => {
         'tenant/special-123', // selectedTenant - should be decoded
         undefined, // user
         undefined, // newEngine
-        null, // from
-        null // to
+        expect.any(Date), // from - effective default (1h ago)
+        expect.any(Date) // to - effective default (now)
       );
     });
 
@@ -496,8 +496,8 @@ describe('GoldfishPage', () => {
         undefined, // tenant
         'john@example.com', // selectedUser - should be decoded
         undefined, // newEngine
-        null, // from
-        null // to
+        expect.any(Date), // from - effective default (1h ago)
+        expect.any(Date) // to - effective default (now)
       );
     });
 
@@ -588,7 +588,7 @@ describe('GoldfishPage', () => {
 
       renderGoldfishPage();
 
-      // Should show error and default to null timestamps
+      // Should show error but still use the effective default range (1h)
       expect(screen.getByRole('alert')).toBeInTheDocument();
       expect(screen.getByText(/conflicting time parameters/i)).toBeInTheDocument();
 
@@ -598,8 +598,8 @@ describe('GoldfishPage', () => {
         undefined, // tenant
         undefined, // user
         undefined, // newEngine
-        null, // from - defaults to null on error
-        null // to - defaults to null on error
+        expect.any(Date), // from - effective default (1h ago)
+        expect.any(Date) // to - effective default (now)
       );
     });
 
@@ -611,7 +611,7 @@ describe('GoldfishPage', () => {
 
       renderGoldfishPage();
 
-      // Should show error and default to null timestamps
+      // Should show error but still use the effective default range (1h)
       expect(screen.getByRole('alert')).toBeInTheDocument();
       expect(screen.getByText(/incomplete time range/i)).toBeInTheDocument();
 
@@ -621,8 +621,8 @@ describe('GoldfishPage', () => {
         undefined, // tenant
         undefined, // user
         undefined, // newEngine
-        null, // from - defaults to null on error
-        null // to - defaults to null on error
+        expect.any(Date), // from - effective default (1h ago)
+        expect.any(Date) // to - effective default (now)
       );
     });
 
@@ -634,7 +634,7 @@ describe('GoldfishPage', () => {
 
       renderGoldfishPage();
 
-      // Should show error and default to null timestamps
+      // Should show error but still use the effective default range (1h)
       expect(screen.getByRole('alert')).toBeInTheDocument();
       expect(screen.getByText(/incomplete time range/i)).toBeInTheDocument();
 
@@ -644,8 +644,8 @@ describe('GoldfishPage', () => {
         undefined, // tenant
         undefined, // user
         undefined, // newEngine
-        null, // from - defaults to null on error
-        null // to - defaults to null on error
+        expect.any(Date), // from - effective default (1h ago)
+        expect.any(Date) // to - effective default (now)
       );
     });
 
