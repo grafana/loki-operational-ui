@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { DataTableColumnHeader } from '../components/common/data-table-column-header';
 import { Badge } from '../components/ui/badge';
 import { Button } from '../components/ui/button';
@@ -17,6 +17,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronDown } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useSearchParams } from 'react-router-dom';
+import { getDataSourceSrv } from '@grafana/runtime';
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from 'recharts';
 import * as z from 'zod';
 
@@ -77,7 +79,8 @@ function LabelValuesList({ values, totalValues }: LabelValuesListProps) {
 export default function AnalyzeLabels() {
   const { toast } = useToast();
   const absolutePath = useAbsolutePath();
-  const { selectedDatasource } = useStore();
+  const { selectedDatasource, setSelectedDatasource } = useStore();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [analysisResults, setAnalysisResults] = useState<{
     totalStreams: number;
     uniqueLabels: number;
@@ -91,10 +94,64 @@ export default function AnalyzeLabels() {
   const form = useForm({
     resolver: zodResolver(formSchema),
     defaultValues: {
+      tenant: searchParams.get('tenant') || '',
       matcher: '{}',
       since: '1h',
     },
   });
+
+  // Sync datasource from URL query param on mount
+  useEffect(() => {
+    const dsUid = searchParams.get('datasource');
+    if (dsUid && (!selectedDatasource || selectedDatasource.uid !== dsUid)) {
+      try {
+        const ds = getDataSourceSrv().getInstanceSettings(dsUid);
+        if (ds) {
+          setSelectedDatasource(ds);
+        }
+      } catch {
+        // datasource not found, ignore
+      }
+    }
+    // Only run on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Update URL query params when datasource changes
+  useEffect(() => {
+    if (selectedDatasource?.uid) {
+      setSearchParams(
+        (prev) => {
+          if (prev.get('datasource') === selectedDatasource.uid) {
+            return prev;
+          }
+          const next = new URLSearchParams(prev);
+          next.set('datasource', selectedDatasource.uid);
+          return next;
+        },
+        { replace: true }
+      );
+    }
+  }, [selectedDatasource, setSearchParams]);
+
+  // Update URL query params when tenant changes
+  const updateTenantParam = useCallback(
+    (tenant: string) => {
+      setSearchParams(
+        (prev) => {
+          const next = new URLSearchParams(prev);
+          if (tenant) {
+            next.set('tenant', tenant);
+          } else {
+            next.delete('tenant');
+          }
+          return next;
+        },
+        { replace: true }
+      );
+    },
+    [setSearchParams]
+  );
 
   const { isLoading, refetch } = useQuery({
     queryKey: ['analyze-labels', selectedDatasource?.uid],
@@ -252,7 +309,14 @@ export default function AnalyzeLabels() {
                   <FormItem className="flex flex-col space-y-1.5">
                     <FormLabel>Tenant ID</FormLabel>
                     <FormControl>
-                      <Input placeholder="Enter tenant ID..." {...field} />
+                      <Input
+                        placeholder="Enter tenant ID..."
+                        {...field}
+                        onChange={(e) => {
+                          field.onChange(e);
+                          updateTenantParam(e.target.value);
+                        }}
+                      />
                     </FormControl>
                     <FormMessage className="text-xs" />
                   </FormItem>
