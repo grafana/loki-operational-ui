@@ -25,8 +25,8 @@
   },
   "includes": [
     {
-      "type": "page",
-      "name": "Loki Operational UI",
+      "type": "Loki Operation UI",
+      "name": "Page One",
       "path": "/a/%PLUGIN_ID%",
       "addToNav": true,
       "defaultNav": true
