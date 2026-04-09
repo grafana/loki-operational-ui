@@ -1,115 +1,84 @@
-# Grafana app plugin template
+# Loki Operational UI
 
-This template is a starting point for building an app plugin for Grafana.
+A Grafana app plugin that provides an administrative console for operating and inspecting Grafana Loki clusters. It connects to Loki's internal APIs through the Grafana datasource proxy to surface operational information that is otherwise only available through CLI tools or raw HTTP endpoints.
 
-## What are Grafana app plugins?
+**Requires:** Grafana >= 10.4.0 | **Access:** Admin users only
 
-App plugins can let you create a custom out-of-the-box monitoring experience by custom pages, nested data sources and panel plugins.
+## Features
 
-## Get started
+### Cluster Nodes
 
-### Frontend
+Browse all Loki cluster members with filtering by name, target type, and service state. Drill into individual nodes to view:
 
-1. Install dependencies
+- Version and build info
+- Service status distribution
+- Live log level control (read/write)
+- Pprof controls
+- Full YAML configuration
+- Analytics metrics and raw Prometheus metrics
 
-   ```bash
-   yarn install
-   ```
+### Ring Management
 
-2. Build plugin in development mode and run in watch mode
+Inspect and manage all 10 Loki ring types (Ingester, Partition Ingester, Distributor, Compactor, Ruler, and more). View ring member state distribution, filter by ID/state/zone, and forget instances.
 
-   ```bash
-   yarn run dev
-   ```
+The Partition Ring view adds the ability to change partition states (Pending, Active, Inactive, Deleted).
 
-3. Build plugin in production mode
+### Data Objects Explorer
 
-   ```bash
-   yarn run build
-   ```
+A file browser for Loki's data objects storage layer. Navigate folders, view file sizes, download files, and inspect detailed file metadata including sections, columns, page info, compression, and data distributions.
 
-4. Run the tests (using Jest)
+### Delete Requests
 
-   ```bash
-   # Runs the tests and watches for changes, requires git init first
-   yarn run test
+List and create Loki delete requests per tenant. View status, deleted line counts, and the originating LogQL query. The creation form includes live query validation and auto-formatting via Loki's `format_query` API.
 
-   # Exits after running all the tests
-   yarn run test:ci
-   ```
+### Analyze Labels
 
-5. Spin up a Grafana instance and run the plugin inside it (using Docker)
+A label cardinality analysis tool. Given a tenant, time range, and optional matcher, it fetches stream series and shows total streams, unique labels, a bar chart of the top 20 labels, and a sortable table with cardinality percentages and sample values.
 
-   ```bash
-   yarn run server
-   ```
+### Goldfish (Query Comparison)
 
-6. Run the E2E tests (using Playwright)
+Side-by-side performance comparison between two cells for sampled queries (from the query-tee). Includes filtering by outcome (match/mismatch/error), tenant, user, and new engine toggle, with paginated diff views and trace ID linking.
 
-   ```bash
-   # Spins up a Grafana instance first that we tests against
-   yarn run server
+## Development
 
-   # If you wish to start a certain Grafana version. If not specified will use latest by default
-   GRAFANA_VERSION=11.3.0 yarn run server
+### Prerequisites
 
-   # Starts the tests
-   yarn run e2e
-   ```
+- Node.js
+- Yarn
+- Docker & Docker Compose (for local Grafana)
 
-7. Run the linter
+### Getting Started
 
-   ```bash
-   yarn run lint
+```bash
+# Install dependencies
+yarn install
 
-   # or
+# Start development mode (watch)
+yarn dev
 
-   yarn run lint:fix
-   ```
+# Run a local Grafana instance with the plugin loaded
+yarn server
 
-# Distributing your plugin
+# Production build
+yarn build
+```
 
-When distributing a Grafana plugin either within the community or privately the plugin must be signed so the Grafana application can verify its authenticity. This can be done with the `@grafana/sign-plugin` package.
+### Testing
 
-_Note: It's not necessary to sign a plugin during development. The docker development environment that is scaffolded with `@grafana/create-plugin` caters for running the plugin without a signature._
+```bash
+# Unit tests (watch mode)
+yarn test
 
-## Initial steps
+# Unit tests (CI, single run)
+yarn test:ci
 
-Before signing a plugin please read the Grafana [plugin publishing and signing criteria](https://grafana.com/legal/plugins/#plugin-publishing-and-signing-criteria) documentation carefully.
+# E2E tests (requires yarn server running)
+yarn e2e
+```
 
-`@grafana/create-plugin` has added the necessary commands and workflows to make signing and distributing a plugin via the grafana plugins catalog as straightforward as possible.
+### Linting
 
-Before signing a plugin for the first time please consult the Grafana [plugin signature levels](https://grafana.com/legal/plugins/#what-are-the-different-classifications-of-plugins) documentation to understand the differences between the types of signature level.
-
-1. Create a [Grafana Cloud account](https://grafana.com/signup).
-2. Make sure that the first part of the plugin ID matches the slug of your Grafana Cloud account.
-   - _You can find the plugin ID in the `plugin.json` file inside your plugin directory. For example, if your account slug is `acmecorp`, you need to prefix the plugin ID with `acmecorp-`._
-3. Create a Grafana Cloud API key with the `PluginPublisher` role.
-4. Keep a record of this API key as it will be required for signing a plugin
-
-## Signing a plugin
-
-### Using Github actions release workflow
-
-If the plugin is using the github actions supplied with `@grafana/create-plugin` signing a plugin is included out of the box. The [release workflow](./.github/workflows/release.yml) can prepare everything to make submitting your plugin to Grafana as easy as possible. Before being able to sign the plugin however a secret needs adding to the Github repository.
-
-1. Please navigate to "settings > secrets > actions" within your repo to create secrets.
-2. Click "New repository secret"
-3. Name the secret "GRAFANA_API_KEY"
-4. Paste your Grafana Cloud API key in the Secret field
-5. Click "Add secret"
-
-#### Push a version tag
-
-To trigger the workflow we need to push a version tag to github. This can be achieved with the following steps:
-
-1. Run `npm version <major|minor|patch>`
-2. Run `git push origin main --follow-tags`
-
-## Learn more
-
-Below you can find source code for existing app plugins and other related documentation.
-
-- [Basic app plugin example](https://github.com/grafana/grafana-plugin-examples/tree/master/examples/app-basic#readme)
-- [`plugin.json` documentation](https://grafana.com/developers/plugin-tools/reference/plugin-jsonplugin-json)
-- [Sign a plugin](https://grafana.com/developers/plugin-tools/publish-a-plugin/sign-a-plugin)
+```bash
+yarn lint
+yarn lint:fix
+```
