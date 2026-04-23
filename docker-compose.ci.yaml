@@ -1,0 +1,29 @@
+# Stack used by plugin-ci-workflows Playwright jobs (`playwright-docker-compose-file`).
+# Uses default container logging (json-file) so CI does not need Grafana Cloud log env vars
+# or the Loki Docker logging plugin. Keep in sync with `docker-compose.yaml` when services change.
+services:
+  grafana:
+    env_file:
+      - .env
+    extends:
+      file: .config/docker-compose-base.yaml
+      service: grafana
+    environment:
+      - GF_USERS_DEFAULT_THEME=light
+  loki:
+    image: grafana/loki:main-02dad9d@sha256:f6531d10533f568057e073102fa629d6f152cfa840b8a6800fc83239b2b64e8c
+    environment:
+      LOG_CLUSTER_DEPTH: '8'
+      LOG_SIM_TH: '0.3'
+    env_file:
+      - .env
+    ports:
+      - '3100:3100'
+    volumes:
+      - ./config/loki-config.yaml:/etc/loki/local-config.yaml
+      - ./config/loki-overrides.yaml:/etc/loki/overrides.yaml
+    command:
+      - -config.file=/etc/loki/local-config.yaml
+      - -runtime-config.file=/etc/loki/overrides.yaml
+      - -target=all,dataobj-explorer,ui
+    restart: on-failure
