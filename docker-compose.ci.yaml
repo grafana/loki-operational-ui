@@ -1,10 +1,14 @@
 # Stack used by plugin-ci-workflows Playwright jobs (`playwright-docker-compose-file`).
 # Uses default container logging (json-file) so CI does not need Grafana Cloud log env vars
 # or the Loki Docker logging plugin. Keep in sync with `docker-compose.yaml` when services change.
+#
+# CI checkouts have no `.env` (gitignored). Use optional `env_file` here only — do not copy
+# required `env_file: .env` from `docker-compose.yaml` or Playwright jobs will fail.
 services:
   grafana:
     env_file:
-      - .env
+      - path: .env
+        required: false
     extends:
       file: .config/docker-compose-base.yaml
       service: grafana
@@ -16,7 +20,8 @@ services:
       LOG_CLUSTER_DEPTH: '8'
       LOG_SIM_TH: '0.3'
     env_file:
-      - .env
+      - path: .env
+        required: false
     ports:
       - '3100:3100'
     volumes:
