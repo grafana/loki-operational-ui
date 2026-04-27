@@ -34,3 +34,4 @@ jobs:
       branch: ${{ github.event.inputs.branch }}
       environment: ${{ github.event.inputs.environment }}
       docs-only: ${{ fromJSON(github.event.inputs.docs-only) }}
+      playwright-docker-compose-file: docker-compose.ci.yaml
