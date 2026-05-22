@@ -1,7 +1,6 @@
-import { defineConfig } from 'eslint/config';
 import grafanaConfig from '@grafana/eslint-config/flat.js';
 
-export default defineConfig([
+export default [
   ...grafanaConfig,
   {
     rules: {
@@ -28,4 +27,4 @@ export default defineConfig([
       'react-hooks/rules-of-hooks': 'off',
     },
   },
-]);
+];

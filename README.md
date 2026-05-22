@@ -43,15 +43,21 @@ Side-by-side performance comparison between two cells for sampled queries (from 
 
 ### Prerequisites
 
-- Node.js
-- Yarn
+- Node.js >= 24
+- Yarn 4 (via Corepack; version pinned in `package.json` `packageManager`)
 - Docker & Docker Compose (for local Grafana)
 
 ### Getting Started
 
 ```bash
-# Install dependencies
+# One-time: enable Corepack so Node uses packageManager from package.json
+corepack enable
+
+# Install dependencies (lifecycle scripts disabled via .yarnrc.yml)
 yarn install
+
+# CI-equivalent install
+yarn install --immutable
 
 # Start development mode (watch)
 yarn dev
