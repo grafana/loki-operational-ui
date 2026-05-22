@@ -9,10 +9,11 @@ yarn-error.log*
 node_modules/
 
 # yarn
-.yarn/cache
-.yarn/unplugged
-.yarn/build-state.yml
-.yarn/install-state.gz
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/sdks
+!.yarn/versions
 .pnp.*
 
 # Runtime data

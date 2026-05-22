@@ -14,4 +14,5 @@ jobs:
   CI:
     uses: grafana/plugin-ci-workflows/.github/workflows/ci.yml@ci-cd-workflows/v7.2.0
     with:
+      node-version: '24'
       playwright-docker-compose-file: docker-compose.ci.yaml
