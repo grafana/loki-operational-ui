@@ -21,7 +21,7 @@ jobs:
         run: corepack enable
 
       - name: Install dependencies
-        run: yarn install --immutable --prefer-offline
+        run: yarn install --immutable
 
       - name: Build plugin
         run: yarn run build
