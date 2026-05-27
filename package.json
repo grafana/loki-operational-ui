@@ -57,7 +57,7 @@
     "jest-environment-jsdom": "29.7.0",
     "monaco-editor-webpack-plugin": "7.1.1",
     "postcss": "8.5.10",
-    "postcss-loader": "8.2.0",
+    "postcss-loader": "8.2.1",
     "prettier": "2.8.8",
     "replace-in-file-webpack-plugin": "1.0.6",
     "sass": "1.63.2",
