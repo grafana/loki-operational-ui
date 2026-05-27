@@ -1591,6 +1591,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@openfeature/web-sdk@npm:1.7.3":
+  version: 1.7.3
+  resolution: "@openfeature/web-sdk@npm:1.7.3"
+  peerDependencies:
+    "@openfeature/core": ^1.9.2
+  checksum: 10c0/e3e409f7cff6ff83fcc9a6251dbc7ed22b1d9caab82b60675c8764e34ac61a50877d404d4f13136993fc4a456702b8aea8eb1a0789e6e5df586fc1ad4482f0d7
+  languageName: node
+  linkType: hard
+
 "@opentelemetry/api-logs@npm:0.202.0":
   version: 0.202.0
   resolution: "@opentelemetry/api-logs@npm:0.202.0"
@@ -9069,6 +9078,7 @@ __metadata:
     "@grafana/ui": "npm:12.4.0"
     "@hookform/resolvers": "npm:5.2.2"
     "@monaco-editor/react": "npm:4.6.0"
+    "@openfeature/web-sdk": "npm:1.7.3"
     "@playwright/test": "npm:1.55.1"
     "@radix-ui/react-collapsible": "npm:1.1.2"
     "@radix-ui/react-dialog": "npm:1.1.5"

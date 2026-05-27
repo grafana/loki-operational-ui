@@ -80,6 +80,7 @@
     "@grafana/ui": "12.4.0",
     "@hookform/resolvers": "5.2.2",
     "@monaco-editor/react": "4.6.0",
+    "@openfeature/web-sdk": "1.7.3",
     "@radix-ui/react-collapsible": "1.1.2",
     "@radix-ui/react-dialog": "1.1.5",
     "@radix-ui/react-dropdown-menu": "2.1.16",
