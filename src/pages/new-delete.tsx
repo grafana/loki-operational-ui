@@ -10,7 +10,6 @@ import { ServiceNames } from 'lib/ring-utils';
 import { findNodeName } from 'lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { formatDuration, intervalToDuration } from 'date-fns';
-import debounce from 'lodash/debounce';
 import { AlertCircle, Loader2 } from 'lucide-react';
 import { useForm, ControllerRenderProps } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
@@ -21,6 +20,15 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { PageContainer } from 'layout/page-container';
 import { useAbsolutePath } from '../hooks/use-absolute-path';
 import { prefixRoute } from 'utils/utils.routing';
+
+// Inspired by lodash/debounce - reimplementing for dependency minimization.
+function debounce<T extends (...args: Parameters<T>) => void>(fn: T, wait: number): T {
+  let timer: ReturnType<typeof setTimeout>;
+  return ((...args: Parameters<T>) => {
+    clearTimeout(timer);
+    timer = setTimeout(() => fn(...args), wait);
+  }) as T;
+}
 
 const formSchema = z.object({
   tenant_id: z.string().min(1, 'Tenant ID is required'),
