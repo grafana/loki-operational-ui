@@ -1,4 +1,3 @@
-export * from './data-table-column-header';
 export * from './log-level-select';
 export * from './node-filters';
 export * from './node-list';
