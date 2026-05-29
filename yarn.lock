@@ -9083,7 +9083,6 @@ __metadata:
     "@radix-ui/react-slot": "npm:1.2.4"
     "@radix-ui/react-tabs": "npm:1.1.13"
     "@radix-ui/react-toast": "npm:1.2.15"
-    "@radix-ui/react-toggle": "npm:1.1.10"
     "@radix-ui/react-toggle-group": "npm:1.1.11"
     "@radix-ui/react-tooltip": "npm:1.2.8"
     "@stylistic/eslint-plugin-ts": "npm:2.13.0"
