@@ -13,7 +13,7 @@ export type ThemeContextType = {
   setTheme: (theme: Theme) => void;
 };
 
-export const initialState: ThemeContextType = {
+const initialState: ThemeContextType = {
   theme: 'light',
   setTheme: () => null,
 };

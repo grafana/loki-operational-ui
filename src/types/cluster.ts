@@ -32,4 +32,3 @@ export interface Cluster {
   members: { [key: string]: Member };
 }
 
-export const ALL_VALUES_TARGET = 'all-values';

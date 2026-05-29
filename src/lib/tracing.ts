@@ -7,7 +7,7 @@
  * Default random bytes generator that uses crypto.getRandomValues when available,
  * falling back to Math.random for environments without crypto support
  */
-export function getRandomBytes(bytes: Uint8Array): Uint8Array {
+function getRandomBytes(bytes: Uint8Array): Uint8Array {
   if (typeof crypto !== 'undefined' && crypto.getRandomValues) {
     crypto.getRandomValues(bytes);
   } else {
