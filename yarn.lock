@@ -9139,7 +9139,6 @@ __metadata:
     swc-loader: "npm:0.2.6"
     tailwind-merge: "npm:3.3.1"
     tailwindcss: "npm:3.4.18"
-    tailwindcss-animate: "npm:1.0.7"
     terser-webpack-plugin: "npm:5.3.14"
     ts-node: "npm:10.9.2"
     typescript: "npm:5.5.4"
@@ -12039,15 +12038,6 @@ __metadata:
   version: 3.3.1
   resolution: "tailwind-merge@npm:3.3.1"
   checksum: 10c0/b84c6a78d4669fa12bf5ab8f0cdc4400a3ce0a7c006511af4af4be70bb664a27466dbe13ee9e3b31f50ddf6c51d380e8192ce0ec9effce23ca729d71a9f63818
-  languageName: node
-  linkType: hard
-
-"tailwindcss-animate@npm:1.0.7":
-  version: 1.0.7
-  resolution: "tailwindcss-animate@npm:1.0.7"
-  peerDependencies:
-    tailwindcss: "*"
-  checksum: 10c0/ec7dbd1631076b97d66a1fbaaa06e0725fccfa63119221e8d87a997b02dcede98ad88bb1ef6665b968f5d260fcefb10592e0299ca70208d365b37761edf5e19a
   languageName: node
   linkType: hard
 
