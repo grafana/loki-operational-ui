@@ -15,12 +15,3 @@ export interface StoreContextValue {
   setSelectedDatasource: (datasource: DataSourceInstanceSettings | null) => void;
 }
 
-export interface BreadcrumbItem {
-  title: string;
-  path: string;
-}
-
-export interface BreadcrumbContextType {
-  items: BreadcrumbItem[];
-  setBreadcrumb: (items: BreadcrumbItem[]) => void;
-}

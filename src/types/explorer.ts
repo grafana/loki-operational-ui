@@ -12,7 +12,7 @@ export interface ExplorerData {
   folders: string[];
 }
 
-export interface PageInfo {
+interface PageInfo {
   compressed_size: number;
   uncompressed_size: number;
   rows_count: number;
@@ -22,7 +22,7 @@ export interface PageInfo {
   data_size: number;
 }
 
-export interface ColumnInfo {
+interface ColumnInfo {
   name?: string;
   type: string;
   value_type: string;
@@ -37,7 +37,7 @@ export interface ColumnInfo {
   statistics?: ColumnStatistics;
 }
 
-export interface SectionMetadata {
+interface SectionMetadata {
   type: string;
   totalCompressedSize: number;
   totalUncompressedSize: number;

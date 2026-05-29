@@ -1,4 +1,4 @@
-export interface BuildInfo {
+interface BuildInfo {
   version: string;
   revision: string;
   branch: string;
