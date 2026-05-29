@@ -3,7 +3,7 @@ import { CodeBlock as ReactCodeBlock } from 'react-code-block';
 import { Button } from './button';
 import { Copy, Check, ChevronDown, ChevronUp } from 'lucide-react';
 import { cn } from 'lib/utils';
-import { useTheme } from 'next-themes';
+import { useTheme2 } from '@grafana/ui';
 import type { PrismTheme } from 'prism-react-renderer';
 
 interface CodeBlockProps {
@@ -133,7 +133,7 @@ const darkTheme: PrismTheme = {
 export function CodeBlock({ code, language = 'typescript', fileName, className, maxLines = 200 }: CodeBlockProps) {
   const [copied, setCopied] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { theme } = useTheme();
+  const { isDark } = useTheme2();
 
   const onCopy = async () => {
     await navigator.clipboard.writeText(code);
@@ -161,7 +161,7 @@ export function CodeBlock({ code, language = 'typescript', fileName, className, 
           </Button>
         </div>
       )}
-      <ReactCodeBlock code={displayedCode} language={language} theme={theme === 'dark' ? darkTheme : lightTheme}>
+      <ReactCodeBlock code={displayedCode} language={language} theme={isDark ? darkTheme : lightTheme}>
         <ReactCodeBlock.Code className="bg-muted/50 p-4 text-sm whitespace-pre-wrap break-words">
           <ReactCodeBlock.LineContent className="max-w-full">
             <ReactCodeBlock.Token />
