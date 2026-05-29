@@ -15,8 +15,8 @@ import { useForm, ControllerRenderProps } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import { useQueryClient } from '@tanstack/react-query';
 import * as z from 'zod';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import { DateTimePicker } from '@grafana/ui';
+import { dateTime } from '@grafana/data';
 import { PageContainer } from 'layout/page-container';
 import { useAbsolutePath } from '../hooks/use-absolute-path';
 import { prefixRoute } from 'utils/utils.routing';
@@ -228,14 +228,10 @@ const NewDeleteRequest = () => {
                     <FormItem>
                       <FormLabel>START TIME</FormLabel>
                       <FormControl>
-                        <DatePicker
-                          selected={field.value}
-                          onChange={field.onChange}
-                          showTimeSelect
-                          timeFormat="HH:mm"
-                          timeIntervals={15}
-                          dateFormat="yyyy-MM-dd HH:mm"
-                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        <DateTimePicker
+                          date={dateTime(field.value)}
+                          onChange={(dt) => field.onChange(dt?.toDate())}
+                          disabledMinutes={() => Array.from({ length: 60 }, (_, i) => i).filter((m) => m % 15 !== 0)} // Only allow multiples of 15 minutes
                         />
                       </FormControl>
                       <FormMessage />
@@ -250,15 +246,11 @@ const NewDeleteRequest = () => {
                     <FormItem>
                       <FormLabel>END TIME</FormLabel>
                       <FormControl>
-                        <DatePicker
-                          selected={field.value}
-                          onChange={field.onChange}
-                          showTimeSelect
-                          timeFormat="HH:mm"
-                          timeIntervals={15}
-                          dateFormat="yyyy-MM-dd HH:mm"
+                        <DateTimePicker
+                          date={dateTime(field.value)}
+                          onChange={(dt) => field.onChange(dt?.toDate())}
                           minDate={form.watch('start_time')}
-                          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                          disabledMinutes={() => Array.from({ length: 60 }, (_, i) => i).filter((m) => m % 15 !== 0)} // Only allow multiples of 15 minutes
                         />
                       </FormControl>
                       <FormMessage />
