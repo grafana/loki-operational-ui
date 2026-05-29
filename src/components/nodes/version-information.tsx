@@ -1,8 +1,10 @@
 import React from 'react';
 import { Card, CardHeader, CardContent, CardTitle } from 'components/ui/card';
 import { Label } from 'components/ui/label';
-import { FaApple, FaLinux, FaWindows } from 'react-icons/fa';
 import { Badge } from 'components/ui/badge';
+import appleIcon from './icons/apple.svg';
+import linuxIcon from './icons/linux.svg';
+import windowsIcon from './icons/windows.svg';
 
 interface VersionInformationProps {
   build: {
@@ -18,13 +20,13 @@ interface VersionInformationProps {
 const getOSIcon = (os: string) => {
   const osLower = os.toLowerCase();
   if (osLower.includes('darwin') || osLower.includes('mac')) {
-    return <FaApple className="h-4 w-4" />;
+    return <img src={appleIcon} alt="macOS" className="h-4 w-4 dark:invert" />;
   }
   if (osLower.includes('linux')) {
-    return <FaLinux className="h-4 w-4" />;
+    return <img src={linuxIcon} alt="Linux" className="h-4 w-4 dark:invert" />;
   }
   if (osLower.includes('windows')) {
-    return <FaWindows className="h-4 w-4" />;
+    return <img src={windowsIcon} alt="Windows" className="h-4 w-4 dark:invert" />;
   }
   return null;
 };
