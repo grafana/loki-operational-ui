@@ -77,15 +77,6 @@ export const OUTCOME_ERROR = 'error' as const;
 
 export type OutcomeFilter = typeof OUTCOME_ALL | typeof OUTCOME_MATCH | typeof OUTCOME_MISMATCH | typeof OUTCOME_ERROR;
 
-export interface ComparisonOutcome {
-  correlationId: string;
-  comparisonStatus: string;
-  differenceDetails: unknown | null;
-  performanceMetrics: unknown | null;
-  comparedAt: string;
-  createdAt: string;
-}
-
 export interface GoldfishAPIResponse {
   queries: SampledQuery[];
   hasMore: boolean;

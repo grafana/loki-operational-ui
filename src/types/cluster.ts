@@ -1,4 +1,4 @@
-export interface BuildInfo {
+interface BuildInfo {
   version: string;
   revision: string;
   branch: string;
@@ -32,4 +32,3 @@ export interface Cluster {
   members: { [key: string]: Member };
 }
 
-export const ALL_VALUES_TARGET = 'all-values';

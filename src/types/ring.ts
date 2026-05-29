@@ -58,5 +58,3 @@ export const PartitionStates = {
   3: 'Inactive',
   4: 'Deleted',
 } as const;
-
-export type PartitionState = keyof typeof PartitionStates;
