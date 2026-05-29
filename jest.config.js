@@ -14,6 +14,7 @@ module.exports = {
   transformIgnorePatterns: [nodeModulesToTransform(projectESModules)],
   moduleNameMapper: {
     ...baseConfig.moduleNameMapper,
+    '\\.(png|jpe?g|gif|svg|ico|webp)$': '<rootDir>/.config/jest/mocks/fileMock.js',
     '^monaco-editor$': '<rootDir>/.config/jest/mocks/monaco-editor.ts',
     '^@monaco-editor/react$': '<rootDir>/.config/jest/mocks/monaco-editor-react.ts',
   },
