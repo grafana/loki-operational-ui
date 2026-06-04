@@ -37,6 +37,12 @@ export interface ColumnInfo {
   statistics?: ColumnStatistics;
 }
 
+export interface IndexPointerRow {
+  path: string;
+  start_ts: string;
+  end_ts: string;
+}
+
 export interface SectionMetadata {
   type: string;
   totalCompressedSize: number;
@@ -46,6 +52,7 @@ export interface SectionMetadata {
   maxTimestamp: string;
   minTimestamp: string;
   distribution: number[];
+  indexPointers?: IndexPointerRow[];
 }
 
 export interface FileMetadataResponse {
