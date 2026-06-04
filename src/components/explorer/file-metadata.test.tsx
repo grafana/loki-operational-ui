@@ -83,4 +83,20 @@ describe('FileMetadataView - index pointers', () => {
 
     expect(screen.queryByText(/Index Pointers/i)).not.toBeInTheDocument();
   });
+
+  it('renders no pointer table when indexPointers is an empty array', async () => {
+    const user = userEvent.setup();
+    const metadata: FileMetadataResponse = {
+      sections: [baseSection({ indexPointers: [] })],
+      lastModified: '2026-06-03T13:00:00Z',
+      minTimestamp: '2026-06-03T12:00:00Z',
+      maxTimestamp: '2026-06-03T13:00:00Z',
+      distribution: [],
+    };
+
+    renderView(metadata);
+    await user.click(screen.getByText(/Section #1/));
+
+    expect(screen.queryByText(/Index Pointers/i)).not.toBeInTheDocument();
+  });
 });

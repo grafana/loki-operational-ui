@@ -337,8 +337,8 @@ function IndexPointersTable({ rows }: IndexPointersTableProps) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => (
-              <tr key={i} className="border-t border-border hover:bg-accent/50 transition-colors">
+            {rows.map((row) => (
+              <tr key={row.path} className="border-t border-border hover:bg-accent/50 transition-colors">
                 <td className="p-4">
                   <div className="flex items-center gap-2">
                     <Link
