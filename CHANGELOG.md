@@ -1,5 +1,39 @@
 # Changelog
 
+## 2.0.0
+
+##### Chores
+
+* **deps:**
+  *  update dependency postcss to v8.5.10 [security] (#62) (f565628d)
+  *  update dependency lodash to v4.18.1 [security] (#54) (4733c389)
+* **ci:**
+  *  lint ignores were moved to eslint.config (f836e19b)
+  *  lint command, jest-setup (cc1323b2)
+  *  dismiss grafana portal (2f889a3e)
+  *  remove .env from docker ci (b879d27f)
+  *   e2e test to ensure app loads (c4f96459)
+  *  fixes tests and webpack path in package.json (8f3ce7f6)
+*  update .config/.cprc.json to version 7.1.7. (bab727d6)
+*  run create-plugin migration - 007-remove-testing-library-types (a3d5abe6)
+*  run create-plugin migration - 006-webpack-nested-fix (651f01a2)
+*  run create-plugin migration - 004-eslint9-flat-config (82039adc)
+*  run create-plugin@5.27.1 update (819bebec)
+
+##### Continuous Integration
+
+* **ci/cd:**  enable playwright tests (07e3f5c1)
+*  bump plugin-ci-workflows to v7.2.0 (36901e3c)
+
+##### Bug Fixes
+
+*  externalize react/jsx-runtime for Grafana 13 compatibility (b8eb5cd9)
+
+##### Other Changes
+
+* grafana/loki-operational-ui into feat/react-19-migration (4c000243)
+
+
 ## 1.0.8
 
 ##### Chores

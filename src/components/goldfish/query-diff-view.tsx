@@ -25,7 +25,7 @@ import {
   HardDrive,
   GitCompare,
 } from 'lucide-react';
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, format } from 'date-fns';
 import { cn, formatBytes } from 'lib/utils';
 import { useToast } from 'hooks/use-toast';
 
@@ -319,11 +319,11 @@ export function QueryDiffView({ query }: { query: SampledQuery }) {
               <div className="grid grid-cols-2 gap-4 text-sm">
                 <div className="space-y-1">
                   <div className="text-muted-foreground">Start Time</div>
-                  <div className="font-mono text-xs">{new Date(query.startTime).toLocaleString()}</div>
+                  <div className="font-mono text-xs">{format(new Date(query.startTime), 'yyyy-MM-dd HH:mm:ss')}</div>
                 </div>
                 <div className="space-y-1">
                   <div className="text-muted-foreground">End Time</div>
-                  <div className="font-mono text-xs">{new Date(query.endTime).toLocaleString()}</div>
+                  <div className="font-mono text-xs">{format(new Date(query.endTime), 'yyyy-MM-dd HH:mm:ss')}</div>
                 </div>
               </div>
             </div>

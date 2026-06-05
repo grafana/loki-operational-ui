@@ -16,8 +16,6 @@ export * from './scroll-area';
 export * from './scroll-to-top';
 export * from './select';
 export * from './separator';
-export * from './sheet';
-export * from './sidebar';
 export * from './skeleton';
 export * from './switch';
 export * from './table';

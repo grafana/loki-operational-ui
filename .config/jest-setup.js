@@ -7,7 +7,6 @@
 
 import '@testing-library/jest-dom';
 import { TextEncoder, TextDecoder } from 'util';
-import React from 'react';
 
 Object.assign(global, { TextDecoder, TextEncoder });
 
@@ -27,24 +26,3 @@ Object.defineProperty(global, 'matchMedia', {
 });
 
 HTMLCanvasElement.prototype.getContext = () => {};
-
-// Mock scrollIntoView for Radix UI components
-Element.prototype.scrollIntoView = jest.fn();
-
-// Mock ResizeObserver for cmdk and other components
-global.ResizeObserver = jest.fn().mockImplementation(() => ({
-  observe: jest.fn(),
-  unobserve: jest.fn(),
-  disconnect: jest.fn(),
-}));
-
-// Mock only the essential Grafana runtime services that need specific test behavior
-jest.mock('@grafana/runtime', () => {
-  const actual = jest.requireActual('@grafana/runtime');
-  return {
-    ...actual,
-    getDataSourceSrv: () => ({
-      getList: () => [{ uid: 'test-datasource', name: 'Test Datasource', isDefault: true, type: 'loki' }],
-    }),
-  };
-});

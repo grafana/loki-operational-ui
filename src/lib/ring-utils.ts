@@ -56,13 +56,6 @@ export function parseZoneFromOwner(owner: string): string {
   return parts.length >= 3 ? parts[parts.length - 2] : '';
 }
 
-export function getFirstZoneFromOwners(owners: string[]): string {
-  if (!owners.length) {
-    return '';
-  }
-  return parseZoneFromOwner(owners[0]);
-}
-
 export function formatBytes(bytes: number): string {
   const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
   let value = bytes;
@@ -81,7 +74,7 @@ interface Member {
 }
 
 // Helper function to check if a service exists in any member
-export const clusterSupportService = (members: Record<string, Member>, serviceName: string): boolean => {
+const clusterSupportService = (members: Record<string, Member>, serviceName: string): boolean => {
   return Object.values(members).some((member) => hasService(member, serviceName));
 };
 
@@ -96,7 +89,7 @@ export const ServiceNames = {
   'index-gateway': 'index-gateway',
 };
 
-export const RingServices: Record<
+const RingServices: Record<
   string,
   { title: string; ringName: RingType; ringPath: string; needsTokens: boolean }
 > = {
