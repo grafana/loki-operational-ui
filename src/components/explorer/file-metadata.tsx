@@ -5,10 +5,11 @@ import { cn, formatBytes } from 'lib/utils';
 import { Button } from 'components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from 'components/ui/card';
 import { Badge } from 'components/ui/badge';
-import { FileMetadataResponse } from 'types/explorer';
+import { FileMetadataResponse, IndexPointerRow } from 'types/explorer';
 import { DateHover } from 'components/common/date-hover';
 import { CopyButton } from '../common/copy-button';
 import { CompressionRatio } from '../common/compression-ratio';
+import { prefixRoute } from 'utils/utils.routing';
 
 // Value type to badge styling mapping
 const getValueTypeBadgeStyle = (valueType: string): string => {
@@ -227,6 +228,9 @@ function Section({ section, sectionIndex, isExpanded, expandedColumns, onToggle,
       {isExpanded && (
         <div className="mt-6 px-6">
           <SectionStats section={section} />
+          {section.indexPointers && section.indexPointers.length > 0 && (
+            <IndexPointersTable rows={section.indexPointers} />
+          )}
           <ColumnsList
             columns={section.columns}
             sectionIndex={sectionIndex}
@@ -311,6 +315,52 @@ function SectionStats({ section }: SectionStatsProps) {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+interface IndexPointersTableProps {
+  rows: IndexPointerRow[];
+}
+
+function IndexPointersTable({ rows }: IndexPointersTableProps) {
+  return (
+    <div className="mb-8">
+      <h4 className="text-lg font-medium mb-4">Index Pointers ({rows.length})</h4>
+      <div className="rounded-lg border border-border overflow-hidden bg-background">
+        <table className="w-full">
+          <thead>
+            <tr className="bg-secondary/50 border-b border-border">
+              <th className="text-left p-4 font-medium text-muted-foreground">Path</th>
+              <th className="text-left p-4 font-medium text-muted-foreground">Start</th>
+              <th className="text-left p-4 font-medium text-muted-foreground">End</th>
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.path} className="border-t border-border hover:bg-accent/50 transition-colors">
+                <td className="p-4">
+                  <div className="flex items-center gap-2">
+                    <Link
+                      to={prefixRoute(`storage/dataobj/metadata?path=${encodeURIComponent(row.path)}`)}
+                      className="font-mono text-sm text-primary hover:underline break-all"
+                    >
+                      {row.path}
+                    </Link>
+                    <CopyButton text={row.path} />
+                  </div>
+                </td>
+                <td className="p-4">
+                  <DateHover date={new Date(row.start_ts)} />
+                </td>
+                <td className="p-4">
+                  <DateHover date={new Date(row.end_ts)} />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }
