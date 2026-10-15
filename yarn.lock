@@ -1483,21 +1483,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@monaco-editor/loader@npm:^1.4.0":
+"@monaco-editor/loader@npm:^1.4.0, @monaco-editor/loader@npm:^1.5.0":
   version: 1.7.0
   resolution: "@monaco-editor/loader@npm:1.7.0"
   dependencies:
     state-local: "npm:^1.0.6"
   checksum: 10c0/1fd3579cb09b669493cf553dfc0723a93483140a44353ce9a739827edfa7b2c6541b254024d15c48176ece749ef666b6d16cce6cf0e4396c7fa1c5a48012d08a
-  languageName: node
-  linkType: hard
-
-"@monaco-editor/loader@npm:^1.5.0":
-  version: 1.5.0
-  resolution: "@monaco-editor/loader@npm:1.5.0"
-  dependencies:
-    state-local: "npm:^1.0.6"
-  checksum: 10c0/d8e1fd75fea113b4d91405784ed4db757df450c6e57a85e87728281e819a73a3ef9fe0cbb1dc1509456f1e895ad9c11e4748f80b68900cb6cf600170e14ce6ed
   languageName: node
   linkType: hard
 
@@ -1698,6 +1689,140 @@ __metadata:
   version: 1.40.0
   resolution: "@opentelemetry/semantic-conventions@npm:1.40.0"
   checksum: 10c0/3259de0ea11b52eb70e44c12eba21448392baf9cb74c37b62071c4a5ed7fb89b61e194f3898d40ac6bfa7293617a0e132876cb6e355472b66de0cdb13c50b529
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-android-arm64@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-android-arm64@npm:2.6.0"
+  conditions: os=android & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-darwin-arm64@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-darwin-arm64@npm:2.6.0"
+  conditions: os=darwin & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-darwin-x64@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-darwin-x64@npm:2.6.0"
+  conditions: os=darwin & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-freebsd-x64@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-freebsd-x64@npm:2.6.0"
+  conditions: os=freebsd & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-linux-arm-glibc@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-linux-arm-glibc@npm:2.6.0"
+  conditions: os=linux & cpu=arm & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-linux-arm-musl@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-linux-arm-musl@npm:2.6.0"
+  conditions: os=linux & cpu=arm & libc=musl
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-linux-arm64-glibc@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-linux-arm64-glibc@npm:2.6.0"
+  conditions: os=linux & cpu=arm64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-linux-arm64-musl@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-linux-arm64-musl@npm:2.6.0"
+  conditions: os=linux & cpu=arm64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-linux-x64-glibc@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-linux-x64-glibc@npm:2.6.0"
+  conditions: os=linux & cpu=x64 & libc=glibc
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-linux-x64-musl@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-linux-x64-musl@npm:2.6.0"
+  conditions: os=linux & cpu=x64 & libc=musl
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-win32-arm64@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-win32-arm64@npm:2.6.0"
+  conditions: os=win32 & cpu=arm64
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher-win32-x64@npm:2.6.0":
+  version: 2.6.0
+  resolution: "@parcel/watcher-win32-x64@npm:2.6.0"
+  conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@parcel/watcher@npm:^2.4.1":
+  version: 2.6.0
+  resolution: "@parcel/watcher@npm:2.6.0"
+  dependencies:
+    "@parcel/watcher-android-arm64": "npm:2.6.0"
+    "@parcel/watcher-darwin-arm64": "npm:2.6.0"
+    "@parcel/watcher-darwin-x64": "npm:2.6.0"
+    "@parcel/watcher-freebsd-x64": "npm:2.6.0"
+    "@parcel/watcher-linux-arm-glibc": "npm:2.6.0"
+    "@parcel/watcher-linux-arm-musl": "npm:2.6.0"
+    "@parcel/watcher-linux-arm64-glibc": "npm:2.6.0"
+    "@parcel/watcher-linux-arm64-musl": "npm:2.6.0"
+    "@parcel/watcher-linux-x64-glibc": "npm:2.6.0"
+    "@parcel/watcher-linux-x64-musl": "npm:2.6.0"
+    "@parcel/watcher-win32-arm64": "npm:2.6.0"
+    "@parcel/watcher-win32-x64": "npm:2.6.0"
+    detect-libc: "npm:^2.0.3"
+    is-glob: "npm:^4.0.3"
+    node-addon-api: "npm:^7.0.0"
+    node-gyp: "npm:latest"
+    picomatch: "npm:^4.0.4"
+  dependenciesMeta:
+    "@parcel/watcher-android-arm64":
+      optional: true
+    "@parcel/watcher-darwin-arm64":
+      optional: true
+    "@parcel/watcher-darwin-x64":
+      optional: true
+    "@parcel/watcher-freebsd-x64":
+      optional: true
+    "@parcel/watcher-linux-arm-glibc":
+      optional: true
+    "@parcel/watcher-linux-arm-musl":
+      optional: true
+    "@parcel/watcher-linux-arm64-glibc":
+      optional: true
+    "@parcel/watcher-linux-arm64-musl":
+      optional: true
+    "@parcel/watcher-linux-x64-glibc":
+      optional: true
+    "@parcel/watcher-linux-x64-musl":
+      optional: true
+    "@parcel/watcher-win32-arm64":
+      optional: true
+    "@parcel/watcher-win32-x64":
+      optional: true
+  checksum: 10c0/0d6799bdf7d59a1ab5e4a79859035f387a66078586d9543eef0b9bd01c9d61cebe3b64eb96f0bd1f8bf50f07ed7266a1628604b66dc63025a3cee19be2e60d65
   languageName: node
   linkType: hard
 
@@ -4564,7 +4689,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ajv@npm:^6.12.4":
+"ajv@npm:^6.12.4, ajv@npm:^6.12.5, ajv@npm:^6.14.0":
   version: 6.15.0
   resolution: "ajv@npm:6.15.0"
   dependencies:
@@ -4573,18 +4698,6 @@ __metadata:
     json-schema-traverse: "npm:^0.4.1"
     uri-js: "npm:^4.2.2"
   checksum: 10c0/67966499dd272ecde1c2e467084411132891523d057487587879d39ac04207f4351b7b2324c83198013967fbfa632c1612adc960114a30770fbe07a0773b32c2
-  languageName: node
-  linkType: hard
-
-"ajv@npm:^6.12.5, ajv@npm:^6.14.0":
-  version: 6.14.0
-  resolution: "ajv@npm:6.14.0"
-  dependencies:
-    fast-deep-equal: "npm:^3.1.1"
-    fast-json-stable-stringify: "npm:^2.0.0"
-    json-schema-traverse: "npm:^0.4.1"
-    uri-js: "npm:^4.2.2"
-  checksum: 10c0/a2bc39b0555dc9802c899f86990eb8eed6e366cddbf65be43d5aa7e4f3c4e1a199d5460fd7ca4fb3d864000dbbc049253b72faa83b3b30e641ca52cb29a68c22
   languageName: node
   linkType: hard
 
@@ -5170,7 +5283,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chokidar@npm:>=3.0.0 <4.0.0, chokidar@npm:^3.5.3, chokidar@npm:^3.6.0":
+"chokidar@npm:^3.5.3, chokidar@npm:^3.6.0":
   version: 3.6.0
   resolution: "chokidar@npm:3.6.0"
   dependencies:
@@ -5186,6 +5299,15 @@ __metadata:
     fsevents:
       optional: true
   checksum: 10c0/8361dcd013f2ddbe260eacb1f3cb2f2c6f2b0ad118708a343a5ed8158941a39cb8fb1d272e0f389712e74ee90ce8ba864eece9e0e62b9705cb468a2f6d917462
+  languageName: node
+  linkType: hard
+
+"chokidar@npm:^5.0.0":
+  version: 5.0.0
+  resolution: "chokidar@npm:5.0.0"
+  dependencies:
+    readdirp: "npm:^5.0.0"
+  checksum: 10c0/42fc907cb2a7ff5c9e220f84dae75380a77997f851c2a5e7865a2cf9ae45dd407a23557208cdcdbf3ac8c93341135a1748e4c48c31855f3bfa095e5159b6bdec
   languageName: node
   linkType: hard
 
@@ -6079,6 +6201,13 @@ __metadata:
   version: 1.0.0
   resolution: "delayed-stream@npm:1.0.0"
   checksum: 10c0/d758899da03392e6712f042bec80aa293bbe9e9ff1b2634baae6a360113e708b91326594c8a486d475c69d6259afb7efacdc3537bfcda1c6c648e390ce601b19
+  languageName: node
+  linkType: hard
+
+"detect-libc@npm:^2.0.3":
+  version: 2.1.2
+  resolution: "detect-libc@npm:2.1.2"
+  checksum: 10c0/acc675c29a5649fa1fb6e255f993b8ee829e510b6b56b0910666949c80c364738833417d0edb5f90e4e46be17228b0f2b66a010513984e18b15deeeac49369c4
   languageName: node
   linkType: hard
 
@@ -7670,10 +7799,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immutable@npm:^4.0.0":
-  version: 4.3.7
-  resolution: "immutable@npm:4.3.7"
-  checksum: 10c0/9b099197081b22f6433003e34929da8ecddbbdc1474cdc8aa3b7669dee4adda349c06143de22def36016d1b6de5322b043eccd7a11db1dad2ca85dad4fff5435
+"immutable@npm:^5.1.5":
+  version: 5.1.9
+  resolution: "immutable@npm:5.1.9"
+  checksum: 10c0/ae7032b60b81b682f3e7e4df13e1ec9a401a603eb81b15bb3e37331ed6666e318c71994c6936e1462eb443d32d04769396562a7e2669da22457c8ba279c03ad2
   languageName: node
   linkType: hard
 
@@ -9132,7 +9261,7 @@ __metadata:
     react-router-dom: "npm:6.30.1"
     recharts: "npm:2.15.4"
     replace-in-file-webpack-plugin: "npm:1.0.6"
-    sass: "npm:1.63.2"
+    sass: "npm:1.105.1"
     sass-loader: "npm:13.3.3"
     style-loader: "npm:3.3.4"
     swc-loader: "npm:0.2.6"
@@ -9377,14 +9506,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0, minipass@npm:^7.1.2":
-  version: 7.1.2
-  resolution: "minipass@npm:7.1.2"
-  checksum: 10c0/b0fd20bb9fb56e5fa9a8bfac539e8915ae07430a619e4b86ff71f5fc757ef3924b23b2c4230393af1eda647ed3d75739e4e0acb250a6b1eb277cf7f8fe449557
-  languageName: node
-  linkType: hard
-
-"minipass@npm:^7.0.4":
+"minipass@npm:^5.0.0 || ^6.0.2 || ^7.0.0, minipass@npm:^7.0.4, minipass@npm:^7.1.2":
   version: 7.1.3
   resolution: "minipass@npm:7.1.3"
   checksum: 10c0/539da88daca16533211ea5a9ee98dc62ff5742f531f54640dd34429e621955e91cc280a91a776026264b7f9f6735947629f920944e9c1558369e8bf22eb33fbb
@@ -9506,6 +9628,15 @@ __metadata:
   version: 3.1.1
   resolution: "node-abort-controller@npm:3.1.1"
   checksum: 10c0/f7ad0e7a8e33809d4f3a0d1d65036a711c39e9d23e0319d80ebe076b9a3b4432b4d6b86a7fab65521de3f6872ffed36fc35d1327487c48eb88c517803403eda3
+  languageName: node
+  linkType: hard
+
+"node-addon-api@npm:^7.0.0":
+  version: 7.1.1
+  resolution: "node-addon-api@npm:7.1.1"
+  dependencies:
+    node-gyp: "npm:latest"
+  checksum: 10c0/fb32a206276d608037fa1bcd7e9921e177fe992fc610d098aa3128baca3c0050fc1e014fa007e9b3874cf865ddb4f5bd9f43ccb7cbbbe4efaff6a83e920b17e9
   languageName: node
   linkType: hard
 
@@ -10650,7 +10781,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-remove-scroll@npm:^2.6.2":
+"react-remove-scroll@npm:^2.6.2, react-remove-scroll@npm:^2.6.3":
   version: 2.7.2
   resolution: "react-remove-scroll@npm:2.7.2"
   dependencies:
@@ -10666,25 +10797,6 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/b5f3315bead75e72853f492c0b51ba8fb4fa09a4534d7fc42d6fcd59ca3e047cf213279ffc1e35b337e314ef5a04cb2b12544c85e0078802271731c27c09e5aa
-  languageName: node
-  linkType: hard
-
-"react-remove-scroll@npm:^2.6.3":
-  version: 2.7.1
-  resolution: "react-remove-scroll@npm:2.7.1"
-  dependencies:
-    react-remove-scroll-bar: "npm:^2.3.7"
-    react-style-singleton: "npm:^2.2.3"
-    tslib: "npm:^2.1.0"
-    use-callback-ref: "npm:^1.3.3"
-    use-sidecar: "npm:^1.1.3"
-  peerDependencies:
-    "@types/react": "*"
-    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0 || ^19.0.0-rc
-  peerDependenciesMeta:
-    "@types/react":
-      optional: true
-  checksum: 10c0/7ad8f6ffd3e2aedf9b3d79f0c9088a9a3d7c5332d80c923427a6d97fe0626fb4cb33a6d9174d19fad57d860be69c96f68497a0619c3a8af0e8a5332e49bdde31
   languageName: node
   linkType: hard
 
@@ -10911,6 +11023,13 @@ __metadata:
   dependencies:
     pify: "npm:^2.3.0"
   checksum: 10c0/90cb2750213c7dd7c80cb420654344a311fdec12944e81eb912cd82f1bc92aea21885fa6ce442e3336d9fccd663b8a7a19c46d9698e6ca55620848ab932da814
+  languageName: node
+  linkType: hard
+
+"readdirp@npm:^5.0.0":
+  version: 5.1.1
+  resolution: "readdirp@npm:5.1.1"
+  checksum: 10c0/5e99755684b9104761e48801828f4d2614efa33b1698629929c5985184dc63a7f8233c827832c40dc7be16b00cc871d303cf9de396d2fb74b9465ee2aa2424a1
   languageName: node
   linkType: hard
 
@@ -11267,16 +11386,20 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sass@npm:1.63.2":
-  version: 1.63.2
-  resolution: "sass@npm:1.63.2"
+"sass@npm:1.105.1":
+  version: 1.105.1
+  resolution: "sass@npm:1.105.1"
   dependencies:
-    chokidar: "npm:>=3.0.0 <4.0.0"
-    immutable: "npm:^4.0.0"
+    "@parcel/watcher": "npm:^2.4.1"
+    chokidar: "npm:^5.0.0"
+    immutable: "npm:^5.1.5"
     source-map-js: "npm:>=0.6.2 <2.0.0"
+  dependenciesMeta:
+    "@parcel/watcher":
+      optional: true
   bin:
     sass: sass.js
-  checksum: 10c0/22dfb77f2c2707a67adef382a448899a5d0577bfa8f4cd5560ab1f3b0d492bdfee78b753f130bccef3647dfa7be3585c936fbfbfd110ee4f96d3916e937f655e
+  checksum: 10c0/07246d9a9cc3c7974d28e03b394791c65d6a8f701d4ed2f130f5cb72ff3ef5626e5e66afb067348b2ae87011c52e18cd29f294025a6430851ee8617ef8c94f38
   languageName: node
   linkType: hard
 
